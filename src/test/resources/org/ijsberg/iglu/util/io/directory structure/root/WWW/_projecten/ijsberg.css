@@ -1,0 +1,40 @@
+
+
+
+
+
+a {font-family:times;font-size:12pt;color:#000;font-weight:bold;}
+a:hover {font-family:times;font-size:12pt;color:#fff;font-weight:bold;}
+.tablemain {background-color:553C3B;}
+.spacer {height:10px;font-size:4px;}
+ul {list-style-type:disk; margin-top:5px;margin-bottom:0px;margin-left:20px;text-align:left;}
+td {font-family:verdana,swiss,arial;font-size:10px;color:#000;color:#A09291;text-align:justify;margin:0px;padding:0px;vertical-align:top;padding:0px;}
+.tdbs {font-family:verdana,swiss,arial;font-size:10px;color:#000;color:#A09291;text-align:justify;border:1px solid #6F5958;padding:10px;}
+.tdb {font-family:verdana,swiss,arial;font-size:10px;color:#000;color:#A09291;text-align:justify;border:1 solid #5E4645;padding:10px;}
+.tdcr {font-family:verdana,swiss,arial;font-size:10px;color:#000;background-color:#553C3B;color:#6F5958;text-align:center;vertical-align:bottom;border:0px solid #6F5958;padding:6px;}
+.title {font-family:verdana,swiss,arial;font-size:11px;font-weight:normal;}
+a {color:#A09291;font-family:verdana,swiss,arial;font-size:10px;font-weight:normal;text-decoration:none;}
+a:link {color:#A09291;font-family:verdana,swiss,arial;font-size:10px;font-weight:normal;text-decoration:none;}
+a:visited {color:#A09291;font-family:verdana,swiss,arial;font-size:10px;font-weight:normal;text-decoration:none;}
+a:hover {color:#FFFFFF;font-family:verdana,swiss,arial;font-size:10px;font-weight:normal;text-decoration:underline;}
+a:active {color:#FFFFFF;font-family:verdana,swiss,arial;font-size:10px;font-weight:normal;text-decoration:underline;}
+at {color:#A09291;font-family:verdana,swiss,arial;font-size:10px;font-weight:normal;text-decoration:none;}
+
+
+
+.au:link {color:#A09291;font-family:verdana,swiss,arial;font-size:10px;font-weight:normal;text-decoration:underline;}
+.au:visited {color:#A09291;font-family:verdana,swiss,arial;font-size:10px;font-weight:normal;text-decoration:underline;}
+.au:hover {color:#FFFFFF;font-family:verdana,swiss,arial;font-size:10px;font-weight:normal;text-decoration:underline;}
+.au:active {color:#FFFFFF;font-family:verdana,swiss,arial;font-size:10px;font-weight:normal;text-decoration:underline;}
+
+.greyed {color:#45555E;font-family:verdana,swiss,arial;font-size:10px;font-weight:normal;text-decoration:none;}
+
+.agn {color:#6F5958;font-family:verdana,swiss,arial;font-size:10px;font-weight:normal;text-decoration:none;}
+.agn:link {color:#6F5958;font-family:verdana,swiss,arial;font-size:10px;font-weight:normal;text-decoration:none;}
+.agn:visited {color:#6F5958;font-family:verdana,swiss,arial;font-size:10px;font-weight:normal;text-decoration:none;}
+.agn:hover {color:#FFFFFF;font-family:verdana,swiss,arial;font-size:10px;font-weight:normal;text-decoration:none;}
+.agn:active {color:#FFFFFF;font-family:verdana,swiss,arial;font-size:10px;font-weight:normal;text-decoration:none;}
+
+p {margin:5px;margin-top:7px;text-align:justify};
+em {font-weight:bold;font-style:italic};
+body {background-color:#000;margin:0px;}

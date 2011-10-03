@@ -1,0 +1,402 @@
+<!--
+  ~ Copyright 2011 Jeroen Meetsma
+  ~
+  ~
+  ~ This file is part of Iglu.
+  ~
+  ~ Iglu is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Iglu is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with Iglu.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<html>
+<head><title>ijsberg automatisering</title>
+    <!-- SCRIPT LANGUAGE="JavaScript">
+    b = 'http://www.ijsberg.nl/_d';
+    d = document.location.search;
+    if (d.charAt(0)=='?') d = d.substr(1);
+    if (d =='') { var n = new Date(); d = n.getDay(); };
+
+    d=0;
+
+    document.write('<BASE HREF="'+ b + d + '/">');
+    //
+    </SCRIPT>
+    <NOSCRIPT -->
+    <BASE HREF="http://www.ijsberg.nl/_d0/">
+    <!-- /NOSCRIPT -->
+
+    <LINK REL="stylesheet" TYPE="text/css" HREF="ijsberg.css">
+    <style>
+        ul {list-style-type:disk; margin-top:5;margin-bottom:15;margin-left:20;text-align:left;}
+    </style>
+</head>
+
+<body bgcolor="#000000">
+<center>
+<table class="tablemain" border=0 cellpadding=0 cellspacing=0 height=100% width=770>
+<tr>
+    <td colspan=3 style="height:108px;padding:0px;background-image:url('p_headclr.gif');"><img src="p_headclr.gif"></td>
+</tr>
+<tr>
+    <td rowspan=3 style="height:100px;padding:0px;"><img src="p_headbg.gif" width=135 height=100></td>
+
+    <td style="background-image:url('p_headbg.gif');">
+        <table border=0 cellpadding=0 cellspacing=0 width=500>
+            <tr>
+                <td rowspan=2 style="background:'';" width=100 height=100><img src="logo.gif" width=100 height=100></td>
+                <td width=400 height=36 style="background:'';padding:0px;padding-left:32px;padding-top:8px;"><img
+                        src="p_ijsbergarchitecten.gif"></td>
+            </tr>
+            <tr>
+                <td style="background:'';height:64px;vertical-align:'top';text-align:'right';padding-top:3px;">
+                    <table border=0 cellpadding=0 cellspacing=0 width=368>
+                        <tr>
+                            <td style="background='';text-align:center;width=1px;"><a href="../index.html">HOME</a></td>
+                            <td style="width:100px;"></td>
+                            <td style="background='';text-align:center;width=1px;"><a
+                                    href="../projecten.html">PROJECTEN</a></td>
+                            <td style="width:100px;"></td>
+                            <td style="background='';text-align:center;width=1px;"><a href="../visie.html">VISIE</a>
+                            </td>
+                            <td style="width:100px;"></td>
+                            <td style="background='';text-align:center;width=1px;"><a href="../links.html">LINKS</a>
+                            </td>
+                            <td style="width:100px;"></td>
+                            <td style="background='';text-align:center;width=1px;"><a href="../contact.html">CONTACT</a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+    </td>
+    <td rowspan=3 style="height:100px;padding:0px;"><img src="p_headbg.gif" width=135 height=100></td>
+</tr>
+
+<!-- tr><td style="height:170px;border-top:solid 1px black;border-bottom:solid 1px black;"><img src="title.jpg" GALLERYIMG="no"></td></tr>
+<tr><td height=100></td></tr -->
+<tr>
+    <td height=60>&nbsp;</td>
+</tr>
+<tr>
+    <td height=100%>
+
+        <CENTER>
+
+            <table cellspacing=0 width=500 border=0>
+                <tr>
+                    <td class="tdb" style="border:'1px solid #43535C';padding:10px;">
+                        <img src="../cornerstone/titel.gif">
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td class="tdb" style="border:'1px solid #43535C';padding:10px;">
+
+                        <img style="margin-bottom:10px;" src="../cornerstone/ontstaan.gif"><br>
+
+                        Hergebruik is iets dat bij het ontwikkelen van maatwerk oplossingen na verloop van tijd vanzelf
+                        ontstaat. Als een organisatie een tijd lang een aantal soortgelijke oplossingen realiseert is de
+                        kans groot dat de aanpak en het ontwerp van de oplossing zich na verloop van tijd zullen
+                        standaardiseren. Vooral bij gebruik van object geori&euml;nteerde methodes en technieken zullen
+                        zich herbruikbare stukken code gaan vormen die keer op keer kunnen worden ingezet.
+                        <br><br>
+                        Hergebruik is mogelijk in technische zin, in een te realiseren systeem, maar ook in de
+                        organisatie rondom een project. In technische zin zijn onderstaande niveaus van hergebruik
+                        mogelijk, oplopend in complexiteit en abstractie:
+                        <br><br>
+                        <ul style="margin-bottom:0px;">
+                            <li>Hergebruik van code; met knip- en plakwerk kunnen statements uit een programma worden
+                                overgenomen.
+                            <li>Hergebruik van classes; eenmaal gebouwde functionele eenheden kunnen ook in andere
+                                systemen voldoen.
+                            <li>Hergebruik van concepten; architecturen en design patterns geven een standaard oplossing
+                                voor een bekende situatie en kunnen daardoor de ontwerptijd van een nieuwe applicatie
+                                verkorten.
+                            <li>Hergebruik van frameworks; door een oplossing op basis van een architectuur en/of
+                                patterns te abstraheren en vast te leggen in code, is de basis voor soortgelijke
+                                oplossingen reeds gelegd.
+                            <li>Hergebruik van (sub)systemen; (onderdelen van) applicaties kunnen in sommige gevallen
+                                zonder verandering opnieuw worden gebruikt.
+                        </ul>
+                        <br><br>
+                        Het moge duidelijk zijn dat spontaan hergebruik afneemt naarmate de complexiteit en de
+                        abstractie van het te herbruiken onderdeel toeneemt. Een klant die een maatwerk systeem heeft
+                        besteld is in het algemeen niet ge&iuml;nteresseerd in een generieke, herbruikbare oplossing,
+                        zodat ontwikkelaars zich in de praktijk eerder zullen richten op het produceren van direct
+                        bruikbare code.
+                        <br><br>
+
+
+                        Herbruikbare Elementen
+
+                        <h5>Class</h5>
+                        Basiseenheid binnen een object geori&euml;nteerd programma. Een class groepeert gegevens en
+                        bijbehorende functionaliteit. Dit principe van ordening levert in het algemeen beter leesbare
+                        structuren op dan een opsplitsing van functies en gegevens.
+                        <h5>Class library</h5>
+                        Verzameling classes gegroepeerd naar functionaliteit. De classes in een class library hebben
+                        vaak functionele overeenkomsten, maar ze hoeven niet noodzakelijkerwijs met elkaar te maken te
+                        hebben.
+                        Class libraries worden opgeslagen als package.
+                        <h5>Design</h5>
+                        Nauwkeurige beschrijving van hoe een stuk programma gecodeerd moet worden.
+                        <h5>Design Pattern</h5>
+                        Een design pattern levert een oplossing voor bekende ontwerpproblemen bij het bouwen van een
+                        applicatie. Daarmee manifesteert een design pattern zich als een stukje architectuur of een
+                        klein framework.
+                        De oplossing wordt meestal kort beschreven en voorzien van enkele (UML-)diagrammen.
+                        <h5>Architectuur</h5>
+                        Een architectuur beschrijft in hoofdlijnen de structuur die nodig is om een systeem te
+                        realiseren.
+                        Een architectuur omvat meestal uitgebreide beschrijvingen van de probleemstellingen en de
+                        gehanteerde concepten om het op te lossen. De oplossing wordt met diagrammen verduidelijkt. Dit
+                        kan o.a. met UML, maar bedacht moet worden dat deze diagrammen niet naar code kunnen worden
+                        omgezet, omdat ze daarvoor meestal te algemeen zijn. Een architectuur kan worden aangevuld met
+                        kleine testprogramma�s om de werking van sleutelelementen aan te tonen.
+                        <h5>Framework</h5>
+                        Een framework is een vastgelegde onderlinge samenhang van componenten. Het is bedoeld om de
+                        programmalogica van een systeem vast te houden. Een framework kan ook worden gezien als een
+                        architectuur die is vastgelegd in een verzameling generieke classes. Door een architectuur via
+                        de tussenstap van een framework te implementeren, wordt een oplossing een stuk flexibeler.
+                        Een framework bestaat uit een architectuur, een ontwerp en een verzameling classes. Een
+                        framework is in het algemeen gebaat bij goede documentatie en voorbeelden. Alle
+                        frameworkspecifieke classes worden opgeslagen in dezelfde package.
+                        <h5>Service</h5>
+                        Proces dat geheel zelfstandig een rol in een systeem vervuld en aanspreekbaar is voor andere
+                        processen.
+                        <h5>Applicatie</h5>
+                        Voert zelfstandig een volledige taak uit voor gebruikers. Het begrip applicatie speelt een rol
+                        bij de deployment van een systeem. Een applicatie is een eenheid die kan worden opgestart en
+                        vanaf dat moment zijn taak uitvoert.
+                        <h5>(Sub-)systeem</h5>
+                        Het begrip �systeem� is nogal breed. Volgens Yourdons definitie is alles wat op gestructureerde
+                        wijze samenhangt een systeem. Hij onderscheidt natuurlijke en ontworpen systemen. Bij ontworpen
+                        systemnen is de structuur, in tegenstelling tot natuurlijke systemen, niet ontstaan, maar
+                        bedacht en opgelegd. ��n van dat soort systemen is de structurering van bedrijfsprocessen in een
+                        bedrijf. Een automatiseringsproject is erop gericht een deel van de bedrijfsprocessen te
+                        automatiseren en is daarmee strict genomen altijd de realisatie van een subsysteem binnen een
+                        bedrijf.
+                        Het begrip systeem in de automatisering beslaat een afgebakend, geformaliseerd en (deels)
+                        geautomatiseerd deel van de bedrijfsprocessen(, inclusief procedures voor onderhoud en beheer).
+                        Of men het begrip systeem of subsysteem gebruikt hangt af van de afbakenig of scope waarin een
+                        probleem wordt benaderd. (Een verkeerde afbakening van een automatiseringsproject levert
+                        dikwijls problemen op. Neemt men de scope te ruim dan kost het te veel tijd om een specifiek
+                        probleem voor een klant op te lossen, neemt men de scope te eng dan moet een gerealiseerd
+                        systeem bij elke gevraagde wijziging op de schop.)
+                        <h5>Component</h5>
+                        <strong>Een component is een duidelijk afgebakend onderdeel van een systeem, dat een duidelijk
+                            afgebakende rol vervult.</strong>
+                        Een component kan gevormd worden door een aantal van de in dit hoofdstuk genoemde begrippen.
+                        <ul style="margin-bottom:0px;">
+                            <li>Een class (of bean); indien de class voldoet aan bovenstaande definitie van een
+                                component.
+                            <li>Een stelsel van classes; met behulp van bijvoorbeeld een framework kan een stelsel van
+                                classes worden geformeerd dat voldoet aan bovenstaande definitie van een component.
+                            <li>Een service; een service is per definitie een component.
+                            <li>Een applictie; een applicatie is per definitie een component.
+                            <li>Een (sub-)systeem; wordt meestal gerealiseerd als een stelsel van classes of zelfs een
+                                applicatie en kan in die zin een component zijn.
+                        </ul>
+                        Hieronder volgen nog enkele opmerkingen over het begrip �component�.
+                        <br><br>
+                        <ul style="margin-bottom:0px;">
+                            <li>Een component vormt een afgerond inzetbaar geheel.
+                            <li>Een component is geen framework, omdat een framework geen duidelijk afgebakende taak
+                                vervuld. Een component kan wel een specifieke implementatie van een framework zijn.
+                            <li>Een component in een systeem moet vervangbaar (kunnen) zijn door een opvolger.
+                            <li>Een component kan bestaan uit onderdelen, zoals classes, frameworks en andere
+                                componenten. In die zin kunnen we spreken van de begrippen �enkelvoudig component en
+                                �samengesteld component�.
+                        </ul>
+
+
+                        Doelgericht Hergebruik
+
+                        Wil hergebruik optimaal worden toegepast, dan moet het een doelstelling zijn van de organisatie
+                        die maatwerk levert. In dit verband kunnen we gaan spreken van doelgericht hergebruik.
+                        Doelgericht hergebruik van (deel-)oplossingen wordt op dit moment zowel gehanteerd door
+                        bedrijven die zich richten op de consumentenmarkt met concrete producten als door bedrijven die
+                        maatwerk leveren.
+                        Verkoop van concrete producten kan onder andere de volgende vormen aannemen:
+                        Verkoop van software pakketten.
+                        Verkoop van componenten als engines, GUI-onderdelen en nuttige classes.
+                        Verkoop class libraries.
+                        Hergebruik binnen maatwerk oplossingen wordt onder andere toegepast in implementaties van
+                        ERP-pakketten e.d. De implementatie wordt in het algemeen gedaan volgens een stricte methodiek
+                        die samenhangt met een visie op het domein waarvoor de oplossing wordt gerealiseerd.
+
+
+                        Voordelen
+
+                        Een doelstelling van een bedrijf moet uiteindelijk gericht zijn op winstgevendheid. Laten we de
+                        voordelen van doelgericht hergebruik eens op een rijtje zetten. Er zijn maarliefst drie categori&euml;n
+                        van voordelen:
+                        <ol>
+                            <li>Verbetering van de kwaliteit van de geboden oplossingen.
+                            <li>Verbetering van de kwaliteit van het organisatie.
+                            <li>Directe winstgevendheid.
+                        </ol>
+                        De voordelen die betreking hebben op de kwaliteit van de oplossing zijn de volgende:
+                        <ul style="margin-bottom:0px;">
+                            <li>De stabiliteit is beter; de stabiliteit van herbruikte onderdelen zal na verloop van
+                                tijd zijn toegenomen doordat ze op grond van praktijkresultaten kunnen worden verbeterd.
+                            <li>De oplossing is bruikbaarder voor de klant; de focus hoeft in het project immers niet te
+                                liggen bij de realisatie van een complexe ruggegraat van het systeem. De focus ligt bij
+                                wat specifiek is voor de klant en dat zal voor het merendeel
+                                eindgebruikersfunctionaliteit zijn.
+                        </ul>
+                        Dan zijn er zijn voordelen die betrekking hebben op de kwaliteit van de organisatie:
+                        <ul style="margin-bottom:0px;">
+                            <li>Doelgericht hergebruik gaat saaiheid tegen; als ontwikkelaars telkens tergend langzaam
+                                min of meer dezelfde oplossingen moeten bouwen dan gaat dit ze op de lange duur de keel
+                                uithangen. Het is beter om overeenkomsten tussen oplossingen snel neer te zetten en tijd
+                                te nemen voor functionaliteit die specifiek voor klant is.
+                            <li>Doelgericht hergebruik houdt een organistie technisch op niveau doordat het dwingt te
+                                abstraheren; herbruikbare onderdelen kunnen in veel gevallen alleen worden ontdekt door
+                                op hoog niveau een oplossing te analyseren. Dit is technisch uitdagend werk en stelt
+                                ontwikkelaars in staat meer tot de essentie van systeemontwikkeling door te dringen.
+                            <li>Doelgericht hergebruik stelt je in staat te expanderen; naarmate het reservoir van
+                                herbruikbare onderdelen toeneemt, wordt het mogelijk om met minder mankracht grotere en
+                                complexere systemen te bouwen. Dit betekent dat het terrein dat de organisatie met een
+                                productportfolio bestrijkt steeds breder kan worden.
+                            <li>Doelgericht hergebruik maakt de organisatie minder afhankelijk van de individuele
+                                medewerkers; de structuur van oplossingen ligt immers grotendeels vast volgens
+                                meervoudig toegepaste principes i.p.v. een door een individu uitgedachte (slecht
+                                gedocumenteerde) afwijkende concepten.
+                        </ul>
+                        En er zijn voordelen die direct winstgevend zijn:
+                        <ul style="margin-bottom:0px;">
+                            <li>Betere concurrentiepositie van het bedrijf; doordat de kosten van een oplossing gedrukt
+                                kunnen worden en doordat de kwaliteit van eerder gerealiseerde de oplossing hoger is,
+                                springt het bedrijf er bijvoorbeeld bij een offerteaanvraag gunstig uit.
+                            <li>Minder nazorg bij klanten nodig; nazorg bij een (ontevreden) klant is vervelend en vaak
+                                ook duur. Doordat gerealiseerde oplossingen stabieler zijn is er minder kans op
+                                vervelende storingen.
+                            <li>Er kan direct geld verdient worden door aan gebruik van herbruikbare onderdelen kosten
+                                te verbinden of door herbruikbare onderdelen als product te vermarkten.
+                        </ul>
+
+
+                        Valkuilen
+
+                        Waarom doen we dit dan niet?
+                        In de praktijk werkt het niet. Het levert niet genoeg op
+                        Code van anderen laat zich vaak lastig integreren omdat stijl en context afwijken. Er kan ook
+                        niet vertrouwd worden op een correcte werking van de code als de contxt verschilt.
+                        Business logic laat zich slecht vangen in generieke oplossingen, oplossingen worden daardoor
+                        veel te abstract, dit kan weer leiden tot hardnekkige bugs.
+                        Men kan het een klant niet aandoen om ontwikkelaars bij een concrete case rekening te laten
+                        houden met eisen voor een generieke oplossing.
+                        Het achteraf destilleren van generieke oplossingen uit specifieke code is een klus die niet wil
+                        vlotten. Geen deadline, analysis paralysis, saai.
+                        Overhead van onderhouden bibliotheek. Documentatie, compatibiliteit.
+                        Zoeken, begrijpen, uitproberen en configureren van andere code kost ook tijd.
+                        Haalt de pret uit het vak en daarmee zijdelings productiviteit. Zelf dingen maken is leuk. Door
+                        zelf dingen te maken vergroot men zijn inzicht. Juniors moeten soms zelf dingen maken. Is goed
+                        voor de organisatie.
+                        Discipline nodig <-> creatieve mensen -> werkt niet
+
+
+                        OO-pizzapunt
+
+
+                        Inzet
+
+
+                        aanpak
+
+                        De uitdaging zit �m in ten eerste het financieren van de initi�le overhead, omdat je
+                        aanvankelijk met lege handen staat. Na verloop van tijd wordt hergebruik winstgevend, maar
+                        desondanks moet bij elk project weer de discipline worden opgebracht om problemen generiek op te
+                        lossen.
+
+                        Ten tweede moet alle informatie over de beschikbare herbruikbare code gemakkelijk toegankelijk
+                        zijn. Dit vereist een slim systeem en flink wat discipline van zowel ontwikkelaars als
+                        verkopers, om alle informatie up-to-date te houden.
+                        Ten derde moeten de componenten zelf beschikbaar zijn via een versiecontrole systeem.
+                        Versiecontrole gaat hierbij verder dan wat de meeste standaard tools te bieden hebben, omdat
+                        specificatiewijzigingen en compatibiliteit nauwkeurig bijgehouden moeten worden.
+
+
+                        Configuratie
+                        Bij hergebruik speelt de configureerbaarheid van de te herbruiken elementen een grote rol. Bij
+                        het geschikt maken voor hergebruik wordt code namelijk zodanig gegeneraliseerd, dat deze voor
+                        meerdere soortgelijke oplossingen kan worden gebruikt. Bij het bouwen van een oplossing echter
+                        moeten klantspeciefieke eigenschappen kunnen worden toegevoegd.
+                        Configuratie kan in drie verschillende stadia van een systeem worden gedaan:
+                        Bij het maken of aanpassen van code (compile-time)
+                        Bij het opstarten van een applicatie (startup-time)
+                        Tijdens het draaien van een applicatie (run-time)
+                        Het grote verschil tussen classes en frameworks aan de ene kant en componenten aan de ander kant
+                        is dat classes en frameworks worden aangepast door te coderen en dat componenten hun specifieke
+                        werking startup-time of run-time verkrijgen.
+
+                        Logging & Monitoring
+                        Aangezien een component min of meer zelfstandig werkt en zeer stabiel moet zijn, moet het er
+                        zelf voor zorgen dat de interne werking gevolgd kan worden. Dit betekend in alle gevallen dat
+                        geconstateerde fouten moeten worden gemeld. In sommige gevallen moet een beheerder een
+                        statusrapport bij een component kunnen opvragen.
+
+                        Commercie
+                        Functionaliteit is het begrip waarmee de wensen van een klant uitgedrukt kunnen worden. Het
+                        bepaalt de architectuur en daarmee de in te zetten standaard herbruikbare onderdelen en de
+                        hoeveelheid maatwerk.
+                        Verhandelbare herbruikbare elementen zijn:
+                        <ul style="margin-bottom:0px;">
+                            <li>Class libraries.
+                            <li>Componenten.
+                            <li>Frameworks.
+                        </ul>
+                        Indien een totaaloplossing wordt geleverd, wordt maatwerk in rekening gebracht door het aantal
+                        benodigde manuren te bepalen. De hoeveelheid maatwerk wordt bepaald door:
+                        <ul style="margin-bottom:0px;">
+                            <li>Overhead in de vorm van consultancy, training en projectmanagement.
+                            <li>De geschatte configuratie-inspanning, waarbij de aard van de configuratie meespeelt.
+                            <li>Ontwikkeling van nieuwe componenten (zoals legacy connectoren).
+                            <li>Inkoop- en installatiewerkzaamheden.
+                        </ul>
+                        Het maakt een groot verschil of men een totaaloplossing bouwt of als technology provider
+                        optreedt. In het eerste geval moet de beschrijving van de componenten gericht zijn op
+                        eindgebruikersfunctionaliteit. In het tweede geval moet een technische specificatie van (de
+                        externe eigenschappen van) de componenten worden geleverd.
+                        <br><br>
+
+
+                        Technische (infrastructurele) code is herbruikbaar
+                        Concepten zijn herbruikbaar (treedt al op bij spontaan hergebruik)
+                        Context moet er zijn -> logging, configuratie Configuratie is alles. 1 standaard mechanisme voor
+                        configuratie is vereist. Ontsluiting via interface -> framework
+                        Framework moet zeer laagdrempelig zijn! Ontwikkelaars zijn wel degelijk geinteresseerd in
+                        efficientie en productiviteit.
+
+
+                    </td>
+                </tr>
+            </table>
+    </td>
+</tr>
+<tr>
+    <td colspan=3 class="tdcr" height=150>
+        - copyright � 2003 ijsberg automatisering -<br>
+        website by <a href="http://addink.net">addink.net</a>
+    </td>
+</tr>
+</table>
+</body>
+
+
+</html>

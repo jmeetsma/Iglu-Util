@@ -23,14 +23,7 @@ import org.ijsberg.iglu.util.collection.CollectionSupport;
 import org.ijsberg.iglu.util.formatting.PatternMatchingSupport;
 import org.ijsberg.iglu.util.misc.StringSupport;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -253,20 +246,12 @@ public abstract class FileSupport {
 	 */
 	public static byte[] getBinaryFromJar(String fileName, String jarFileName) throws IOException {
 		//zipfile is opened for READ on instantiation
-		ZipFile zipfile;
-		try {
-			zipfile = new ZipFile(jarFileName);
-		}
-		catch (ZipException ze) {
-			throw new IOException("zipfile '" + jarFileName + "' can not be opened with message: " + ze.toString());
-		}
+		ZipFile zipfile = new ZipFile(jarFileName);
 		try {
 			ZipEntry entry = getZipEntryFromJar(fileName, zipfile);
 			if (entry == null) {
-//				System.out.println("entry " + fileName + " not found in jar " + jarFileName);
 				throw new IOException("entry " + fileName + " not found in jar " + jarFileName);
 			}
-//			System.out.println("entry " + fileName + " FOUND in jar " + jarFileName);
 			InputStream in = zipfile.getInputStream(entry);
 			try {
 				return StreamSupport.absorbInputStream(in);
@@ -287,9 +272,7 @@ public abstract class FileSupport {
 		while (i.hasNext()) {
 			String path = (String) i.next();
 			if (path.endsWith(".zip") || path.endsWith(".jar")) {
-//				System.out.print(path);
 				retval = getBinaryFromJar(fileName, path);
-//				System.out.println(" -> " + retval);
 			}
 			else {
 				retval = getBinaryFromFS(path + '/' + fileName);
@@ -298,7 +281,6 @@ public abstract class FileSupport {
 				File dir = new File(path);
 				if (dir.exists() && dir.isDirectory()) {
 					Collection jars = FileSupport.getFilesInDirectoryTree(dir, "*.jar");
-//					System.out.println("JARS:" + jars);
 					Iterator j = jars.iterator();
 					while (j.hasNext()) {
 						File jar = (File) j.next();
@@ -324,12 +306,52 @@ public abstract class FileSupport {
 
 
 	public static byte[] getBinaryFromClassloader(String path) throws IOException {
-		InputStream input = FileSupport.class.getClassLoader().getResourceAsStream(path);
-		if (input != null) {
-			return StreamSupport.absorbInputStream(input);
-		}
-		return null;
+		return StreamSupport.absorbInputStream(getInputStreamFromClassLoader(path));
 	}
+
+	public static InputStream getInputStreamFromClassLoader(String path) throws IOException {
+		InputStream retval = FileSupport.class.getClassLoader().getResourceAsStream(path);
+		if(retval == null) {
+			throw new IOException("class loader can not load resource '" + path  + "'");
+		}
+		return retval;
+	}
+
+	public static OutputStream getOutputStreamToFileSystem(String path) throws IOException {
+		return new FileOutputStream(path);
+	}
+
+	public static void copyClassLoadableResourceToFileSystem(String pathToResource, String outputPath) throws IOException{
+		InputStream input = getInputStreamFromClassLoader(pathToResource);
+		OutputStream output = getOutputStreamToFileSystem(outputPath);
+		try {
+			StreamSupport.absorbInputStream(input, output);
+		} finally {
+			output.close();
+			input.close();
+		}
+	}
+
+	/**
+	 * Input stream is closed after reading.
+	 *
+	 * @param input
+	 * @param outputPath
+	 * @throws IOException
+	 */
+	public static void copyToFileSystem(InputStream input, String outputPath) throws IOException {
+		OutputStream output = null;
+		try {
+			output = new FileOutputStream(outputPath);
+			StreamSupport.absorbInputStream(input, output);
+		} finally {
+			output.close();
+			input.close();
+		}
+	}
+
+
+
 
 	public static ZipEntry getZipEntryFromJar(String fileName, String jarFileName) throws IOException {
 		//zipfile is opened for READ on instantiation
@@ -387,6 +409,25 @@ public abstract class FileSupport {
 	}
 
 	/**
+	 * Deletes all files and subdirectories from a directory.
+	 *
+	 * @param path
+	 */
+	public static void emptyDirectory(File file) {
+		deleteContentsInDirectoryTree(file, null);
+	}
+
+	/**
+	 * Deletes a file or a directory including its contents;
+	 *
+	 * @param path
+	 */
+	public static void deleteFile(File file) {
+		deleteContentsInDirectoryTree(file, null);
+		file.delete();
+	}
+
+	/**
 	 * Copies a file.
 	 *
 	 * @param filename
@@ -428,7 +469,17 @@ public abstract class FileSupport {
 	 * @param mask
 	 */
 	public static void deleteContentsInDirectoryTree(String path, String mask) {
-		File root = new File(path);
+		deleteContentsInDirectoryTree(new File(path), mask);
+	}
+
+	/**
+	 * Deletes from a directory all files and subdirectories targeted by a given mask.
+	 * The method will recurse into subdirectories.
+	 *
+	 * @param root
+	 * @param mask
+	 */
+	public static void deleteContentsInDirectoryTree(File root, String mask) {
 		Collection files = getContentsInDirectoryTree(root, mask, true, true);
 		Iterator i = files.iterator();
 		while (i.hasNext()) {
@@ -583,6 +634,14 @@ public abstract class FileSupport {
 		return retval;
 	}
 
+	public static String getFileNameFromPath(String path) {
+		String unixStylePath = convertToUnixStylePath(path);
+		if(unixStylePath.endsWith("/")) {
+			throw new IllegalArgumentException("path '" + path + "' points to a directory");
+		}
+		return unixStylePath.substring(unixStylePath.lastIndexOf('/') + 1);
+	}
+
 /*
 	public static void main(String[] args)
 	{
@@ -598,4 +657,18 @@ public abstract class FileSupport {
 	}
 */
 
+
+	public static File createTmpDir() throws IOException {
+		File file = File.createTempFile("iglu_util_test_", null);
+		file.delete();
+		file.mkdirs();
+		return file;
+	}
+
+	public static File createTmpDir(String prefix) throws IOException {
+		File file = File.createTempFile(prefix, null);
+		file.delete();
+		file.mkdirs();
+		return file;
+	}
 }

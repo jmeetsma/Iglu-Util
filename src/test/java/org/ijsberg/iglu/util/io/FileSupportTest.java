@@ -28,6 +28,7 @@ import java.io.File;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertTrue;
 
 public class FileSupportTest {
@@ -40,12 +41,12 @@ public class FileSupportTest {
 		assertTrue(file.exists());
 
 		List foundFiles = FileSupport.getFilesInDirectoryTree(testDirPath);
-		assertEquals(171, foundFiles.size());
+		assertEquals(169, foundFiles.size());
 
 		testDirPath += '/';
 
 		foundFiles = FileSupport.getFilesInDirectoryTree(testDirPath);
-		assertEquals(171, foundFiles.size());
+		assertEquals(169, foundFiles.size());
 
 		foundFiles = FileSupport.getFilesInDirectoryTree(testDirPath, "*.LOG");
 		assertEquals(19, foundFiles.size());
@@ -77,4 +78,25 @@ public class FileSupportTest {
 
 	}
 
+
+	@Test
+	public void testCreateTmpDir() throws Exception {
+		File dir = FileSupport.createTmpDir();
+		assertTrue(dir.isDirectory());
+		assertTrue(dir.exists());
+		assertTrue(dir.delete());
+	}
+
+
+	@Test
+	public void getFileNameFromPath() throws Exception {
+		assertEquals("TestFile.tst", FileSupport.getFileNameFromPath("/this/is/a/TestFile.tst"));
+		assertEquals("TestFile.tst", FileSupport.getFileNameFromPath("/this/is/a//TestFile.tst"));
+		assertEquals("TestFile.tst", FileSupport.getFileNameFromPath("TestFile.tst"));
+		assertEquals("TestFile.tst", FileSupport.getFileNameFromPath("\\this\\is/a\\\\TestFile.tst"));
+		try {
+			FileSupport.getFileNameFromPath("/this/is/a/");
+			fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException expected) {}
+	}
 }

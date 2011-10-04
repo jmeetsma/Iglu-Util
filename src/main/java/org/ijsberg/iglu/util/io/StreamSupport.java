@@ -22,6 +22,7 @@ package org.ijsberg.iglu.util.io;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -65,16 +66,26 @@ public abstract class StreamSupport {
 		return retval;
 	}
 */
+
 	public static byte[] absorbInputStream(InputStream input) throws IOException {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		int available = input.available();
-		while (available > 0) {
-			byte[] buf = new byte[available];
-			int len = input.read(buf);
-			out.write(buf, 0, len);
-			available = input.available();
+		ByteArrayOutputStream output = null;
+		try{
+			output = new ByteArrayOutputStream();
+			absorbInputStream(input, output);
+			return output.toByteArray();
+		} finally {
+			output.close();
 		}
-		return out.toByteArray();
 	}
 
+	public static int BUF_SIZE = 10000;
+
+	public static void absorbInputStream(InputStream input, OutputStream output) throws IOException {
+		byte[] buf = new byte[BUF_SIZE];
+		int available;
+		while ((available = input.available()) > 0) {
+			int len = input.read(buf);
+			output.write(buf, 0, len);
+		}
+	}
 }

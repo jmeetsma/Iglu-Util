@@ -19,6 +19,8 @@
  */
 package org.ijsberg.iglu.util.collection;
 
+import java.io.PrintStream;
+
 /**
  * Contains miscellaneous static methods for array handling.
  */
@@ -43,4 +45,91 @@ public abstract class ArraySupport {
 		}
 		return result;
 	}
+
+	/**
+	 * @param array
+	 */
+	public static void print(Object[] array) {
+		print(array, System.out);
+	}
+
+	/**
+	 * @param array
+	 * @param out
+	 */
+	public static void print(Object[] array, PrintStream out) {
+		print(array, System.out, System.getProperty("line.separator"));
+	}
+
+	/**
+	 * @param array
+	 * @param out
+	 * @param separator
+	 */
+	public static void print(Object[] array, PrintStream out, String separator) {
+		out.print(format(array, separator));
+	}
+
+	/**
+	 * @param array
+	 * @param separator
+	 * @return
+	 */
+	public static String format(Object[] array, String separator) {
+		return format(null, array, separator);
+	}
+
+	/**
+	 * @param itemPrefix
+	 * @param array
+	 * @param separator
+	 * @return
+	 */
+	public static String format(String itemPrefix, Object[] array, String separator) {
+		if (array == null) {
+			return "";
+		}
+		StringBuffer retval = new StringBuffer();
+		for (int i = 0; i < array.length; i++) {
+			retval.append((itemPrefix != null ? itemPrefix : "") + array[i] + (i + 1 != array.length ? separator : ""));
+		}
+		return retval.toString();
+	}
+
+
+	/**
+	 * @param array
+	 * @param separator
+	 * @return
+	 */
+	public static String format(int[] array, String separator) {
+		if (array == null) {
+			return null;
+		}
+		StringBuffer retval = new StringBuffer();
+		for (int i = 0; i < array.length; i++) {
+			retval.append(array[i] + (i + 1 != array.length ? separator : ""));
+		}
+		return retval.toString();
+	}
+
+	/**
+	 * @param array
+	 * @param separator
+	 * @return
+	 */
+	public static String format(byte[] array, String separator) {
+		if (array == null) {
+			return null;
+		}
+		StringBuffer retval = new StringBuffer();
+		for (int i = 0; i < array.length; i++) {
+			retval.append(array[i] + (i + 1 != array.length ? separator : ""));
+		}
+		return retval.toString();
+	}
+
+
+
+
 }

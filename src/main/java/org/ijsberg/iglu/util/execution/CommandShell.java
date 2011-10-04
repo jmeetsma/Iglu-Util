@@ -19,7 +19,7 @@
  */
 package org.ijsberg.iglu.util.execution;
 
-import org.ijsberg.iglu.util.collection.CollectionSupport;
+import org.ijsberg.iglu.util.collection.ArraySupport;
 import org.ijsberg.iglu.util.io.FileSupport;
 import org.ijsberg.iglu.util.io.Filter;
 import org.ijsberg.iglu.util.io.Forwarder;
@@ -197,7 +197,7 @@ public class CommandShell implements Transceiver {
 			proc = rt.exec(commandArray, null, workingDir);
 		}
 		catch (IOException e) {
-			throw new RuntimeException("can not start command shell [" + CollectionSupport.format(commandArray, ",") + "] + in directory " + workingDir);
+			throw new RuntimeException("can not start command shell [" + ArraySupport.format(commandArray, ",") + "] + in directory " + workingDir);
 		}
 
 		// any error message?

@@ -29,7 +29,12 @@ import java.util.Map;
  * Print methods print to standard out by default and use an end of line (EOL) as separator.
  */
 public abstract class CollectionSupport {
+
+	public static final String LINE_SEP = System.getProperty("line.separator");
+
 	/**
+	 * Prints a collection to standard out.
+	 *
 	 * @param coll
 	 */
 	public static void print(Collection coll) {
@@ -37,26 +42,31 @@ public abstract class CollectionSupport {
 	}
 
 	/**
+	 * Prints every item of a collection on a separate line to the given output stream.
+	 *
 	 * @param coll
-	 * @param out
+	 * @param out stream to print to
 	 */
 	public static void print(Collection coll, PrintStream out) {
-		print(coll, out, System.getProperty("line.separator"));
+		print(coll, out, LINE_SEP);
 	}
 
 	/**
+	 * Prints a collection to the given output stream.
+	 *
 	 * @param coll
-	 * @param out
-	 * @param separator
+	 * @param out stream to print to
+	 * @param separator item separator
 	 */
 	public static void print(Collection coll, PrintStream out, String separator) {
-		out.println(format(coll, separator));
+		out.print(format(coll, separator));
 	}
 
 	/**
+	 *
 	 * @param coll
-	 * @param separator
-	 * @return
+	 * @param separator item separator
+	 * @return formatted collection
 	 */
 	public static String format(Collection coll, String separator) {
 		return format(null, coll, separator);
@@ -65,17 +75,12 @@ public abstract class CollectionSupport {
 	/**
 	 * @param itemPrefix
 	 * @param coll
-	 * @param separator
-	 * @return
+	 * @param separator item separator
+	 * @return formatted collection
 	 */
 	public static String format(String itemPrefix, Collection coll, String separator) {
 		if (coll == null) return "";
-		StringBuffer retval = new StringBuffer();
-		Iterator i = coll.iterator();
-		while (i.hasNext()) {
-			retval.append((itemPrefix != null ? itemPrefix : "") + i.next() + (i.hasNext() ? separator : ""));
-		}
-		return retval.toString();
+		return ArraySupport.format(itemPrefix, coll.toArray(), separator);
 	}
 
 	/**
@@ -118,77 +123,6 @@ public abstract class CollectionSupport {
 		return retval.toString();
 	}
 
-	/**
-	 * @param array
-	 */
-	public static void print(Object[] array) {
-		print(array, System.out);
-	}
-
-	/**
-	 * @param array
-	 * @param out
-	 */
-	public static void print(Object[] array, PrintStream out) {
-		print(array, System.out, System.getProperty("line.separator"));
-	}
-
-	/**
-	 * @param array
-	 * @param out
-	 * @param separator
-	 */
-	public static void print(Object[] array, PrintStream out, String separator) {
-		out.println(format(array, separator));
-	}
-
-	/**
-	 * @param array
-	 * @param separator
-	 * @return
-	 */
-	public static String format(Object[] array, String separator) {
-		if (array == null) {
-			return null;
-		}
-		StringBuffer retval = new StringBuffer();
-		for (int i = 0; i < array.length; i++) {
-			retval.append(array[i] + (i + 1 != array.length ? separator : ""));
-		}
-		return retval.toString();
-	}
-
-	/**
-	 * @param array
-	 * @param separator
-	 * @return
-	 */
-	public static String format(int[] array, String separator) {
-		if (array == null) {
-			return null;
-		}
-		StringBuffer retval = new StringBuffer();
-		for (int i = 0; i < array.length; i++) {
-			retval.append(array[i] + (i + 1 != array.length ? separator : ""));
-		}
-		return retval.toString();
-	}
-
-	/**
-	 * @param array
-	 * @param separator
-	 * @return
-	 */
-	public static String format(byte[] array, String separator) {
-		if (array == null) {
-			return null;
-		}
-		StringBuffer retval = new StringBuffer();
-		for (int i = 0; i < array.length; i++) {
-			retval.append(array[i] + (i + 1 != array.length ? separator : ""));
-		}
-		return retval.toString();
-	}
 
 
 }

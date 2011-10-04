@@ -28,19 +28,6 @@ import static org.junit.Assert.assertFalse;
 public class PatternMatchingSupportTest {
 	private PatternMatchingSupport patternmatchingsupport;
 
-	/**
-	 */
-	public void setUp() {
-		System.out.println("setting up test environment for class org.ijsberg.iglu.util.formatting.PatternMatchingSupport");
-		System.gc();
-		System.out.println("Total memory " + (Runtime.getRuntime().totalMemory() / Math.pow(2, 20)) + " Mb");
-		System.out.println("Memory use " + Math.floor(((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) * 100 / Runtime.getRuntime().totalMemory())) + " %");
-	}
-
-	/**
-	 */
-	public void tearDown() {
-	}
 
 	@Test
 	public void testMatchWildcardExp() {

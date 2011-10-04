@@ -22,6 +22,8 @@ package org.ijsberg.iglu.util.collection;
 
 import org.junit.Test;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -31,31 +33,21 @@ import static junit.framework.Assert.assertEquals;
 
 /**
  */
-public class ArraySupportTest {
-	@Test
-	public void testDetermineIndexInRange() throws Exception {
-
-		String[] range = {"zero", "one", "two"};
-
-		assertEquals(1, ArraySupport.determineIndexInRange("one", range, 0));
-		assertEquals(5, ArraySupport.determineIndexInRange("bogus", range, 5));
-	}
-
+public class CollectionSupportTest {
 	@Test
 	public void testPrint() throws Exception {
 
-		Object[] array = new String[]{"one","two","three"};
+		Collection coll = Arrays.asList(new String[]{"one","two","three"});
 		ByteArrayOutputStream buf = new ByteArrayOutputStream();
 		PrintStream out = new PrintStream(buf);
-		ArraySupport.print(array, out, "->");
+		CollectionSupport.print(coll, out, "->");
 		assertEquals("one->two->three", buf.toString());
 	}
 
 	@Test
 	public void testFormat() throws Exception {
-		Object[] array = new String[]{"one","two","three"};
-		String result = ArraySupport.format("- ", array, ", ");
+		Collection coll = Arrays.asList(new String[]{"one","two","three"});
+		String result = CollectionSupport.format("- ", coll, ", ");
 		assertEquals("- one, - two, - three", result);
 	}
-
 }

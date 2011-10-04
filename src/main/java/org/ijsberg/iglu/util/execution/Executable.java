@@ -33,8 +33,8 @@ package org.ijsberg.iglu.util.execution;
  * new Executor(){protected Object execute(){System.out.println("this message is printed asynchronously");return null;}}.executeAsync();
  * </code>
  */
-public abstract class Executable implements Runnable//, Executable
-{
+public abstract class Executable implements Runnable {
+
 	private boolean finished;
 	private boolean aborted;
 	private Throwable execException;

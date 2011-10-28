@@ -544,6 +544,16 @@ public abstract class StringSupport {
 		return split(input, punctuationChars, sort, false);
 	}
 
+	/**
+	 * reads all words in a text and converts them to lower case
+	 *
+	 * @param input
+	 * @param punctuationChars characters that can not belong to words and are therefore separators
+	 * @return a collection of uniquely identified words
+	 */
+	public static List split(String input, String punctuationChars, String quoteChars) {
+		return split(input, punctuationChars, quoteChars, false, false, false);
+	}
 
 	/**
 	 * reads all words in a text
@@ -570,7 +580,7 @@ public abstract class StringSupport {
 	 * @return a collection of extracted words
 	 */
 	public static List split(String input, String punctuationChars, boolean sort, boolean convertToLowerCase, boolean distinct) {
-		return split(input, punctuationChars, sort, convertToLowerCase, distinct, "\"");
+		return split(input, punctuationChars, "\"", sort, convertToLowerCase, distinct);
 	}
 
 	//TODO get rid of flags (move to spec)
@@ -581,13 +591,13 @@ public abstract class StringSupport {
 	 *
 	 * @param input
 	 * @param punctuationChars   characters that can not belong to words and are therefore separators
+	 * @param quoteSymbols	   used as list of characters used to group strings
 	 * @param sort			   whether to sort the result alphabetically. (If the result is sorted, setting the distinct flag to false has no effect)
 	 * @param convertToLowerCase whether to convert all found words to lowercase
 	 * @param distinct		   true if a certain word may occur only once in the resulting collection
-	 * @param quoteSymbols	   used as list of characters used to group strings
 	 * @return a collection of extracted words
 	 */
-	public static List split(String input, String punctuationChars, boolean sort, boolean convertToLowerCase, boolean distinct, String quoteSymbols) {
+	public static List split(String input, String punctuationChars, String quoteSymbols, boolean sort, boolean convertToLowerCase, boolean distinct) {
 		if (input == null) {
 			return new ArrayList(0);
 		}
@@ -597,6 +607,7 @@ public abstract class StringSupport {
 		StringBuffer word = new StringBuffer();
 		boolean readingWord = false;
 		boolean insideQuotes = false;
+		char insideQuote = '\0';
 		for (int i = 0; i < input.length(); i++) {
 			if (readingWord) {
 				if (punctuationChars.indexOf(input.charAt(i)) != -1 && !insideQuotes) {
@@ -618,6 +629,7 @@ public abstract class StringSupport {
 				}
 				else {
 					if (quoteSymbols != null && quoteSymbols.indexOf(input.charAt(i)) != -1) {
+						insideQuote = input.charAt(i);
 						insideQuotes = !insideQuotes;
 					}
 					else {
@@ -628,7 +640,8 @@ public abstract class StringSupport {
 			else {
 				if (punctuationChars.indexOf(input.charAt(i)) == -1) {
 					word = new StringBuffer();
-					if (quoteSymbols != null && input.charAt(i) == '"') {
+					if (quoteSymbols != null && quoteSymbols.indexOf(input.charAt(i)) != -1) {
+						insideQuote = input.charAt(i);
 						insideQuotes = !insideQuotes;
 					}
 					else {

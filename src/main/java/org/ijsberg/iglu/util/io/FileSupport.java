@@ -203,15 +203,23 @@ public abstract class FileSupport {
 	public static byte[] getBinaryFromFS(String fileName) throws IOException {
 		File file = new File(fileName);
 		if (file.exists()) {
-			InputStream in = new FileInputStream(file);
-			try {
-				return StreamSupport.absorbInputStream(new FileInputStream(file));
-			}
-			finally {
-				in.close();
-			}
+			return getBinaryFromFS(file);
 		}
 		throw new FileNotFoundException("file '" + fileName + "' does not exist");
+	}
+
+	/**
+	 * @return
+	 * @throws IOException
+	 */
+	public static byte[] getBinaryFromFS(File existingFile) throws IOException {
+		FileInputStream in = new FileInputStream(existingFile);
+		try {
+			return StreamSupport.absorbInputStream(in);
+		}
+		finally {
+			in.close();
+		}
 	}
 
 	/**
@@ -248,7 +256,7 @@ public abstract class FileSupport {
 		//zipfile is opened for READ on instantiation
 		ZipFile zipfile = new ZipFile(jarFileName);
 		try {
-			ZipEntry entry = getZipEntryFromJar(fileName, zipfile);
+			ZipEntry entry = zipfile.getEntry(fileName);
 			if (entry == null) {
 				throw new IOException("entry " + fileName + " not found in jar " + jarFileName);
 			}
@@ -356,29 +364,10 @@ public abstract class FileSupport {
 	public static ZipEntry getZipEntryFromJar(String fileName, String jarFileName) throws IOException {
 		//zipfile is opened for READ on instantiation
 		ZipFile zipfile = new ZipFile(jarFileName);
-		return getZipEntryFromJar(fileName, zipfile);
+		return zipfile.getEntry(fileName);
 	}
 
-	/**
-	 * @param fileName
-	 * @param zipfile
-	 * @return
-	 * @throws IOException
-	 */
-	public static ZipEntry getZipEntryFromJar(String fileName, ZipFile zipfile) throws IOException {
-		return zipfile.getEntry(fileName);
-/*		Enumeration e = zipfile.entries();
-		while (e.hasMoreElements())
-		{
-			ZipEntry entry = (ZipEntry) e.nextElement();
-			if (entry.getName().equals(fileName))
-			{
-				return entry;
-				//a resource can be read into a byte[] as well, but it's easier to use the classloader
-			}
-		}
-		return null;*/
-	}
+
 
 
 	/**
@@ -411,7 +400,7 @@ public abstract class FileSupport {
 	/**
 	 * Deletes all files and subdirectories from a directory.
 	 *
-	 * @param path
+	 * @param file
 	 */
 	public static void emptyDirectory(File file) {
 		deleteContentsInDirectoryTree(file, null);
@@ -420,7 +409,7 @@ public abstract class FileSupport {
 	/**
 	 * Deletes a file or a directory including its contents;
 	 *
-	 * @param path
+	 * @param file
 	 */
 	public static void deleteFile(File file) {
 		deleteContentsInDirectoryTree(file, null);

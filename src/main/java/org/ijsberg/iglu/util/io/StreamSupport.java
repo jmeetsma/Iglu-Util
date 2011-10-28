@@ -30,6 +30,9 @@ import java.util.Iterator;
  * Helper class for stream related functions.
  */
 public abstract class StreamSupport {
+
+	public static int BUF_SIZE = 10000;
+
 	/**
 	 * Reads all bytes from an input stream.
 	 *
@@ -37,36 +40,6 @@ public abstract class StreamSupport {
 	 * @return
 	 * @throws IOException
 	 */
-/*
-	public static byte[] absorbInputStream(InputStream input) throws IOException
-	{
-		int bytesAvail = 0;
-		int totalBytesRead = 0;
-		int totalBytesCopied = 0;
-		byte[] byteArray;
-		ArrayList byteArraysRead = new ArrayList();
-
-		byte[] buf = new byte[1024];
-		while ((bytesAvail = input.read(buf)) > 0)
-		{
-			totalBytesRead += bytesAvail;
-			byteArray = new byte[bytesAvail];
-			System.arraycopy(buf, 0, byteArray, 0, bytesAvail);
-			byteArraysRead.add(byteArray);
-		}
-
-		byte[] retval = new byte[totalBytesRead];
-		Iterator i = byteArraysRead.iterator();
-		while (i.hasNext())
-		{
-			byteArray = (byte[]) i.next();
-			System.arraycopy(byteArray, 0, retval, totalBytesCopied, byteArray.length);
-			totalBytesCopied += byteArray.length;
-		}
-		return retval;
-	}
-*/
-
 	public static byte[] absorbInputStream(InputStream input) throws IOException {
 		ByteArrayOutputStream output = null;
 		try{
@@ -78,8 +51,12 @@ public abstract class StreamSupport {
 		}
 	}
 
-	public static int BUF_SIZE = 10000;
-
+	/**
+	 *
+	 * @param input
+	 * @param output
+	 * @throws IOException
+	 */
 	public static void absorbInputStream(InputStream input, OutputStream output) throws IOException {
 		byte[] buf = new byte[BUF_SIZE];
 		int available;

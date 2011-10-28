@@ -28,10 +28,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Helper class containing string manipulation functions.
@@ -663,14 +660,15 @@ public abstract class StringSupport {
 	 * reads all strings in a text that are inbetween certain tags such as '[' and ']'
 	 *
 	 * @param input
-	 * @param sort	 whether to sort the result alphabetically
 	 * @param startTag
 	 * @param endTag
+	 * @param sort whether to sort the result alphabetically
 	 * @return a collection of uniquely identified words
 	 */
-	public static Collection extractStringsInbetweenTagsFromText(String input, boolean sort, char startTag, char endTag) {
+	public static Set extractStringsInbetweenTagsFromText(String input, char startTag, char endTag, boolean sort) {
+		
 		TreeMap storage = new TreeMap();
-		ArrayList unsortedStorage = new ArrayList();
+		HashSet unsortedStorage = new HashSet();
 
 		StringBuffer word = new StringBuffer();
 		boolean readingWord = false;
@@ -793,47 +791,6 @@ public abstract class StringSupport {
 	}
 
 
-	/**
-	 * Creates a character array and initializes it with a default value.
-	 *
-	 * @param size
-	 * @param defaultVal
-	 * @return
-	 */
-/*	public static char[] createCharArray(int size, char defaultVal)
-	{
-		char[] retval = new char[size];
-		for(int i = 0; i < size; i++)
-		{
-			retval[i] = defaultVal;
-		}
-		return retval;
-	}
-*/
-
-
-	/**
-	 * Creates a character array and initializes it with a default value.
-	 *
-	 * @param size
-	 * @param defaultVal
-	 * @return
-	 */
-/*	public static char[] createCharArray(int size, char defaultVal)
-	{
-		char[] retval = new char[size];
-		int half = (size / 2) + 1;
-		for(int i = 0; i < half; i++)
-		{
-			retval[i] = defaultVal;
-		}
-		if(size > 2)
-		{
-			System.arraycopy(retval, 0, retval, half - 1, half - 1);
-		}
-		return retval;
-	}
-*/
 
 	/**
 	 * Creates a character array and initializes it with a default value.

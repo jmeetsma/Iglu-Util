@@ -20,7 +20,6 @@
 
 package org.ijsberg.iglu.util.misc;
 
-import junit.framework.TestCase;
 import org.junit.Test;
 
 import java.util.List;
@@ -55,47 +54,47 @@ public class StringSupportTest {
 	}
 
 	@Test
-	public void extractStringsInbetweenTagsFromText() throws Exception {
+	public void extractStringsInBetweenTagsFromText() throws Exception {
 
-		String text = "this is a text with a [part inbetween] brackets";
+		String text = "this is a text with a [part in between] brackets";
 		Set result = StringSupport.extractStringsInbetweenTagsFromText(text, '[', ']', false);
 		assertEquals(1, result.size());
-		assertEquals("part inbetween", result.toArray()[0]);
+		assertEquals("part in between", result.toArray()[0]);
 
 		text = "this is a text";
 		result = StringSupport.extractStringsInbetweenTagsFromText(text, '[', ']', false);
 		assertEquals(0, result.size());
 
-		text = "this is a text with a {part inbetween} brackets {and another part}";
+		text = "this is a text with a {part in between} brackets {and another part}";
 		result = StringSupport.extractStringsInbetweenTagsFromText(text, '{', '}', false);
 		assertEquals(2, result.size());
-		assertEquals("part inbetween", result.toArray()[0]);
+		assertEquals("part in between", result.toArray()[0]);
 		assertEquals("and another part", result.toArray()[1]);
 
 		//sort results
 		result = StringSupport.extractStringsInbetweenTagsFromText(text, '{', '}', true);
 		assertEquals(2, result.size());
 		assertEquals("and another part", result.toArray()[0]);
-		assertEquals("part inbetween", result.toArray()[1]);
+		assertEquals("part in between", result.toArray()[1]);
 
 	}
 
 	@Test
-	public void extractStringsInbetweenQuotesFromText() throws Exception {
+	public void extractStringsInBetweenQuotesFromText() throws Exception {
 
-		String text = "this is a text with a 'part inbetween' brackets";
+		String text = "this is a text with a 'part in between' brackets";
 		Set result = StringSupport.extractStringsInbetweenTagsFromText(text, '\'', '\'', false);
 		assertEquals(1, result.size());
-		assertEquals("part inbetween", result.toArray()[0]);
+		assertEquals("part in between", result.toArray()[0]);
 
 		text = "this is a text";
 		result = StringSupport.extractStringsInbetweenTagsFromText(text, '\'', '\'', false);
 		assertEquals(0, result.size());
 
-		text = "this is a text with a \"part inbetween\" brackets \"and anhother part\"";
+		text = "this is a text with a \"part in between\" brackets \"and another part\"";
 		result = StringSupport.extractStringsInbetweenTagsFromText(text, '\"', '\"', false);
 		assertEquals(2, result.size());
-		assertEquals("part inbetween", result.toArray()[0]);
+		assertEquals("part in between", result.toArray()[0]);
 		assertEquals("and another part", result.toArray()[1]);
 	}
 }

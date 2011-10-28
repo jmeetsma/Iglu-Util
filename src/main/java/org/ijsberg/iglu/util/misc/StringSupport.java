@@ -33,11 +33,10 @@ import java.util.*;
 /**
  * Helper class containing string manipulation functions.
  *
- * @author Fedor Wiedenhof
  */
 public abstract class StringSupport {
 	/**
-	 * replaces the first occurance of needle in haystack with newNeedle
+	 * replaces the first occurrence of needle in haystack with newNeedle
 	 *
 	 * @param haystack input string
 	 * @param needle   string to place
@@ -609,7 +608,7 @@ public abstract class StringSupport {
 			if (readingWord) {
 				if (punctuationChars.indexOf(input.charAt(i)) != -1 && !insideQuotes) {
 					//check forbidden word list first
-					//or maybe make arangements in Index
+					//or maybe make arrangements in Index
 					//e.g.: disable Index with too many (%) references
 
 					String foundWord = word.toString().trim();

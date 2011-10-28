@@ -21,7 +21,35 @@
 package org.ijsberg.iglu.util.misc;
 
 import junit.framework.TestCase;
+import org.junit.Test;
+
+import java.util.List;
+
+import static junit.framework.Assert.assertEquals;
 
 public class StringSupportTest {
+
+	@Test
+	public void testSplit() throws Exception {
+		List result = StringSupport.split("org.ijsberg.iglu.util",".","");
+		assertEquals("org", result.get(0));
+		assertEquals("ijsberg", result.get(1));
+		assertEquals("iglu", result.get(2));
+		assertEquals("util", result.get(3));
+
+		String line = "Harry went to the \"market square\" and bought some fish";
+		result = StringSupport.split(line, " ", "\"");
+		assertEquals("Harry", result.get(0));
+		assertEquals("the", result.get(3));
+		assertEquals("market square", result.get(4));
+		assertEquals("and", result.get(5));
+
+		line = "Harry went to the 'market square' and bought some fish";
+		result = StringSupport.split(line, " ", "'");
+		assertEquals("the", result.get(3));
+		assertEquals("market square", result.get(4));
+		assertEquals("and", result.get(5));
+
+	}
 }
 

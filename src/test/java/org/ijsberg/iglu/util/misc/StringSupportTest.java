@@ -20,8 +20,57 @@
 
 package org.ijsberg.iglu.util.misc;
 
-import junit.framework.TestCase;
+import static junit.framework.Assert.assertEquals;
+
+import java.util.Set;
+
+import org.junit.Test;
 
 public class StringSupportTest {
+
+	@Test
+	public void extractStringsInbetweenTagsFromText() throws Exception {
+
+		String text = "this is a text with a [part inbetween] brackets";
+		Set result = StringSupport.extractStringsInbetweenTagsFromText(text, '[', ']', false);
+		assertEquals(1, result.size());
+		assertEquals("part inbetween", result.toArray()[0]);
+
+		text = "this is a text";
+		result = StringSupport.extractStringsInbetweenTagsFromText(text, '[', ']', false);
+		assertEquals(0, result.size());
+
+		text = "this is a text with a {part inbetween} brackets {and another part}";
+		result = StringSupport.extractStringsInbetweenTagsFromText(text, '{', '}', false);
+		assertEquals(2, result.size());
+		assertEquals("part inbetween", result.toArray()[0]);
+		assertEquals("and another part", result.toArray()[1]);
+
+		//sort results
+		result = StringSupport.extractStringsInbetweenTagsFromText(text, '{', '}', true);
+		assertEquals(2, result.size());
+		assertEquals("and another part", result.toArray()[0]);
+		assertEquals("part inbetween", result.toArray()[1]);
+
+	}
+
+	@Test
+	public void extractStringsInbetweenQuotesFromText() throws Exception {
+
+		String text = "this is a text with a 'part inbetween' brackets";
+		Set result = StringSupport.extractStringsInbetweenTagsFromText(text, '\'', '\'', false);
+		assertEquals(1, result.size());
+		assertEquals("part inbetween", result.toArray()[0]);
+
+		text = "this is a text";
+		result = StringSupport.extractStringsInbetweenTagsFromText(text, '\'', '\'', false);
+		assertEquals(0, result.size());
+
+		text = "this is a text with a \"part inbetween\" brackets \"and anhother part\"";
+		result = StringSupport.extractStringsInbetweenTagsFromText(text, '\"', '\"', false);
+		assertEquals(2, result.size());
+		assertEquals("part inbetween", result.toArray()[0]);
+		assertEquals("and another part", result.toArray()[1]);
+	}
 }
 

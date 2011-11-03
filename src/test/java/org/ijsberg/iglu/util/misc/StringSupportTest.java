@@ -51,6 +51,10 @@ public class StringSupportTest {
 		assertEquals("the", result.get(3));
 		assertEquals("market square", result.get(4));
 		assertEquals("and", result.get(5));
+
+		line = "the \"market square \" and a space";
+		result = StringSupport.split(line, " ", "\"");
+		assertEquals("market square ", result.get(1));
 	}
 
 	@Test

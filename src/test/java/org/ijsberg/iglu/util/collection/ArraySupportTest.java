@@ -20,6 +20,7 @@
 
 package org.ijsberg.iglu.util.collection;
 
+
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;

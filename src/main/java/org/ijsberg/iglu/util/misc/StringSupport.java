@@ -611,7 +611,7 @@ public abstract class StringSupport {
 					//or maybe make arrangements in Index
 					//e.g.: disable Index with too many (%) references
 
-					String foundWord = word.toString().trim();
+					String foundWord = word.toString()/*.trim()*/;
 					if (convertToLowerCase) {
 						foundWord = foundWord.toLowerCase();
 					}
@@ -648,7 +648,7 @@ public abstract class StringSupport {
 			}
 		}
 		if (readingWord) {
-			String foundWord = word.toString().trim();
+			String foundWord = word.toString()/*.trim()*/;
 			if (convertToLowerCase) {
 				foundWord = foundWord.toLowerCase();
 			}

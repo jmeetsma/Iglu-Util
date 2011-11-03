@@ -35,9 +35,11 @@ public class FileSupportTest {
 
 	@Test
 	public void testGetFilesInDirectoryTree() {
+
 		String testDirPath = "./src/test/resources/org/ijsberg/iglu/util/io/directory structure";
 		File file = new File(testDirPath);
 
+		System.out.println(file.getAbsolutePath());
 		assertTrue(file.exists());
 
 		List foundFiles = FileSupport.getFilesInDirectoryTree(testDirPath);

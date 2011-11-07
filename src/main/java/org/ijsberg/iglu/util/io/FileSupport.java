@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Iglu.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.ijsberg.iglu.util.io;
 
 import org.ijsberg.iglu.util.collection.CollectionSupport;

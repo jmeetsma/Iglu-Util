@@ -20,8 +20,6 @@
 
 package org.ijsberg.iglu.util.mail;
 
-import junit.framework.TestCase;
-
 public class MimeTypeSupportTest {
 }
 

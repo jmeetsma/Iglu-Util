@@ -28,7 +28,7 @@
     <groupId>org.ijsberg.iglu</groupId>
     <artifactId>iglu-util</artifactId>
     <packaging>jar</packaging>
-    <version>0.9.0</version>
+    <version>0.9.1-SNAPSHOT</version>
     <name>Iglu-Util</name>
     <description>
         Iglu Util contains miscellaneous utilities for server side Java development.

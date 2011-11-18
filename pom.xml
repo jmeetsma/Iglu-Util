@@ -15,7 +15,7 @@
   ~ GNU Lesser General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Lesser General Public License
-  ~ along with Iglu.  If not, see <http://www.gnu.org/licenses/>.
+  ~ along with Iglu.  If not, see <http://www.gnu.org/licenses />.
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -25,10 +25,10 @@
         <version>7</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.ijsberg.iglu</groupId>
+    <groupId>org.ijsberg</groupId>
     <artifactId>iglu-util</artifactId>
     <packaging>jar</packaging>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.9.1-SNAPSHOT</version>
     <name>Iglu-Util</name>
     <description>
         Iglu Util contains miscellaneous utilities for server side Java development.
@@ -80,7 +80,7 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <phase>install</phase>
+                        <!--phase>install</phase-->
                         <goals>
                             <goal>jar</goal>
                             <goal>test-jar</goal>

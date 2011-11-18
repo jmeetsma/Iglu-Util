@@ -22,9 +22,13 @@ package org.ijsberg.iglu.util.io;
 
 
 import org.ijsberg.iglu.util.collection.CollectionSupport;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
@@ -32,6 +36,19 @@ import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertTrue;
 
 public class FileSupportTest {
+
+	private static final String ROOT = "org/ijsberg/iglu/util/io/directory structure/root/";
+	private File tmpDir;
+
+	@Before
+	public void setUp() throws Exception {
+		tmpDir = FileSupport.createTmpDir("Iglu-Util-test");
+	}
+
+	@After
+	public void tearDown() throws Exception {
+//		tmpDir.delete();
+	}
 
 	@Test
 	public void testGetFilesInDirectoryTree() {
@@ -55,6 +72,7 @@ public class FileSupportTest {
 
 	}
 
+	@Test
 	public void testGetFilesInDirectoryTreeForWindows() {
 		String testDirPath = ".\\src\\test\\resources\\org\\ijsberg\\iglu\\util\\io\\directory structure";
 		File file = new File(testDirPath);
@@ -101,4 +119,35 @@ public class FileSupportTest {
 			fail("IllegalArgumentException expected");
 		} catch (IllegalArgumentException expected) {}
 	}
+
+
+
+	@Test
+	public void testGetInputStreamFromClassLoader() throws Exception{
+		//NOTE: IDEs will not automatically regard any file as resource
+		InputStream input = FileSupport.getInputStreamFromClassLoader("iglu_logo_ice.gif");
+		try {
+			FileSupport.getInputStreamFromClassLoader("not_existing.file");
+			fail("IOException expected");
+		} catch (IOException expected) {}
+
+		input = FileSupport.getInputStreamFromClassLoader("test/ijsberg.jpg");
+
+		//apparently a dir can be loaded
+		input = FileSupport.getInputStreamFromClassLoader(ROOT + "WWW");
+
+		byte[] thing = StreamSupport.absorbInputStream(input);
+		System.out.println(new String(thing));
+
+		input.close();
+	}
+
+	@Test
+	public void testCopyClassLoadableResourceToFileSystem() throws IOException{
+
+		assertEquals(0, tmpDir.listFiles().length);
+		FileSupport.copyClassLoadableResourceToFileSystem("iglu_logo_ice.gif", tmpDir.getPath());
+		assertEquals(1, tmpDir.listFiles().length);
+	}
+
 }

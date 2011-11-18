@@ -318,6 +318,12 @@ public abstract class FileSupport {
 		return StreamSupport.absorbInputStream(getInputStreamFromClassLoader(path));
 	}
 
+	/**
+	 *
+	 * @param path path with regular path separators ('/')
+	 * @return
+	 * @throws IOException
+	 */
 	public static InputStream getInputStreamFromClassLoader(String path) throws IOException {
 		InputStream retval = FileSupport.class.getClassLoader().getResourceAsStream(path);
 		if(retval == null) {

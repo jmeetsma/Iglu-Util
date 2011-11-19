@@ -40,6 +40,8 @@ import java.util.zip.ZipFile;
  * as well as other file system manipulation.
  */
 public abstract class FileSupport {
+	private static final int COPY_BUFFER = 100000;
+
 	/**
 	 * Retrieves all files from a directory and its subdirectories.
 	 *
@@ -314,7 +316,7 @@ public abstract class FileSupport {
 	}
 
 
-	public static byte[] getBinaryFromClassloader(String path) throws IOException {
+	public static byte[] getBinaryFromClassLoader(String path) throws IOException {
 		return StreamSupport.absorbInputStream(getInputStreamFromClassLoader(path));
 	}
 
@@ -325,47 +327,38 @@ public abstract class FileSupport {
 	 * @throws IOException
 	 */
 	public static InputStream getInputStreamFromClassLoader(String path) throws IOException {
-		InputStream retval = FileSupport.class.getClassLoader().getResourceAsStream(path);
+		ClassLoader classLoader = FileSupport.class.getClassLoader();
+		InputStream retval = classLoader.getResourceAsStream(path);
+
 		if(retval == null) {
 			throw new IOException("class loader can not load resource '" + path  + "'");
 		}
 		return retval;
 	}
 
-	public static OutputStream getOutputStreamToFileSystem(String path) throws IOException {
-		return new FileOutputStream(path);
-	}
-
-	public static void copyClassLoadableResourceToFileSystem(String pathToResource, String outputPath) throws IOException{
-		InputStream input = getInputStreamFromClassLoader(pathToResource);
-		OutputStream output = getOutputStreamToFileSystem(outputPath);
-		try {
-			StreamSupport.absorbInputStream(input, output);
-		} finally {
-			output.close();
-			input.close();
-		}
-	}
-
 	/**
-	 * Input stream is closed after reading.
-	 *
-	 * @param input
+	 * @param pathToResource
 	 * @param outputPath
 	 * @throws IOException
 	 */
-	public static void copyToFileSystem(InputStream input, String outputPath) throws IOException {
-		OutputStream output = null;
+	public static void copyClassLoadableResourceToFileSystem(String pathToResource, String outputPath) throws IOException{
+
+		//TODO make sure that files exist
+		InputStream input = getInputStreamFromClassLoader(pathToResource);
+
+
+		File outputFile = new File(outputPath);
+		if(outputFile.isDirectory()) {
+			outputFile = new File(outputFile.getPath() + '/' + getFileNameFromPath(pathToResource));
+		}
+		OutputStream output = new FileOutputStream(outputFile);
 		try {
-			output = new FileOutputStream(outputPath);
 			StreamSupport.absorbInputStream(input, output);
 		} finally {
 			output.close();
 			input.close();
 		}
 	}
-
-
 
 
 	public static ZipEntry getZipEntryFromJar(String fileName, String jarFileName) throws IOException {
@@ -426,24 +419,27 @@ public abstract class FileSupport {
 	/**
 	 * Copies a file.
 	 *
-	 * @param filename
-	 * @param newFilename
+	 * @param fileName
+	 * @param newFileName
 	 * @param overwriteExisting
 	 * @throws IOException
 	 */
-	public static void copyFile(String filename, String newFilename, boolean overwriteExisting) throws IOException {
-		File file = new File(filename);
+	public static void copyFile(String fileName, String newFileName, boolean overwriteExisting) throws IOException {
+		File file = new File(fileName);
 		if (!file.exists()) {
-			throw new IOException("file '" + filename + "' does not exist");
+			throw new IOException("file '" + fileName + "' does not exist");
 		}
 		if (file.isDirectory()) {
-			throw new IOException('\'' + filename + "' is a directory");
+			throw new IOException('\'' + fileName + "' is a directory");
 		}
-		File newFile = new File(newFilename);
+		File newFile = new File(newFileName);
+		if(file.isDirectory()) {
+			newFile = new File(file.getPath() + '/' + getFileNameFromPath(fileName));
+		}
 		if (!overwriteExisting && newFile.exists()) {
-			throw new IOException("file '" + newFilename + "' already exists");
+			throw new IOException("file '" + newFileName + "' already exists");
 		}
-		byte[] buffer = new byte[100000];//+/-100kB
+		byte[] buffer = new byte[COPY_BUFFER];
 
 		int read = 0;
 

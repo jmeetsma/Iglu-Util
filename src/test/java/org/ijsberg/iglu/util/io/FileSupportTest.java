@@ -29,9 +29,11 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertTrue;
 
@@ -47,7 +49,7 @@ public class FileSupportTest {
 
 	@After
 	public void tearDown() throws Exception {
-//		tmpDir.delete();
+		tmpDir.delete();
 	}
 
 	@Test
@@ -80,18 +82,18 @@ public class FileSupportTest {
 		assertTrue(file.exists());
 
 		List foundFiles = FileSupport.getFilesInDirectoryTree(testDirPath);
-		assertEquals(336, foundFiles.size());
+		assertEquals(169, foundFiles.size());
 
 		foundFiles = FileSupport.getFilesInDirectoryTree(testDirPath, "*");
-		assertEquals(336, foundFiles.size());
+		assertEquals(169, foundFiles.size());
 
 		testDirPath += '\\';
 
 		foundFiles = FileSupport.getFilesInDirectoryTree(testDirPath);
-		assertEquals(336, foundFiles.size());
+		assertEquals(169, foundFiles.size());
 
 		foundFiles = FileSupport.getFilesInDirectoryTree(testDirPath, "*");
-		assertEquals(336, foundFiles.size());
+		assertEquals(169, foundFiles.size());
 
 		foundFiles = FileSupport.getFilesInDirectoryTree(testDirPath, "*.LOG");
 		assertEquals(19, foundFiles.size());
@@ -137,7 +139,6 @@ public class FileSupportTest {
 		input = FileSupport.getInputStreamFromClassLoader(ROOT + "WWW");
 
 		byte[] thing = StreamSupport.absorbInputStream(input);
-		System.out.println(new String(thing));
 
 		input.close();
 	}
@@ -145,9 +146,17 @@ public class FileSupportTest {
 	@Test
 	public void testCopyClassLoadableResourceToFileSystem() throws IOException{
 
-		//assertEquals(0, tmpDir.listFiles().length);
-		//FileSupport.copyClassLoadableResourceToFileSystem("iglu_logo_ice.gif", tmpDir.getPath());
-		//assertEquals(1, tmpDir.listFiles().length);
+		assertEquals(0, tmpDir.listFiles().length);
+		FileSupport.copyClassLoadableResourceToFileSystem("iglu_logo_ice.gif", tmpDir.getPath() + "/iglu_logo.gif");
+		assertEquals(1, tmpDir.listFiles().length);
+		assertEquals("iglu_logo.gif", tmpDir.listFiles()[0].getName());
+
+		FileSupport.copyClassLoadableResourceToFileSystem("iglu_logo_ice.gif", tmpDir.getPath());
+		assertEquals(2, tmpDir.listFiles().length);
+
+		assertTrue(new File(tmpDir.getPath() + "/iglu_logo_ice.gif").exists());
 	}
+
+
 
 }

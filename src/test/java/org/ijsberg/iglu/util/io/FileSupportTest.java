@@ -62,6 +62,7 @@ public class FileSupportTest {
 		assertTrue(file.exists());
 
 		List foundFiles = FileSupport.getFilesInDirectoryTree(testDirPath);
+		System.out.println("FOUND FILES " + foundFiles);
 		assertEquals(169, foundFiles.size());
 
 		testDirPath += '/';
@@ -137,7 +138,10 @@ public class FileSupportTest {
 
 		//apparently a dir can be loaded
 		input = FileSupport.getInputStreamFromClassLoader(ROOT + "WWW");
-
+		//(input.available produces NullPointer on Apple)
+		
+		input = FileSupport.getInputStreamFromClassLoader(ROOT + "WWW/route.gif");
+		
 		byte[] thing = StreamSupport.absorbInputStream(input);
 
 		input.close();

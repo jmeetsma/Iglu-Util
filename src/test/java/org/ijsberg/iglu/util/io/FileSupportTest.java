@@ -57,12 +57,13 @@ public class FileSupportTest {
 
 		String testDirPath = "./src/test/resources/org/ijsberg/iglu/util/io/directory structure";
 		File file = new File(testDirPath);
+		FileSupport.deleteContentsInDirectoryTree(file, ".DS_Store");
 
 		System.out.println(file.getAbsolutePath());
 		assertTrue(file.exists());
 
-		List foundFiles = FileSupport.getFilesInDirectoryTree(testDirPath);
-		System.out.println("FOUND FILES " + foundFiles);
+		List<File> foundFiles = FileSupport.getFilesInDirectoryTree(testDirPath);
+		
 		assertEquals(169, foundFiles.size());
 
 		testDirPath += '/';
@@ -75,31 +76,6 @@ public class FileSupportTest {
 
 	}
 
-	@Test
-	public void testGetFilesInDirectoryTreeForWindows() {
-		String testDirPath = ".\\src\\test\\resources\\org\\ijsberg\\iglu\\util\\io\\directory structure";
-		File file = new File(testDirPath);
-
-		assertTrue(file.exists());
-
-		List foundFiles = FileSupport.getFilesInDirectoryTree(testDirPath);
-		assertEquals(169, foundFiles.size());
-
-		foundFiles = FileSupport.getFilesInDirectoryTree(testDirPath, "*");
-		assertEquals(169, foundFiles.size());
-
-		testDirPath += '\\';
-
-		foundFiles = FileSupport.getFilesInDirectoryTree(testDirPath);
-		assertEquals(169, foundFiles.size());
-
-		foundFiles = FileSupport.getFilesInDirectoryTree(testDirPath, "*");
-		assertEquals(169, foundFiles.size());
-
-		foundFiles = FileSupport.getFilesInDirectoryTree(testDirPath, "*.LOG");
-		assertEquals(19, foundFiles.size());
-
-	}
 
 
 	@Test

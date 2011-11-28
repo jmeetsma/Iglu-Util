@@ -48,7 +48,7 @@ public abstract class FileSupport {
 	 * @param path path to directory
 	 * @return A list containing the found files
 	 */
-	public static ArrayList getFilesInDirectoryTree(String path) {
+	public static ArrayList<File> getFilesInDirectoryTree(String path) {
 		File directory = new File(path);
 		return getContentsInDirectoryTree(directory, null, true, false);
 	}
@@ -72,7 +72,7 @@ public abstract class FileSupport {
 	 * @param mask exact filename, or mask containing wildcards
 	 * @return A list containing the found files
 	 */
-	public static ArrayList getFilesInDirectoryTree(String path, String mask) {
+	public static ArrayList<File> getFilesInDirectoryTree(String path, String mask) {
 		File file = new File(path);
 		return getContentsInDirectoryTree(file, mask, true, false);
 	}
@@ -86,7 +86,7 @@ public abstract class FileSupport {
 	 * @param mask mask to match
 	 * @return a list containing the found files
 	 */
-	public static ArrayList getFilesInDirectoryTree(File file, String mask) {
+	public static ArrayList<File> getFilesInDirectoryTree(File file, String mask) {
 		return getContentsInDirectoryTree(file, mask, true, false);
 	}
 
@@ -100,8 +100,8 @@ public abstract class FileSupport {
 	 * @param returnDirs  return directories
 	 * @return a list containing the found contents
 	 */
-	private static ArrayList getContentsInDirectoryTree(File directory, String mask, boolean returnFiles, boolean returnDirs) {
-		ArrayList result = new ArrayList();
+	private static ArrayList<File> getContentsInDirectoryTree(File directory, String mask, boolean returnFiles, boolean returnDirs) {
+		ArrayList<File> result = new ArrayList<File>();
 		if (directory != null && !directory.isFile()) {
 			File[] files = directory.listFiles();
 			if (files != null) {
@@ -128,7 +128,7 @@ public abstract class FileSupport {
 	 * @param path path to directory
 	 * @return A list containing the found directories
 	 */
-	public static ArrayList getDirectoriesInDirectoryTree(String path) {
+	public static ArrayList<File> getDirectoriesInDirectoryTree(String path) {
 		File file = new File(path);
 		return getContentsInDirectoryTree(file, null, false, true);
 	}
@@ -141,7 +141,7 @@ public abstract class FileSupport {
 	 * @param mask file name to match
 	 * @return A list containing the found directories
 	 */
-	public static ArrayList getDirectoriesInDirectoryTree(String path, String mask) {
+	public static ArrayList<File> getDirectoriesInDirectoryTree(String path, String mask) {
 		File file = new File(path);
 		return getContentsInDirectoryTree(file, mask, false, true);
 	}
@@ -155,7 +155,7 @@ public abstract class FileSupport {
 	 * @param returnDirs indicates if directories must be returned as well
 	 * @return a list containing the found files
 	 */
-	public static ArrayList getFilesInDirectoryTree(String path, String mask, boolean returnDirs) {
+	public static ArrayList<File> getFilesInDirectoryTree(String path, String mask, boolean returnDirs) {
 		File file = new File(path);
 		return getContentsInDirectoryTree(file, mask, true, returnDirs);
 	}
@@ -235,10 +235,8 @@ public abstract class FileSupport {
 		String fileName = StringSupport.replaceAll(className, ".", "/");
 		fileName += ".class";
 
-		Collection jars = StringSupport.split(System.getProperty("java.class.path"), ";:", false);
-		Iterator i = jars.iterator();
-		while (i.hasNext()) {
-			String jarFileName = (String) i.next();
+		Collection<String> jars = StringSupport.split(System.getProperty("java.class.path"), ";:", false);
+		for(String jarFileName : jars) {
 			if (jarFileName.endsWith(".jar") || jarFileName.endsWith(".zip")) {
 				ZipEntry entry = getZipEntryFromJar(fileName, jarFileName);
 				if (entry != null) {
@@ -278,10 +276,8 @@ public abstract class FileSupport {
 
 	public static byte[] getBinaryFromClassPath(String fileName, String classPath) throws IOException {
 		byte[] retval = null;
-		Collection paths = StringSupport.split(classPath, ";:", false);
-		Iterator i = paths.iterator();
-		while (i.hasNext()) {
-			String path = (String) i.next();
+		Collection<String> paths = StringSupport.split(classPath, ";:", false);
+		for(String path : paths) {
 			if (path.endsWith(".zip") || path.endsWith(".jar")) {
 				retval = getBinaryFromJar(fileName, path);
 			}
@@ -291,10 +287,8 @@ public abstract class FileSupport {
 			if (retval == null) {
 				File dir = new File(path);
 				if (dir.exists() && dir.isDirectory()) {
-					Collection jars = FileSupport.getFilesInDirectoryTree(dir, "*.jar");
-					Iterator j = jars.iterator();
-					while (j.hasNext()) {
-						File jar = (File) j.next();
+					Collection<File> jars = FileSupport.getFilesInDirectoryTree(dir, "*.jar");
+					for(File jar : jars) {
 						try {
 							retval = getBinaryFromJar(fileName, jar.getPath());
 						}

@@ -512,7 +512,7 @@ public abstract class StringSupport {
 	 * @param input
 	 * @return a collection of uniquely identified words in order of appearance
 	 */
-	public static List split(String input) {
+	public static List<String> split(String input) {
 		return split(input, " ,.:;/\\", false);
 	}
 
@@ -524,7 +524,7 @@ public abstract class StringSupport {
 	 * @param punctuationChars
 	 * @return a collection of uniquely identified words
 	 */
-	public static List split(String input, String punctuationChars) {
+	public static List<String> split(String input, String punctuationChars) {
 		return split(input, punctuationChars, false);
 	}
 
@@ -537,7 +537,7 @@ public abstract class StringSupport {
 	 * @param sort			 indicates if result must be sorted alphabetically
 	 * @return a collection of uniquely identified words
 	 */
-	public static List split(String input, String punctuationChars, boolean sort) {
+	public static List<String> split(String input, String punctuationChars, boolean sort) {
 		return split(input, punctuationChars, sort, false);
 	}
 
@@ -548,7 +548,7 @@ public abstract class StringSupport {
 	 * @param punctuationChars characters that can not belong to words and are therefore separators
 	 * @return a collection of uniquely identified words
 	 */
-	public static List split(String input, String punctuationChars, String quoteChars) {
+	public static List<String> split(String input, String punctuationChars, String quoteChars) {
 		return split(input, punctuationChars, quoteChars, false, false, false);
 	}
 
@@ -561,7 +561,7 @@ public abstract class StringSupport {
 	 * @param convertToLowerCase whether to convert all found words to lowercase
 	 * @return a collection of uniquely identified words
 	 */
-	public static List split(String input, String punctuationChars, boolean sort, boolean convertToLowerCase) {
+	public static List<String> split(String input, String punctuationChars, boolean sort, boolean convertToLowerCase) {
 		return split(input, punctuationChars, sort, convertToLowerCase, false);
 	}
 
@@ -576,7 +576,7 @@ public abstract class StringSupport {
 	 * @param distinct		   true if a certain word may occur only once in the resulting collection
 	 * @return a collection of extracted words
 	 */
-	public static List split(String input, String punctuationChars, boolean sort, boolean convertToLowerCase, boolean distinct) {
+	public static List<String> split(String input, String punctuationChars, boolean sort, boolean convertToLowerCase, boolean distinct) {
 		return split(input, punctuationChars, "\"", sort, convertToLowerCase, distinct);
 	}
 
@@ -590,16 +590,16 @@ public abstract class StringSupport {
 	 * @param punctuationChars   characters that can not belong to words and are therefore separators
 	 * @param quoteSymbols	   used as list of characters used to group strings
 	 * @param sort			   whether to sort the result alphabetically. (If the result is sorted, setting the distinct flag to false has no effect)
-	 * @param convertToLowerCase whether to convert all found words to lowercase
+	 * @param convertToLowerCase whether to convert all found words to lower case
 	 * @param distinct		   true if a certain word may occur only once in the resulting collection
 	 * @return a collection of extracted words
 	 */
-	public static List split(String input, String punctuationChars, String quoteSymbols, boolean sort, boolean convertToLowerCase, boolean distinct) {
+	public static List<String> split(String input, String punctuationChars, String quoteSymbols, boolean sort, boolean convertToLowerCase, boolean distinct) {
 		if (input == null) {
-			return new ArrayList(0);
+			return new ArrayList<String>(0);
 		}
-		TreeMap storage = new TreeMap();
-		ArrayList unsortedStorage = new ArrayList();
+		TreeMap<String, Object> storage = new TreeMap<String, Object>();
+		ArrayList<String> unsortedStorage = new ArrayList<String>();
 
 		StringBuffer word = new StringBuffer();
 		boolean readingWord = false;
@@ -661,7 +661,7 @@ public abstract class StringSupport {
 			storage.put(foundWord, new Object());
 		}
 		if (sort) {
-			return new ArrayList(storage.keySet());
+			return new ArrayList<String>(storage.keySet());
 		}
 		else {
 			return unsortedStorage;
@@ -670,7 +670,7 @@ public abstract class StringSupport {
 
 
 	/**
-	 * reads all strings in a text that are inbetween certain tags such as '[' and ']'
+	 * reads all strings in a text that are in between certain tags such as '[' and ']'
 	 *
 	 * @param input
 	 * @param startTag
@@ -680,8 +680,8 @@ public abstract class StringSupport {
 	 */
 	public static Set extractStringsInbetweenTagsFromText(String input, char startTag, char endTag, boolean sort) {
 		
-		TreeMap storage = new TreeMap();
-		HashSet unsortedStorage = new HashSet();
+		TreeMap<String, Object> storage = new TreeMap<String, Object>();
+		HashSet<String> unsortedStorage = new HashSet<String>();
 
 		StringBuffer word = new StringBuffer();
 		boolean readingWord = false;
@@ -690,7 +690,7 @@ public abstract class StringSupport {
 			if (readingWord) {
 				if (input.charAt(i) == endTag) {
 					//check forbidden word list first
-					//or maybe make arangements in Index
+					//or maybe make arrangements in Index
 					//e.g.: disable Index with too many (%) references
 
 
@@ -738,7 +738,7 @@ public abstract class StringSupport {
 	}
 
 	/**
-	 * Retrieves stacktrace from throwable
+	 * Retrieves stack trace from throwable
 	 *
 	 * @param t
 	 * @return
@@ -750,7 +750,7 @@ public abstract class StringSupport {
 	}
 
 	/**
-	 * Retrieves stacktrace from throwable.
+	 * Retrieves stack trace from throwable.
 	 *
 	 * @param t
 	 * @param depth
@@ -761,7 +761,7 @@ public abstract class StringSupport {
 	}
 
 	/**
-	 * Retrieves stacktrace from throwable.
+	 * Retrieves stack trace from throwable.
 	 *
 	 * @param t
 	 * @param depth

@@ -20,17 +20,16 @@
 
 package org.ijsberg.iglu.util.io;
 
-import com.sun.corba.se.spi.orbutil.fsm.Input;
-import org.junit.Before;
-import org.junit.After;
-import org.junit.Test;
+import static junit.framework.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
-import static junit.framework.Assert.assertEquals;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 /**

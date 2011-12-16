@@ -20,13 +20,12 @@
 
 package org.ijsberg.iglu.util.misc;
 
-import org.junit.Test;
-
-import java.util.List;
-
 import static junit.framework.Assert.assertEquals;
 
+import java.util.List;
 import java.util.Set;
+
+import org.junit.Test;
 
 
 public class StringSupportTest {

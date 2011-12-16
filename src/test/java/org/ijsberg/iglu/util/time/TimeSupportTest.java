@@ -20,7 +20,6 @@
 
 package org.ijsberg.iglu.util.time;
 
-import junit.framework.TestCase;
 
 public class TimeSupportTest {
 }

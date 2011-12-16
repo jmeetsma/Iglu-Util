@@ -20,7 +20,6 @@
 
 package org.ijsberg.iglu.util.logic;
 
-import junit.framework.TestCase;
 
 public class StatementTest {
 }

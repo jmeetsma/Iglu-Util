@@ -20,7 +20,6 @@
 
 package org.ijsberg.iglu.util.io;
 
-import junit.framework.TestCase;
 
 public class ReceiverQueueTest {
 }

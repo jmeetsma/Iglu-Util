@@ -31,7 +31,7 @@ package org.ijsberg.iglu.util.execution;
  * It's convenient to define executables as anonymous inner classes.
  * E.g.:
  * <code>
- * new Executor(){protected Object execute(){System.out.println("this message is printed asynchronously");return null;}}.executeAsync();
+ * new Executable(){protected Object execute(){System.out.println("this message is printed asynchronously");return null;}}.executeAsync();
  * </code>
  */
 public abstract class Executable implements Runnable {

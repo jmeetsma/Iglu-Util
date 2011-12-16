@@ -20,21 +20,21 @@
 
 package org.ijsberg.iglu.util.execution;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
+
 import org.ijsberg.iglu.util.collection.ArraySupport;
 import org.ijsberg.iglu.util.io.FileSupport;
 import org.ijsberg.iglu.util.io.Filter;
 import org.ijsberg.iglu.util.io.Forwarder;
 import org.ijsberg.iglu.util.io.Pipe;
 import org.ijsberg.iglu.util.io.Receiver;
+import org.ijsberg.iglu.util.io.StdIODialog;
 import org.ijsberg.iglu.util.io.Transceiver;
 import org.ijsberg.iglu.util.io.Transponder;
-import org.ijsberg.iglu.util.io.StdIODialog;
 import org.ijsberg.iglu.util.misc.StringSupport;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * Tries to start a command shell in the OS and

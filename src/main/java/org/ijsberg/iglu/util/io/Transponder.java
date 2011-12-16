@@ -20,8 +20,8 @@
 
 package org.ijsberg.iglu.util.io;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Receives and retransmits objects asynchronously.

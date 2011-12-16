@@ -28,7 +28,7 @@ import java.util.Iterator;
  * Transmits messages to a number of Receivers.
  */
 public class BasicChannel implements Channel, Transmitter {
-	private ArrayList receivers = new ArrayList();
+	private ArrayList<Receiver> receivers = new ArrayList<Receiver>();
 	private int maxNrofReceivers;//unlimited
 	//echo input to transceivers
 	private boolean echo;
@@ -102,12 +102,12 @@ public class BasicChannel implements Channel, Transmitter {
 	 */
 	public synchronized void transmit(Object o, ReceiverQueue t) {
 		if (!closed) {
-			Iterator i = receivers.iterator();
-			ArrayList toBeRemoved = new ArrayList();
-			while (i.hasNext()) {
-				ReceiverQueue r = (ReceiverQueue) i.next();
+			ArrayList<Receiver> toBeRemoved = new ArrayList<Receiver>();
+			for (Receiver r : receivers) {
 				//cleanup
-				if (r.isClosed()) {
+				//TODO separate cleanup from transmit
+				//
+				if (r instanceof ReceiverQueue && ((ReceiverQueue)r).isClosed()) {
 					toBeRemoved.add(r);
 				}
 				else {
@@ -116,9 +116,8 @@ public class BasicChannel implements Channel, Transmitter {
 					}
 				}
 			}
-			i = toBeRemoved.iterator();
-			while (i.hasNext()) {
-				receivers.remove(i.next());
+			for (Receiver r : toBeRemoved) {
+				receivers.remove(r);
 			}
 		}
 	}
@@ -159,7 +158,7 @@ public class BasicChannel implements Channel, Transmitter {
 	}
 
 	/**
-	 * Adds a receiver so that it will receive transmitted mesages.
+	 * Adds a receiver so that it will receive transmitted messages.
 	 *
 	 * @param receiver
 	 * @return the registered receiver for convenience or null if the channel is closed or the maximum

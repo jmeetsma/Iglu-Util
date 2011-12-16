@@ -20,6 +20,7 @@
 
 package org.ijsberg.iglu.util.logic;
 
+//TODO this is a predicate!
 /**
  * A statement may be evaluated as being 'true' or 'false'
  * but it may also be some string of which its presence may be tested.

@@ -20,10 +20,10 @@
 
 package org.ijsberg.iglu.util.formatting;
 
-import org.ijsberg.iglu.util.misc.StringSupport;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.ijsberg.iglu.util.misc.StringSupport;
 
 /**
  * Helper class that validates formats of values.

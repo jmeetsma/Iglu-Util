@@ -20,7 +20,6 @@
 
 package org.ijsberg.iglu.util.misc;
 
-import junit.framework.TestCase;
 
 public class KeyGeneratorTest {
 }

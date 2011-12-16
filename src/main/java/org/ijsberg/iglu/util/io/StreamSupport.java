@@ -20,12 +20,10 @@
 
 package org.ijsberg.iglu.util.io;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * Helper class for stream related functions.

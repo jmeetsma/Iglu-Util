@@ -20,9 +20,9 @@
 
 package org.ijsberg.iglu.util.formatting;
 
-import org.ijsberg.iglu.util.misc.StringSupport;
-
 import java.math.BigDecimal;
+
+import org.ijsberg.iglu.util.misc.StringSupport;
 
 
 /**

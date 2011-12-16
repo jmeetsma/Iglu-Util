@@ -20,20 +20,27 @@
 
 package org.ijsberg.iglu.util.io;
 
-import org.ijsberg.iglu.util.collection.CollectionSupport;
-import org.ijsberg.iglu.util.formatting.PatternMatchingSupport;
-import org.ijsberg.iglu.util.misc.StringSupport;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.TreeMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+
+import org.ijsberg.iglu.util.collection.CollectionSupport;
+import org.ijsberg.iglu.util.formatting.PatternMatchingSupport;
+import org.ijsberg.iglu.util.misc.StringSupport;
 
 /**
  * Supports retrieval and deletion of particular files in a directory structure
@@ -60,7 +67,7 @@ public abstract class FileSupport {
 	 * @param directory directory
 	 * @return a list containing the found files
 	 */
-	public static ArrayList getFilesInDirectoryTree(File directory) {
+	public static ArrayList<File> getFilesInDirectoryTree(File directory) {
 		return getContentsInDirectoryTree(directory, null, true, false);
 	}
 
@@ -182,11 +189,9 @@ public abstract class FileSupport {
 	 */
 	public static File getFileFromDirectoryInClassPath(String fileName, String classPath) {
 
-		Collection paths = StringSupport.split(classPath, ";:", false);
+		Collection<String> paths = StringSupport.split(classPath, ";:", false);
 
-		Iterator i = paths.iterator();
-		while (i.hasNext()) {
-			String singlePath = (String) i.next();
+		for(String singlePath : paths) {
 			File dir = new File(singlePath);
 			if (dir.isDirectory()) {
 				File file = new File(singlePath + '/' + fileName);
@@ -466,20 +471,14 @@ public abstract class FileSupport {
 	 * @param mask
 	 */
 	public static void deleteContentsInDirectoryTree(File root, String mask) {
-		Collection files = getContentsInDirectoryTree(root, mask, true, true);
-		Iterator i = files.iterator();
-		while (i.hasNext()) {
-			File file = (File) i.next();
-			if (file.exists())//file may meanwhile have been deleted
-			{
+		Collection<File> files = getContentsInDirectoryTree(root, mask, true, true);
+		for(File file : files) {
+			if (file.exists()) {//file may meanwhile have been deleted
 				if (file.isDirectory()) {
 					//empty directory
 					emptyDirectory(file.getAbsolutePath());
 				}
-				if (file.exists())//file may meanwhile have been deleted
-				{
-					boolean result = file.delete();
-				}
+				file.delete();				
 			}
 		}
 	}
@@ -490,8 +489,8 @@ public abstract class FileSupport {
 	 * @return a map containing the number of occurrences of the search string in lines, if 1 or more, keyed and sorted by line number
 	 * @throws IOException if the file could not be found or is a directory or locked
 	 */
-	public static Map countOccurencesInTextFile(File file, String searchString) throws IOException {
-		TreeMap retval = new TreeMap();
+	public static Map<Integer, Integer> countOccurencesInTextFile(File file, String searchString) throws IOException {
+		TreeMap<Integer, Integer> retval = new TreeMap<Integer, Integer>();
 		InputStream input;
 
 		input = new FileInputStream(file);
@@ -586,13 +585,11 @@ public abstract class FileSupport {
 		while (i.hasNext()) {
 			File file = (File) i.next();
 			try {
-				Map occurrences = countOccurencesInTextFile(file, searchString);
+				Map<Integer, Integer> occurrences = countOccurencesInTextFile(file, searchString);
 				if (occurrences.size() > 0) {
 					int total = 0;
-					Iterator j = occurrences.keySet().iterator();
 					StringBuffer message = new StringBuffer();
-					while (j.hasNext()) {
-						Integer lineNo = (Integer) j.next();
+					for (Integer lineNo : occurrences.keySet()) {
 						Integer no = (Integer) occurrences.get(lineNo);
 						total += no.intValue();
 						message.append("line " + lineNo + ": " + no + "\n");

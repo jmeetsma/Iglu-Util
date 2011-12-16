@@ -20,14 +20,13 @@
 
 package org.ijsberg.iglu.util.mail;
 
-import org.ijsberg.iglu.util.io.FileData;
-import org.ijsberg.iglu.util.misc.KeyGenerator;
-import org.ijsberg.iglu.util.execution.Executable;
-
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.UnknownHostException;
+
+import org.ijsberg.iglu.util.execution.Executable;
+import org.ijsberg.iglu.util.io.FileData;
+import org.ijsberg.iglu.util.misc.KeyGenerator;
 
 /**
  * Mails an SMTP message to recipients.

@@ -27,7 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Threadsafe date converter.
+ * Thread-safe date converter for heavily reused date formats.
  * Wraps a <i>non lenient</i> SimpleDateFormat.
  */
 public final class SafeDateFormat {
@@ -39,8 +39,8 @@ public final class SafeDateFormat {
 	 */
 	public SafeDateFormat(final DateFormat aDateFormat) {
 		dateFormat = new
-				java.lang.ThreadLocal() {
-					protected Object initialValue() {
+				java.lang.ThreadLocal<DateFormat>() {
+					protected DateFormat initialValue() {
 						DateFormat dateFormat = (DateFormat) aDateFormat.clone();
 						dateFormat.setLenient(false);
 						return dateFormat;
@@ -53,8 +53,8 @@ public final class SafeDateFormat {
 	 */
 	public SafeDateFormat(final String simpleDateFormat) {
 		dateFormat = new
-				java.lang.ThreadLocal() {
-					protected Object initialValue() {
+				java.lang.ThreadLocal<DateFormat>() {
+					protected DateFormat initialValue() {
 						SimpleDateFormat dateFormat = new SimpleDateFormat(
 								simpleDateFormat);
 						dateFormat.setLenient(false);
@@ -69,8 +69,8 @@ public final class SafeDateFormat {
 	 */
 	public SafeDateFormat(final String simpleDateFormat, final DateFormatSymbols symbols) {
 		dateFormat = new
-				java.lang.ThreadLocal() {
-					protected Object initialValue() {
+				java.lang.ThreadLocal<DateFormat>() {
+					protected DateFormat initialValue() {
 						SimpleDateFormat dateFormat = new SimpleDateFormat(
 								simpleDateFormat, symbols);
 						dateFormat.setLenient(false);

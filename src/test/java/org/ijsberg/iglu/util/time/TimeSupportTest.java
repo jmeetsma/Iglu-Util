@@ -20,7 +20,178 @@
 
 package org.ijsberg.iglu.util.time;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
+
+import org.junit.Test;
+
 
 public class TimeSupportTest {
+
+	@Test
+	public void testTimeInMillisIsTimeZoneDependent() throws Exception {
+		
+		Calendar cal = new GregorianCalendar();
+		cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+		cal.set(1970, 1, 27, 15, 6, 0);
+
+		long timeUtcInMillis = cal.getTimeInMillis();
+		
+		cal.setTimeZone(TimeZone.getTimeZone("CET"));
+		cal.set(1970, 1, 27, 15, 6, 0);
+
+		//Calendar subtracts an hour from UTC time
+		//  because the local time CET is an hour ahead
+		long timeCetInMillis = cal.getTimeInMillis();
+		
+		assertEquals(timeCetInMillis, timeUtcInMillis - TimeSupport.HOUR_IN_MS);
+	}
+
+	@Test
+	public void testGetUtcOffset() throws Exception {
+		
+		Calendar cal = new GregorianCalendar();
+		cal.set(Calendar.DAY_OF_YEAR, 1);
+		cal.set(Calendar.YEAR, 2012);
+		cal.setTimeZone(TimeZone.getTimeZone("CET"));
+		
+		assertEquals(TimeSupport.HOUR_IN_MS, TimeSupport.getUtcOffset(cal));
+		cal.set(Calendar.DAY_OF_YEAR, 183);
+		assertEquals(2 * TimeSupport.HOUR_IN_MS, TimeSupport.getUtcOffset(cal));
+
+		cal.setTimeZone(TimeZone.getTimeZone("EST"));
+		assertEquals(-5 * TimeSupport.HOUR_IN_MS, TimeSupport.getUtcOffset(cal));
+	}
+
+	
+	@Test
+	public void testIsToday() throws Exception {
+		
+		Date date = getDateAtLeast10SecBeforeMidnight();
+		assertTrue(TimeSupport.isToday(date));
+		
+		date.setTime(date.getTime() + TimeSupport.DAY_IN_MS);
+		assertFalse(TimeSupport.isToday(date));
+
+		date.setTime(date.getTime() - 2 * TimeSupport.DAY_IN_MS);
+		assertFalse(TimeSupport.isToday(date));
+	}
+
+	@Test
+	public void testIsBeforeToday() throws Exception {
+		
+		Date date = getDateAtLeast10SecBeforeMidnight();
+		assertFalse(TimeSupport.isBeforeToday(date));
+		
+		date.setTime(date.getTime() + TimeSupport.DAY_IN_MS);
+		assertFalse(TimeSupport.isBeforeToday(date));
+
+		date.setTime(date.getTime() - 2 * TimeSupport.DAY_IN_MS);
+		assertTrue(TimeSupport.isBeforeToday(date));
+	}
+	
+	@Test
+	public void testIsLE10SecsBeforeMidnight() throws Exception {
+		assertTrue(isLE10SecsBeforeMidnight(new GregorianCalendar(1970, 1, 27, 23, 59, 55)));
+		assertTrue(isLE10SecsBeforeMidnight(new GregorianCalendar(1970, 1, 27, 23, 59, 50)));
+		assertTrue(isLE10SecsBeforeMidnight(new GregorianCalendar(1970, 1, 27, 23, 59, 59)));
+		assertFalse(isLE10SecsBeforeMidnight(new GregorianCalendar(1970, 1, 27, 23, 59, 49)));
+		assertFalse(isLE10SecsBeforeMidnight(new GregorianCalendar(1970, 1, 28, 0, 0, 0)));
+	}
+
+	private Date getDateAtLeast10SecBeforeMidnight() throws InterruptedException {
+		Date date = new Date();
+		Calendar cal = new GregorianCalendar();
+		cal.setTime(date);
+		
+		//wait if it's just before midnight
+		while(isLE10SecsBeforeMidnight(cal)) {
+
+			Thread.sleep(1000);
+			date = new Date();
+			cal.setTime(date);
+		}
+		return date;
+	}
+
+	private boolean isLE10SecsBeforeMidnight(Calendar cal) {
+		return cal.get(Calendar.HOUR_OF_DAY) == 23 && cal.get(Calendar.MINUTE) == 59 && cal.get(Calendar.SECOND) >= 50;
+	}
+
+	@Test
+	public void testIsAfterToday() throws Exception {
+		
+		Date date = getDateAtLeast10SecBeforeMidnight();
+		assertFalse(TimeSupport.isAfterToday(date));
+		
+		date.setTime(date.getTime() + TimeSupport.DAY_IN_MS);
+		assertTrue(TimeSupport.isAfterToday(date));
+
+		date.setTime(date.getTime() - 2 * TimeSupport.DAY_IN_MS);
+		assertFalse(TimeSupport.isAfterToday(date));
+	}
+	
+	
+	@Test
+	public void testGetMinutesSinceMidnight() throws Exception {
+		
+		Date now = new Date();
+		Calendar cal = new GregorianCalendar();
+		cal.setTime(now);
+		assertEquals(cal.get(Calendar.MINUTE) + (cal.get(Calendar.HOUR_OF_DAY) * 60), TimeSupport.getMinutesSinceMidnight());
+	}
+
+	@Test
+	public void testGetIntervalsSinceMidnight() throws Exception {
+		
+		Date now = new Date();
+		Calendar cal = new GregorianCalendar();
+		cal.setTime(now);
+		assertEquals(cal.get(Calendar.MINUTE) + (cal.get(Calendar.HOUR_OF_DAY) * 60), TimeSupport.getIntervalsSinceMidnight(1, now.getTime()));
+
+		assertEquals((cal.get(Calendar.MINUTE) + (cal.get(Calendar.HOUR_OF_DAY) * 60)) / 5, TimeSupport.getIntervalsSinceMidnight(5, now.getTime()));
+
+	}
+	
+	
+	private long getTime(int hours, int minutes) {
+		return new GregorianCalendar(1970, 1, 27, hours, minutes).getTimeInMillis();
+	}
+	
+	@Test
+	public void testFloorToIntervalStart() throws Exception {
+		
+		Calendar cal = new GregorianCalendar();
+		long time = TimeSupport.floorToIntervalStart(5, getTime(9, 31));
+		cal.setTimeInMillis(time);
+		assertEquals(30, cal.get(Calendar.MINUTE));
+		
+		
+	}
+	
+	
+	@Test
+	public void testIsSameInterval() throws Exception {
+		assertTrue(TimeSupport.isSameInterval(1, getTime(9, 30), getTime(9, 30)));
+		assertTrue(TimeSupport.isSameInterval(5, getTime(9, 30), getTime(9, 30)));
+		assertTrue(TimeSupport.isSameInterval(30, getTime(9, 30), getTime(9, 30)));
+		assertTrue(TimeSupport.isSameInterval(60, getTime(9, 30), getTime(9, 30)));
+
+		assertTrue(TimeSupport.isSameInterval(5, getTime(9, 31), getTime(9, 33)));
+
+		assertFalse(TimeSupport.isSameInterval(1, getTime(9, 30), getTime(9, 34)));
+		assertFalse(TimeSupport.isSameInterval(5, getTime(9, 31), getTime(9, 35)));
+
+	}
+	
+
+	
+
 }
 

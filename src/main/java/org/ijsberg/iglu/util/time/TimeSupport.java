@@ -25,18 +25,35 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
- * Contains convenience methods concerning time and date.
+ * Contains convenience methods concerning time, date and scheduling.
  */
 public abstract class TimeSupport {
-	public static final long defaultGMTOffsetInMillis = getStandardGMTOffset();
+	
+	public static final int SECOND_IN_MS = 1000;
+	public static final int MINUTE_IN_MS = 60 * SECOND_IN_MS;
+	public static final int HALF_MINUTE_IN_MS = 30 * SECOND_IN_MS;
+	public static final int HOUR_IN_MS = 60 * MINUTE_IN_MS;
+	public static final int DAY_IN_MS = 24 * HOUR_IN_MS;
+
+	public static final long localUtcOffsetInMillis = getLocalUtcOffset();
 
 	/**
-	 * @return
+	 * The offset from UTC can be used to calculate time and date of time stamps based on
+	 * <code>System.currentTimeInMillis()</code>.
+	 * 
+	 * @return offset from UTC in milliseconds
 	 */
-	private static long getStandardGMTOffset() {
+	private static long getLocalUtcOffset() {
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.setTime(new Date());
-		//determine the offset from GMT by adding daylight saving time and time zone offset
+		return getUtcOffset(cal);
+	}
+
+	/**
+	 * @return offset from UTC in milliseconds
+	 */
+	public static long getUtcOffset(Calendar cal) {
+		//offset from UTC consists of daylight saving time and time zone offset
 		return cal.get(Calendar.DST_OFFSET) + cal.get(Calendar.ZONE_OFFSET);
 	}
 
@@ -82,59 +99,46 @@ public abstract class TimeSupport {
 		Calendar calToday = new GregorianCalendar();
 		calToday.setTime(new Date());
 
-		//it doesn't any difference if you multiply nr of years with 365.25 or 1000
+		//it doesn't make any difference if you multiply nr of years with 365.25 or 1000
 		return (calInput.get(Calendar.YEAR) * 1000 + calInput.get(Calendar.DAY_OF_YEAR)) > (calToday.get(Calendar.YEAR) * 1000 + calToday.get(Calendar.DAY_OF_YEAR));
 	}
 
+
 	/**
 	 * @return The number of minutes passed since 00:00 hours
 	 */
-	public static int getMinutesSinceMidnight(long gmtOffset) {
-		return getMinutesSinceMidnight(System.currentTimeMillis(), gmtOffset);
+	public static int getMinutesSinceMidnight() {
+		return getMinutesSinceMidnight(System.currentTimeMillis());
 	}
 
 	/**
 	 * @param timeInMillis
-	 * @return The number of minutes passed since 00:00 hours
+	 * @return the number of minutes passed since 00:00 hours in current time zone
 	 */
-	public static int getMinutesSinceMidnight(long timeInMillis, long gmtOffset) {
-		if (gmtOffset > 86400000 || gmtOffset < -86400000) {
-			throw new IllegalArgumentException("time can not differ more than a day from GMT");
-		}
-		timeInMillis += gmtOffset;
-		return (int) (timeInMillis - (1440 * 60000 * ((timeInMillis + 30000) / (1440 * 60000)))) / 60000;
+	public static int getMinutesSinceMidnight(long timeInMillis) {
+		return getIntervalsSinceMidnight(1, timeInMillis);
 	}
 
 	/**
-	 * @param intervalInMinutes intervalInMinutes in minutes
+	 * @param intervalInMinutes should be > 0
 	 * @param timeInMillis
-	 * @return the number of passed intervals since midnight
+	 * @return the number of passed intervals since midnight in local time zone
 	 */
-	public static int getIntervalsSinceMidnight(int intervalInMinutes, long timeInMillis, long gmtOffset) {
-		if (gmtOffset > 86400000 || gmtOffset < -86400000) {
-			throw new IllegalArgumentException("time can not differ more than a day from GMT");
-		}
-		if (intervalInMinutes <= 0) {
-			throw new IllegalArgumentException("intervalInMinutes must be larger than 0");
-		}
-		timeInMillis += gmtOffset;
-		return (int) (timeInMillis - (1440 * 60000 * ((timeInMillis + 30000) / (1440 * 60000)))) / (60000 * intervalInMinutes);
+	public static int getIntervalsSinceMidnight(int intervalInMinutes, long timeInMillis) {
+		timeInMillis += localUtcOffsetInMillis;
+		return (int) (timeInMillis - (DAY_IN_MS * ((timeInMillis + HALF_MINUTE_IN_MS) / (DAY_IN_MS)))) / (MINUTE_IN_MS * intervalInMinutes);
 	}
 
+
+	
 	/**
-	 * @param intervalInMinutes intervalInMinutes in minutes
-	 * @param time1			 time in millis
-	 * @param time2			 time in millis
-	 * @return true if the two specified times are part of the same intervalInMinutes
+	 * @param intervalInMinutes should be > 0
+	 * @param time1 time in millis
+	 * @param time2 time in millis
+	 * @return true if the two specified times are part of the same intervalInMinutes in local time zone
 	 */
-	public static boolean isSameInterval(int intervalInMinutes, long time1, long time2, long gmtOffset) {
-		if (gmtOffset > 86400000 || gmtOffset < -86400000) {
-			throw new IllegalArgumentException("time can not differ more than a day from GMT");
-		}
-		if (intervalInMinutes <= 0) {
-			throw new IllegalArgumentException("intervalInMinutes must be larger than 0");
-		}
-		return floorToIntervalStart(intervalInMinutes, time1, gmtOffset) == floorToIntervalStart(intervalInMinutes, time2, gmtOffset);
+	public static boolean isSameInterval(int intervalInMinutes, long time1, long time2) {
+		return floorToIntervalStart(intervalInMinutes, time1) == floorToIntervalStart(intervalInMinutes, time2);
 	}
 
 	/**
@@ -170,11 +174,11 @@ public abstract class TimeSupport {
 	 * Determines the exact time an interval starts based on a time within the interval.
 	 *
 	 * @param intervalInMinutes
-	 * @param time			  time in millis
+	 * @param time time in millis
 	 * @return the exact time in milliseconds the interval begins
 	 */
-	public static long floorToIntervalStart(int intervalInMinutes, long time, long gmtOffset) {
-		return 60000 * intervalInMinutes * ((time + gmtOffset) / (60000 * intervalInMinutes));
+	public static long floorToIntervalStart(int intervalInMinutes, long time) {
+		return (MINUTE_IN_MS * intervalInMinutes) * ((time + localUtcOffsetInMillis) / (MINUTE_IN_MS * intervalInMinutes));
 	}
 
 	/**
@@ -182,7 +186,7 @@ public abstract class TimeSupport {
 	 * @return time in milles rounded to the minute
 	 */
 	public static long roundToMinute(long time) {
-		return 60000 * ((time + 30000) / 60000);
+		return MINUTE_IN_MS * ((time + HALF_MINUTE_IN_MS) / MINUTE_IN_MS);
 	}
 
 	/**
@@ -190,10 +194,7 @@ public abstract class TimeSupport {
 	 * @param offsetInMinutes
 	 * @return true if an interval starts this minute
 	 */
-	public static boolean isIntervalStart(int intervalInMinutes, int offsetInMinutes, long gmtOffset) {
-		if (gmtOffset > 86400000 || gmtOffset < -86400000) {
-			throw new IllegalArgumentException("time can not differ more than a day from GMT");
-		}
+	public static boolean isIntervalStart(int intervalInMinutes, int offsetInMinutes) {
 		if (intervalInMinutes <= 0) {
 			throw new IllegalArgumentException("interval must be larger than 0");
 		}
@@ -207,8 +208,8 @@ public abstract class TimeSupport {
 			offsetInMinutes -= intervalInMinutes;
 		}
 
-		long currentTime = System.currentTimeMillis() + gmtOffset;
-		long interval = 60000 * intervalInMinutes;
+		long currentTime = System.currentTimeMillis() + localUtcOffsetInMillis;
+		long interval = MINUTE_IN_MS * intervalInMinutes;
 
 		//add half a minute to the time
 		//(this will ensure that all values 1/2 min before and 1/2 min after are valid)
@@ -216,50 +217,38 @@ public abstract class TimeSupport {
 		//decimals will be lost
 		//multiply to original value
 		//compare to 1 minute interval
-		return (interval * ((currentTime + 30000) / interval)) + (offsetInMinutes * 60000)
+		return (interval * ((currentTime + HALF_MINUTE_IN_MS) / interval)) + (offsetInMinutes * MINUTE_IN_MS)
 				== roundToMinute(currentTime);
 	}
 
 	/**
 	 * @param intervalInMinutes
-	 * @return true if a (page) interval starts this minute
+	 * @return true if a (page) interval starts this minute in local time zone
 	 */
-	public static boolean isIntervalStart(int intervalInMinutes, long gmtOffset) {
-		if (gmtOffset > 86400000 || gmtOffset < -86400000) {
-			throw new IllegalArgumentException("time can not differ more than a day from GMT");
-		}
+	public static boolean isIntervalStart(int intervalInMinutes) {
 		if (intervalInMinutes <= 0) {
 			throw new IllegalArgumentException("interval must be larger than 0");
 		}
-		long currentTime = System.currentTimeMillis() + gmtOffset;
-		long interval = 60000 * intervalInMinutes;
+		long currentTime = System.currentTimeMillis() + localUtcOffsetInMillis;
+		long interval = MINUTE_IN_MS * intervalInMinutes;
 
-		//add half a minute to the time
-		//(this will ensure that all values 1/2 min before and 1/2 min after are valid)
-		//divide by the interval
-		//decimals will be lost
-		//multiply to original value
-		//compare to 1 minute interval
-
-		return (interval * ((currentTime + 30000) / interval))
+		return (interval * ((currentTime + HALF_MINUTE_IN_MS) / interval))
 				== roundToMinute(currentTime);
 	}
 
 	/**
 	 * @param intervalInMinutes
-	 * @return the number of milliseconds to wait until the next interval starts
+	 * @return the number of milliseconds to wait until the next interval starts in local time zone
 	 */
-	public static long determineMillisUntilNextInterval(int intervalInMinutes, long gmtOffset) {
-		if (gmtOffset > 86400000 || gmtOffset < -86400000) {
-			throw new IllegalArgumentException("time can not differ more than a day from GMT");
-		}
+	public static long determineMillisUntilNextInterval(int intervalInMinutes) {
 		if (intervalInMinutes <= 0) {
 			throw new IllegalArgumentException("interval must be larger than 0");
 		}
-		long currentTime = System.currentTimeMillis() + gmtOffset;
-		long interval = 60000l * intervalInMinutes;
+		long currentTime = System.currentTimeMillis() + localUtcOffsetInMillis;
+		long interval = MINUTE_IN_MS * intervalInMinutes;
 
 		long result = interval - (currentTime - (interval * (currentTime / interval)));
 		return result;
 	}
+
 }

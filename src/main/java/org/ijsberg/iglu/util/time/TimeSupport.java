@@ -34,8 +34,10 @@ public abstract class TimeSupport {
 	public static final int HALF_MINUTE_IN_MS = 30 * SECOND_IN_MS;
 	public static final int HOUR_IN_MS = 60 * MINUTE_IN_MS;
 	public static final int DAY_IN_MS = 24 * HOUR_IN_MS;
+	public static final int DAY_IN_MINS = 24 * 60;
 
-	public static final long localUtcOffsetInMillis = getLocalUtcOffset();
+	public static final long LOCAL_UTC_OFFSET = getLocalUtcOffset();
+	public static final long LOCAL_UTC_OFFSET_IN_MINUTES = LOCAL_UTC_OFFSET / MINUTE_IN_MS;
 
 	/**
 	 * The offset from UTC can be used to calculate time and date of time stamps based on
@@ -105,43 +107,6 @@ public abstract class TimeSupport {
 
 
 	/**
-	 * @return The number of minutes passed since 00:00 hours
-	 */
-	public static int getMinutesSinceMidnight() {
-		return getMinutesSinceMidnight(System.currentTimeMillis());
-	}
-
-	/**
-	 * @param timeInMillis
-	 * @return the number of minutes passed since 00:00 hours in current time zone
-	 */
-	public static int getMinutesSinceMidnight(long timeInMillis) {
-		return getIntervalsSinceMidnight(1, timeInMillis);
-	}
-
-	/**
-	 * @param intervalInMinutes should be > 0
-	 * @param timeInMillis
-	 * @return the number of passed intervals since midnight in local time zone
-	 */
-	public static int getIntervalsSinceMidnight(int intervalInMinutes, long timeInMillis) {
-		timeInMillis += localUtcOffsetInMillis;
-		return (int) (timeInMillis - (DAY_IN_MS * ((timeInMillis + HALF_MINUTE_IN_MS) / (DAY_IN_MS)))) / (MINUTE_IN_MS * intervalInMinutes);
-	}
-
-
-	
-	/**
-	 * @param intervalInMinutes should be > 0
-	 * @param time1 time in millis
-	 * @param time2 time in millis
-	 * @return true if the two specified times are part of the same intervalInMinutes in local time zone
-	 */
-	public static boolean isSameInterval(int intervalInMinutes, long time1, long time2) {
-		return floorToIntervalStart(intervalInMinutes, time1) == floorToIntervalStart(intervalInMinutes, time2);
-	}
-
-	/**
 	 * @param time1 time in millis
 	 * @param time2 time in millis
 	 * @return true if the two specified times are part of the same day
@@ -169,18 +134,7 @@ public abstract class TimeSupport {
 
 		return (cal1.get(Calendar.WEEK_OF_YEAR) == cal2.get(Calendar.WEEK_OF_YEAR));
 	}
-
-	/**
-	 * Determines the exact time an interval starts based on a time within the interval.
-	 *
-	 * @param intervalInMinutes
-	 * @param time time in millis
-	 * @return the exact time in milliseconds the interval begins
-	 */
-	public static long floorToIntervalStart(int intervalInMinutes, long time) {
-		return (MINUTE_IN_MS * intervalInMinutes) * ((time + localUtcOffsetInMillis) / (MINUTE_IN_MS * intervalInMinutes));
-	}
-
+	
 	/**
 	 * @param time time in millis
 	 * @return time in milles rounded to the minute
@@ -190,65 +144,19 @@ public abstract class TimeSupport {
 	}
 
 	/**
-	 * @param intervalInMinutes
-	 * @param offsetInMinutes
-	 * @return true if an interval starts this minute
+	 * @return The number of minutes passed since 00:00 hours
 	 */
-	public static boolean isIntervalStart(int intervalInMinutes, int offsetInMinutes) {
-		if (intervalInMinutes <= 0) {
-			throw new IllegalArgumentException("interval must be larger than 0");
-		}
-
-		while (offsetInMinutes < 0) {
-			offsetInMinutes = intervalInMinutes + offsetInMinutes;
-		}
-		//offset must be smaller than interval
-
-		while (offsetInMinutes > intervalInMinutes) {
-			offsetInMinutes -= intervalInMinutes;
-		}
-
-		long currentTime = System.currentTimeMillis() + localUtcOffsetInMillis;
-		long interval = MINUTE_IN_MS * intervalInMinutes;
-
-		//add half a minute to the time
-		//(this will ensure that all values 1/2 min before and 1/2 min after are valid)
-		//divide by the interval
-		//decimals will be lost
-		//multiply to original value
-		//compare to 1 minute interval
-		return (interval * ((currentTime + HALF_MINUTE_IN_MS) / interval)) + (offsetInMinutes * MINUTE_IN_MS)
-				== roundToMinute(currentTime);
+	public static int getMinutesSinceMidnight() {
+		return getMinutesSinceMidnight(System.currentTimeMillis());
 	}
 
 	/**
-	 * @param intervalInMinutes
-	 * @return true if a (page) interval starts this minute in local time zone
+	 * @param time
+	 * @return the number of minutes passed since 00:00 hours in current time zone
 	 */
-	public static boolean isIntervalStart(int intervalInMinutes) {
-		if (intervalInMinutes <= 0) {
-			throw new IllegalArgumentException("interval must be larger than 0");
-		}
-		long currentTime = System.currentTimeMillis() + localUtcOffsetInMillis;
-		long interval = MINUTE_IN_MS * intervalInMinutes;
-
-		return (interval * ((currentTime + HALF_MINUTE_IN_MS) / interval))
-				== roundToMinute(currentTime);
+	public static int getMinutesSinceMidnight(long time) {
+		return SchedulingSupport.getIntervalsSinceMidnight(time, 1);
 	}
 
-	/**
-	 * @param intervalInMinutes
-	 * @return the number of milliseconds to wait until the next interval starts in local time zone
-	 */
-	public static long determineMillisUntilNextInterval(int intervalInMinutes) {
-		if (intervalInMinutes <= 0) {
-			throw new IllegalArgumentException("interval must be larger than 0");
-		}
-		long currentTime = System.currentTimeMillis() + localUtcOffsetInMillis;
-		long interval = MINUTE_IN_MS * intervalInMinutes;
-
-		long result = interval - (currentTime - (interval * (currentTime / interval)));
-		return result;
-	}
 
 }

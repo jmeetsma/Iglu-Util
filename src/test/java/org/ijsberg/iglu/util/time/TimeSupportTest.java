@@ -105,7 +105,7 @@ public class TimeSupportTest {
 		assertFalse(isLE10SecsBeforeMidnight(new GregorianCalendar(1970, 1, 28, 0, 0, 0)));
 	}
 
-	private Date getDateAtLeast10SecBeforeMidnight() throws InterruptedException {
+	public static Date getDateAtLeast10SecBeforeMidnight() throws InterruptedException {
 		Date date = new Date();
 		Calendar cal = new GregorianCalendar();
 		cal.setTime(date);
@@ -120,7 +120,7 @@ public class TimeSupportTest {
 		return date;
 	}
 
-	private boolean isLE10SecsBeforeMidnight(Calendar cal) {
+	public static boolean isLE10SecsBeforeMidnight(Calendar cal) {
 		return cal.get(Calendar.HOUR_OF_DAY) == 23 && cal.get(Calendar.MINUTE) == 59 && cal.get(Calendar.SECOND) >= 50;
 	}
 
@@ -147,50 +147,12 @@ public class TimeSupportTest {
 		assertEquals(cal.get(Calendar.MINUTE) + (cal.get(Calendar.HOUR_OF_DAY) * 60), TimeSupport.getMinutesSinceMidnight());
 	}
 
-	@Test
-	public void testGetIntervalsSinceMidnight() throws Exception {
-		
-		Date now = new Date();
-		Calendar cal = new GregorianCalendar();
-		cal.setTime(now);
-		assertEquals(cal.get(Calendar.MINUTE) + (cal.get(Calendar.HOUR_OF_DAY) * 60), TimeSupport.getIntervalsSinceMidnight(1, now.getTime()));
-
-		assertEquals((cal.get(Calendar.MINUTE) + (cal.get(Calendar.HOUR_OF_DAY) * 60)) / 5, TimeSupport.getIntervalsSinceMidnight(5, now.getTime()));
-
-	}
 	
 	
-	private long getTime(int hours, int minutes) {
+	public static long getTime(int hours, int minutes) {
 		return new GregorianCalendar(1970, 1, 27, hours, minutes).getTimeInMillis();
 	}
 	
-	@Test
-	public void testFloorToIntervalStart() throws Exception {
-		
-		Calendar cal = new GregorianCalendar();
-		long time = TimeSupport.floorToIntervalStart(5, getTime(9, 31));
-		cal.setTimeInMillis(time);
-		assertEquals(30, cal.get(Calendar.MINUTE));
-		
-		
-	}
-	
-	
-	@Test
-	public void testIsSameInterval() throws Exception {
-		assertTrue(TimeSupport.isSameInterval(1, getTime(9, 30), getTime(9, 30)));
-		assertTrue(TimeSupport.isSameInterval(5, getTime(9, 30), getTime(9, 30)));
-		assertTrue(TimeSupport.isSameInterval(30, getTime(9, 30), getTime(9, 30)));
-		assertTrue(TimeSupport.isSameInterval(60, getTime(9, 30), getTime(9, 30)));
-
-		assertTrue(TimeSupport.isSameInterval(5, getTime(9, 31), getTime(9, 33)));
-
-		assertFalse(TimeSupport.isSameInterval(1, getTime(9, 30), getTime(9, 34)));
-		assertFalse(TimeSupport.isSameInterval(5, getTime(9, 31), getTime(9, 35)));
-
-	}
-	
-
 	
 
 }

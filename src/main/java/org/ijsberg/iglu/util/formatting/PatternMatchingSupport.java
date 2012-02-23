@@ -68,8 +68,9 @@ public abstract class PatternMatchingSupport {
 		//replace [\^$.|?*+() to make regexp do wildcard match
 		String expCopy = StringSupport.replaceAll(
 				exp,
-				new String[]{"[", "\\", "^", "$", ".",	/*"|",*/	"?", "*", "+", "(", ")"},
-				new String[]{"\\[", "\\\\", "\\^", "\\$", "\\.",	/*"\\|",*/	",", ".*", "\\+", "\\(", "\\)"});
+				new String[]{"[", 	"\\", 	"^", 	"$", ".",	"?", "*", "+", "(", ")"},
+				new String[]{"\\[", "\\\\", "\\^", "\\$", "\\.",".?", ".*", "\\+", "\\(", "\\)"});
+		
 		return (valueMatchesRegularExpression(val, expCopy));
 	}
 

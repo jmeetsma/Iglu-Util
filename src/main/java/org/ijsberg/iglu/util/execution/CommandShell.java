@@ -172,9 +172,9 @@ public class CommandShell implements Transceiver {
 	/**
 	 *
 	 */
-	public static class NewLineFilter implements Filter {
-		public Object filter(Object input) {
-			StringBuffer temp = new StringBuffer(new String((byte[]) input));
+	public static class NewLineFilter implements Filter<byte[]> {
+		public byte[] filter(byte[] input) {
+			StringBuffer temp = new StringBuffer(new String(input));
 			StringSupport.replaceAll(temp, "\r\n", "\n");
 			StringSupport.replaceAll(temp, "\r", "\n");
 			StringSupport.replaceAll(temp, "\n", "\r\n");

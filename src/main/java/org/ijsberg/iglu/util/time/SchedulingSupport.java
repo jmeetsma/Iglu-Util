@@ -67,7 +67,8 @@ public class SchedulingSupport extends TimeSupport {
 	public static long getPreviousIntervalStart(long time, int intervalInMinutes, int offsetInMinutes) {
 		long interval = MINUTE_IN_MS * intervalInMinutes;
 		long offset = calculateOffsetInMs(intervalInMinutes, offsetInMinutes);
-		return (interval * ((time + LOCAL_UTC_OFFSET - offset) / (interval))) + offset;
+		
+		return (interval * ((time + LOCAL_UTC_OFFSET - offset) / (interval))) + offset - LOCAL_UTC_OFFSET;
 	}
 
 	/**
@@ -112,7 +113,7 @@ public class SchedulingSupport extends TimeSupport {
 	 * @return true if the two specified times are part of the same intervalInMinutes in local time zone
 	 */
 	public static boolean isWithinSameInterval(long time1, long time2, int intervalInMinutes, int offsetInMinutes) {
-		return getPreviousIntervalStart(time1, intervalInMinutes) == getPreviousIntervalStart(time2, intervalInMinutes, offsetInMinutes);
+		return getPreviousIntervalStart(time1, intervalInMinutes, offsetInMinutes) == getPreviousIntervalStart(time2, intervalInMinutes, offsetInMinutes);
 	}
 
 	/**
@@ -147,7 +148,7 @@ public class SchedulingSupport extends TimeSupport {
 	 * @return the number of milliseconds to wait until the next interval starts in local time zone
 	 */
 	public static long getTimeTillIntervalStart(long time, int intervalInMinutes) {
-		return getNextIntervalStart(time, intervalInMinutes) - (time + LOCAL_UTC_OFFSET);
+		return getNextIntervalStart(time, intervalInMinutes) - (time);
 	}
 
 	/**
@@ -155,7 +156,7 @@ public class SchedulingSupport extends TimeSupport {
 	 * @return the number of milliseconds to wait until the next interval starts in local time zone
 	 */
 	public static long getTimeTillIntervalStart(long time, int intervalInMinutes, int offsetInMinutes) {
-		return getNextIntervalStart(time, intervalInMinutes, offsetInMinutes) - (time + LOCAL_UTC_OFFSET);
+		return getNextIntervalStart(time, intervalInMinutes, offsetInMinutes) - (time);
 	}
 
 }

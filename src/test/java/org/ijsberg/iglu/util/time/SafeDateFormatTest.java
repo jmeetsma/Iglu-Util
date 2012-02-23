@@ -20,19 +20,38 @@
 
 package org.ijsberg.iglu.util.time;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
+
+import org.ijsberg.iglu.util.execution.Executable;
+import org.ijsberg.iglu.util.execution.TimeOutException;
+import org.junit.Test;
 
 
 public class SafeDateFormatTest {
 
-//	@Test
+	@Test
 	public void testConstructor() throws Exception {
+		SafeDateFormat dateFormat = new SafeDateFormat("ddMMyyyy");
+		
+		assertEquals("27011970", dateFormat.format(new Date(TimeSupportTest.getTime(10, 25))));
 	}
 	
-		
-	
-	
+/*
+ * 
+ * TODO try to create a test that invokes a method with a number of concurrent threads		
+	public void test() {
+		Executable exec = new Executable() {
+			public Object execute() {
+				return null;
+			}
+		};
+		exec.executeAsyncDelayed(SchedulingSupport.getTimeTillIntervalStart(System.currentTimeMillis(), 1));
+	}
+*/	
 }
 

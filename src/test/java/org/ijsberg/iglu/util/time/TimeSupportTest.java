@@ -98,11 +98,11 @@ public class TimeSupportTest {
 	
 	@Test
 	public void testIsLE10SecsBeforeMidnight() throws Exception {
-		assertTrue(isLE10SecsBeforeMidnight(new GregorianCalendar(1970, 1, 27, 23, 59, 55)));
-		assertTrue(isLE10SecsBeforeMidnight(new GregorianCalendar(1970, 1, 27, 23, 59, 50)));
-		assertTrue(isLE10SecsBeforeMidnight(new GregorianCalendar(1970, 1, 27, 23, 59, 59)));
-		assertFalse(isLE10SecsBeforeMidnight(new GregorianCalendar(1970, 1, 27, 23, 59, 49)));
-		assertFalse(isLE10SecsBeforeMidnight(new GregorianCalendar(1970, 1, 28, 0, 0, 0)));
+		assertTrue(isLE10SecsBeforeMidnight(new GregorianCalendar(1970, 1, 1, 23, 59, 55)));
+		assertTrue(isLE10SecsBeforeMidnight(new GregorianCalendar(1970, 1, 1, 23, 59, 50)));
+		assertTrue(isLE10SecsBeforeMidnight(new GregorianCalendar(1970, 1, 1, 23, 59, 59)));
+		assertFalse(isLE10SecsBeforeMidnight(new GregorianCalendar(1970, 1, 1, 23, 59, 49)));
+		assertFalse(isLE10SecsBeforeMidnight(new GregorianCalendar(1970, 1, 2, 0, 0, 0)));
 	}
 
 	public static Date getDateAtLeast10SecBeforeMidnight() throws InterruptedException {
@@ -121,7 +121,26 @@ public class TimeSupportTest {
 	}
 
 	public static boolean isLE10SecsBeforeMidnight(Calendar cal) {
-		return cal.get(Calendar.HOUR_OF_DAY) == 23 && cal.get(Calendar.MINUTE) == 59 && cal.get(Calendar.SECOND) >= 50;
+		return isLESecsBeforeInterval(cal.getTimeInMillis(), 10, TimeSupport.DAY_IN_MINS);
+	}
+
+	public static Date getDateAtLeast10SecBeforeInterval() throws InterruptedException {
+		Date date = new Date();
+		Calendar cal = new GregorianCalendar();
+		cal.setTime(date);
+		
+		//wait if it's just before midnight
+		while(isLE10SecsBeforeMidnight(cal)) {
+
+			Thread.sleep(1000);
+			date = new Date();
+			cal.setTime(date);
+		}
+		return date;
+	}
+
+	public static boolean isLESecsBeforeInterval(long time, int minimumBefore, int intervalInMinutes) {
+		return SchedulingSupport.getNextIntervalStart(time, intervalInMinutes) <= time + (minimumBefore * TimeSupport.SECOND_IN_MS);
 	}
 
 	@Test
@@ -150,7 +169,7 @@ public class TimeSupportTest {
 	
 	
 	public static long getTime(int hours, int minutes) {
-		return new GregorianCalendar(1970, 1, 27, hours, minutes).getTimeInMillis();
+		return new GregorianCalendar(1970, 0, 27, hours, minutes).getTimeInMillis();
 	}
 	
 	

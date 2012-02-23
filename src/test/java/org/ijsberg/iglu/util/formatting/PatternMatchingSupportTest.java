@@ -26,23 +26,38 @@ import static org.junit.Assert.assertFalse;
 import org.junit.Test;
 
 public class PatternMatchingSupportTest {
-	private PatternMatchingSupport patternmatchingsupport;
 
 
 	@Test
 	public void testMatchWildcardExp() {
 
+		assertTrue(PatternMatchingSupport.valueMatchesWildcardExpression("hopla.mask", "*"));
+		assertFalse(PatternMatchingSupport.valueMatchesWildcardExpression("hopla.mask", ""));
 
 		assertTrue(PatternMatchingSupport.valueMatchesWildcardExpression("hopla.mask", "*.mask"));
 		assertFalse(PatternMatchingSupport.valueMatchesWildcardExpression("hopla.mas", "*.mask"));
 		assertFalse(PatternMatchingSupport.valueMatchesWildcardExpression("hopla.mask", "*.mas"));
 		assertTrue(PatternMatchingSupport.valueMatchesWildcardExpression("hopla.mask", "*.mas*"));
 
-		assertTrue(PatternMatchingSupport.valueMatchesWildcardExpression("hopla.mask", "*.mask|*.test"));
-		assertTrue(PatternMatchingSupport.valueMatchesWildcardExpression("hopla.test", "*.mask|*.test"));
+		assertTrue(PatternMatchingSupport.valueMatchesWildcardExpression("/dir/subdir/file.ext", "/dir/subdir/*"));
+		assertTrue(PatternMatchingSupport.valueMatchesWildcardExpression("/dir/subdir/file.ext", "/dir/*dir/*.ext"));
+		assertTrue(PatternMatchingSupport.valueMatchesWildcardExpression("/dir/subdir/file.ext", "*/file.ext"));
+
+		assertFalse(PatternMatchingSupport.valueMatchesWildcardExpression("/dir/subdir/file.ext", "sub*/file.ext"));
+
+		assertTrue(PatternMatchingSupport.valueMatchesWildcardExpression("/dir/subdir/file.ext", "/dir/s?bdir/file.ext"));
+		assertTrue(PatternMatchingSupport.valueMatchesWildcardExpression("/dir/subdir/file.ext", "*/subdir/*"));
 
 	}
 
+	@Test
+	public void testMatchWildcardExpOr() {
+		assertTrue(PatternMatchingSupport.valueMatchesWildcardExpression("hopla.mask", "*.mask|*.test"));
+		assertTrue(PatternMatchingSupport.valueMatchesWildcardExpression("hopla.test", "*.mask|*.test"));
+		assertFalse(PatternMatchingSupport.valueMatchesWildcardExpression("hopla.test", "*.mask|*.hopla"));
+	}
+	
+	
 	@Test
 	public void testMatchRegExp() {
 		assertTrue(PatternMatchingSupport.valueMatchesRegularExpression("jeroen@ijsberg.nl", "^[A-Za-z0-9](([_\\.\\-]?[a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([\\.\\-]?[a-zA-Z0-9]+)*)\\.([A-Za-z]{2,})$"

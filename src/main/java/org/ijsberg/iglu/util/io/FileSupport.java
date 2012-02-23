@@ -57,7 +57,7 @@ public abstract class FileSupport {
 	 */
 	public static ArrayList<File> getFilesInDirectoryTree(String path) {
 		File directory = new File(path);
-		return getContentsInDirectoryTree(directory, null, true, false);
+		return getContentsInDirectoryTree(directory, "*", true, false);
 	}
 
 
@@ -68,7 +68,7 @@ public abstract class FileSupport {
 	 * @return a list containing the found files
 	 */
 	public static ArrayList<File> getFilesInDirectoryTree(File directory) {
-		return getContentsInDirectoryTree(directory, null, true, false);
+		return getContentsInDirectoryTree(directory, "*", true, false);
 	}
 
 
@@ -76,50 +76,75 @@ public abstract class FileSupport {
 	 * Retrieves files for a given mask from a directory and its subdirectories.
 	 *
 	 * @param path root of directory tree
-	 * @param mask exact filename, or mask containing wildcards
+	 * @param includeMask exact filename, or mask containing wildcards
 	 * @return A list containing the found files
 	 */
-	public static ArrayList<File> getFilesInDirectoryTree(String path, String mask) {
+	public static ArrayList<File> getFilesInDirectoryTree(String path, String includeMask) {
 		File file = new File(path);
-		return getContentsInDirectoryTree(file, mask, true, false);
+		return getContentsInDirectoryTree(file, includeMask, true, false);
 	}
 
+	/**
+	 * Retrieves files for a given mask from a directory and its subdirectories.
+	 *
+	 * @param path root of directory tree
+	 * @param includeRuleSet rule set defining precisely which files to include
+	 * @return A list containing the found files
+	 */
+	public static ArrayList<File> getFilesInDirectoryTree(String path, FileFilterRuleSet includeRuleSet) {
+		File file = new File(path);
+		return getContentsInDirectoryTree(file, includeRuleSet, true, false);
+	}
 
 	/**
 	 * Retrieves all files from a directory and its subdirectories
 	 * matching the given mask.
 	 *
 	 * @param file directory
-	 * @param mask mask to match
+	 * @param includeMask mask to match
 	 * @return a list containing the found files
 	 */
-	public static ArrayList<File> getFilesInDirectoryTree(File file, String mask) {
-		return getContentsInDirectoryTree(file, mask, true, false);
+	public static ArrayList<File> getFilesInDirectoryTree(File file, String includeMask) {
+		return getContentsInDirectoryTree(file, includeMask, true, false);
 	}
 
 
 	/**
 	 * Retrieves contents from a directory and its subdirectories matching a given mask.
 	 *
-	 * @param directory   directory
-	 * @param mask		file name to match
+	 * @param directory directory
+	 * @param includeMask file name to match
 	 * @param returnFiles return files
-	 * @param returnDirs  return directories
+	 * @param returnDirs return directories
 	 * @return a list containing the found contents
 	 */
-	private static ArrayList<File> getContentsInDirectoryTree(File directory, String mask, boolean returnFiles, boolean returnDirs) {
+	private static ArrayList<File> getContentsInDirectoryTree(File directory, String includeMask, boolean returnFiles, boolean returnDirs) {
+		return getContentsInDirectoryTree(directory, new FileFilterRuleSet(includeMask), returnFiles, returnDirs);
+	}
+
+
+	/**
+	 * Retrieves contents from a directory and its subdirectories matching a given rule set.
+	 *
+	 * @param directory directory
+	 * @param includeMask file name to match
+	 * @param returnFiles return files
+	 * @param returnDirs return directories
+	 * @return a list containing the found contents
+	 */
+	private static ArrayList<File> getContentsInDirectoryTree(File directory, FileFilterRuleSet ruleSet, boolean returnFiles, boolean returnDirs) {
 		ArrayList<File> result = new ArrayList<File>();
 		if (directory != null && !directory.isFile()) {
 			File[] files = directory.listFiles();
 			if (files != null) {
 				for (int i = 0; i < files.length; i++) {
 					if (files[i].isDirectory()) {
-						if (returnDirs && (mask == null || PatternMatchingSupport.valueMatchesWildcardExpression(files[i].getName(), mask))) {
+						if (returnDirs && ruleSet.fileMatchesRules(files[i])) {
 							result.add(files[i]);
 						}
-						result.addAll(getContentsInDirectoryTree(files[i], mask, returnFiles, returnDirs));
+						result.addAll(getContentsInDirectoryTree(files[i], ruleSet, returnFiles, returnDirs));
 					}
-					else if (returnFiles && (mask == null || PatternMatchingSupport.valueMatchesWildcardExpression(files[i].getName(), mask))) {
+					else if (returnFiles && ruleSet.fileMatchesRules(files[i])) {
 						result.add(files[i]);
 					}
 				}
@@ -128,7 +153,7 @@ public abstract class FileSupport {
 		return result;
 	}
 
-
+	
 	/**
 	 * Retrieves all directories from a directory and its subdirectories.
 	 *
@@ -137,7 +162,7 @@ public abstract class FileSupport {
 	 */
 	public static ArrayList<File> getDirectoriesInDirectoryTree(String path) {
 		File file = new File(path);
-		return getContentsInDirectoryTree(file, null, false, true);
+		return getContentsInDirectoryTree(file, "*", false, true);
 	}
 
 
@@ -145,26 +170,26 @@ public abstract class FileSupport {
 	 * Retrieves all directories from a directory and its subdirectories.
 	 *
 	 * @param path path to directory
-	 * @param mask file name to match
+	 * @param includeMask file name to match
 	 * @return A list containing the found directories
 	 */
-	public static ArrayList<File> getDirectoriesInDirectoryTree(String path, String mask) {
+	public static ArrayList<File> getDirectoriesInDirectoryTree(String path, String includeMask) {
 		File file = new File(path);
-		return getContentsInDirectoryTree(file, mask, false, true);
+		return getContentsInDirectoryTree(file, includeMask, false, true);
 	}
 
 
 	/**
 	 * Retrieves all files from a directory and its subdirectories.
 	 *
-	 * @param path	   path to directory
-	 * @param mask	   file name to match
+	 * @param path path to directory
+	 * @param includeMask file name to match
 	 * @param returnDirs indicates if directories must be returned as well
 	 * @return a list containing the found files
 	 */
-	public static ArrayList<File> getFilesInDirectoryTree(String path, String mask, boolean returnDirs) {
+	public static ArrayList<File> getFilesAndDirectoriesInDirectoryTree(String path, String includeMask) {
 		File file = new File(path);
-		return getContentsInDirectoryTree(file, mask, true, returnDirs);
+		return getContentsInDirectoryTree(file, includeMask, true, true);
 	}
 
 	/**
@@ -345,8 +370,7 @@ public abstract class FileSupport {
 		//TODO make sure that files exist
 		InputStream input = getInputStreamFromClassLoader(pathToResource);
 
-
-		File outputFile = new File(outputPath);
+		File outputFile = createFile(outputPath);
 		if(outputFile.isDirectory()) {
 			outputFile = new File(outputFile.getPath() + '/' + getFileNameFromPath(pathToResource));
 		}
@@ -457,10 +481,10 @@ public abstract class FileSupport {
 	 * The method will recurse into subdirectories.
 	 *
 	 * @param path
-	 * @param mask
+	 * @param includeMask
 	 */
-	public static void deleteContentsInDirectoryTree(String path, String mask) {
-		deleteContentsInDirectoryTree(new File(path), mask);
+	public static void deleteContentsInDirectoryTree(String path, String includeMask) {
+		deleteContentsInDirectoryTree(new File(path), includeMask);
 	}
 
 	/**
@@ -468,10 +492,10 @@ public abstract class FileSupport {
 	 * The method will recurse into subdirectories.
 	 *
 	 * @param root
-	 * @param mask
+	 * @param includeMask
 	 */
-	public static void deleteContentsInDirectoryTree(File root, String mask) {
-		Collection<File> files = getContentsInDirectoryTree(root, mask, true, true);
+	public static void deleteContentsInDirectoryTree(File root, String includeMask) {
+		Collection<File> files = getContentsInDirectoryTree(root, includeMask, true, true);
 		for(File file : files) {
 			if (file.exists()) {//file may meanwhile have been deleted
 				if (file.isDirectory()) {
@@ -549,11 +573,11 @@ public abstract class FileSupport {
 			}
 			if (args[0].startsWith("-s")) {
 				if (args.length == 2) {
-					CollectionSupport.print(getFilesInDirectoryTree(args[1], null, true));
+					CollectionSupport.print(getFilesAndDirectoriesInDirectoryTree(args[1], null));
 					return;
 				}
 				if (args.length == 3) {
-					CollectionSupport.print(getFilesInDirectoryTree(args[1], args[2], true));
+					CollectionSupport.print(getFilesAndDirectoriesInDirectoryTree(args[1], args[2]));
 					return;
 				}
 				if (args.length > 3) {
@@ -625,7 +649,12 @@ public abstract class FileSupport {
 		return unixStylePath.substring(unixStylePath.lastIndexOf('/') + 1);
 	}
 
-/*
+	public static String getDirNameFromPath(String path) {
+		String unixStylePath = convertToUnixStylePath(path);
+		return unixStylePath.substring(0, unixStylePath.lastIndexOf('/') + 1);
+	}
+
+	/*
 	public static void main(String[] args)
 	{
 		//CollectionSupport.print(FileSupport.getDirectoriesInDirectoryTree("/home/jeroen/development/flash/src"));

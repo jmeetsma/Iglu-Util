@@ -23,10 +23,10 @@ package org.ijsberg.iglu.util.io;
 /**
  * Implementations filter objects or their contents in some object stream.
  */
-public interface Filter {
+public interface Filter<T> {
 	/**
 	 * @param input
 	 * @return filtered input
 	 */
-	Object filter(Object input);
+	T filter(T input);
 }

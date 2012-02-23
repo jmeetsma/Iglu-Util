@@ -456,6 +456,9 @@ public abstract class StringSupport {
 	 * @return a resulting String
 	 */
 	public static String absorbInputStream(InputStream input, String encoding) throws IOException {
+
+		//TODO use StreamSupport
+		
 		char[] buf = new char[1000];
 		//String lineSeparator = System.getProperty("line.separator");
 		StringBuffer sb = new StringBuffer();
@@ -474,6 +477,7 @@ public abstract class StringSupport {
 			sb.append(buf, 0, charsRead);
 		}
 		return sb.toString();
+		
 	}
 
 	/**

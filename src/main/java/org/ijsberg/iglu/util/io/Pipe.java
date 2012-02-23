@@ -25,7 +25,7 @@ package org.ijsberg.iglu.util.io;
  */
 public class Pipe implements Transmitter {
 	private Receiver receiver;
-	private Filter filter;
+	private Filter<Object> filter;
 	private boolean isClosed;
 
 
@@ -49,12 +49,12 @@ public class Pipe implements Transmitter {
 	 * @param receiver
 	 * @param filter
 	 */
-	public Pipe(Receiver receiver, Filter filter) {
+	public Pipe(Receiver receiver, Filter<?> filter) {
 		if (receiver == null) {
 			throw new IllegalArgumentException("receiver may not be null");
 		}
 		this.receiver = receiver;
-		this.filter = filter;
+		this.filter = (Filter<Object>)filter;
 	}
 
 	/**

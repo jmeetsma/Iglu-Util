@@ -99,6 +99,12 @@ public class SchedulingSupportTest extends TimeSupportTest {
 		cal.setTimeInMillis(time);
 		assertEquals(24, cal.get(Calendar.MINUTE));
 		
+		time = SchedulingSupport.getPreviousIntervalStart(getTime(9, 31), (TimeSupport.DAY_IN_MINS / 4));
+		cal.setTimeInMillis(time);
+		assertEquals(0, cal.get(Calendar.MINUTE));
+		assertEquals(6, cal.get(Calendar.HOUR));
+
+		
 		//next: intervals not dividing day in round numbers
 
 //		time = SchedulingSupport.getPreviousIntervalStart(getTime(9, 31), 7);
@@ -130,6 +136,11 @@ public class SchedulingSupportTest extends TimeSupportTest {
 		cal.setTimeInMillis(time);
 		assertEquals(41, cal.get(Calendar.MINUTE));
 		
+		//negative offset
+
+		time = SchedulingSupport.getPreviousIntervalStart(getTime(9, 42), 12, -31);
+		cal.setTimeInMillis(time);
+		assertEquals(41, cal.get(Calendar.MINUTE));
 		
 		//odd offset
 	}
@@ -179,21 +190,28 @@ public class SchedulingSupportTest extends TimeSupportTest {
 	}
 	
 	@Test
-		public void testIsWithinSameInterval() throws Exception {
-			assertTrue(SchedulingSupport.isWithinSameInterval(getTime(9, 30), getTime(9, 30), 1));
-			assertTrue(SchedulingSupport.isWithinSameInterval(getTime(9, 30), getTime(9, 30), 5));
-			assertTrue(SchedulingSupport.isWithinSameInterval(getTime(9, 30), getTime(9, 30), 30));
-			assertTrue(SchedulingSupport.isWithinSameInterval(getTime(9, 30), getTime(9, 30), 60));
-	
-			assertTrue(SchedulingSupport.isWithinSameInterval(getTime(9, 31), getTime(9, 33), 5));
-	
-			assertFalse(SchedulingSupport.isWithinSameInterval(getTime(9, 30), getTime(9, 34), 1));
-			assertFalse(SchedulingSupport.isWithinSameInterval(getTime(9, 31), getTime(9, 35), 5));
-			assertTrue(SchedulingSupport.isWithinSameInterval(getTime(13, 03), getTime(13, 13), 15));
-			assertFalse(SchedulingSupport.isWithinSameInterval(getTime(13, 03), getTime(14, 13), 15));
-		}
+	public void testIsWithinSameInterval() throws Exception {
+		assertTrue(SchedulingSupport.isWithinSameInterval(getTime(9, 30), getTime(9, 30), 1));
+		assertTrue(SchedulingSupport.isWithinSameInterval(getTime(9, 30), getTime(9, 30), 5));
+		assertTrue(SchedulingSupport.isWithinSameInterval(getTime(9, 30), getTime(9, 30), 30));
+		assertTrue(SchedulingSupport.isWithinSameInterval(getTime(9, 30), getTime(9, 30), 60));
+
+		assertTrue(SchedulingSupport.isWithinSameInterval(getTime(9, 31), getTime(9, 33), 5));
+
+		assertFalse(SchedulingSupport.isWithinSameInterval(getTime(9, 30), getTime(9, 34), 1));
+		assertFalse(SchedulingSupport.isWithinSameInterval(getTime(9, 31), getTime(9, 35), 5));
+		assertTrue(SchedulingSupport.isWithinSameInterval(getTime(13, 03), getTime(13, 13), 15));
+		assertFalse(SchedulingSupport.isWithinSameInterval(getTime(13, 03), getTime(14, 13), 15));
+	}
 	
 
+	@Test
+	public void testIsWithinSameIntervalWithOffset() throws Exception {
+		assertTrue(SchedulingSupport.isWithinSameInterval(getTime(9, 30), getTime(9, 30), 1, 0));
+		assertTrue(SchedulingSupport.isWithinSameInterval(getTime(9, 31), getTime(9, 33), 5, 1));
+		assertFalse(SchedulingSupport.isWithinSameInterval(getTime(9, 31), getTime(9, 33), 5, 2));
+	}
+		
 	@Test
 	public void testIsWithinMinuteOfIntervalStart() throws Exception {
 

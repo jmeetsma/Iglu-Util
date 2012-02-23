@@ -30,43 +30,49 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import org.ijsberg.iglu.util.collection.CollectionSupport;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class FileSupportTest {
+public class FileSupportTest extends DirStructureDependentTest {
 
-	private static final String ROOT = "org/ijsberg/iglu/util/io/directory structure/root/";
-	private File tmpDir;
-
-	@Before
-	public void setUp() throws Exception {
-		tmpDir = FileSupport.createTmpDir("Iglu-Util-test");
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		tmpDir.delete();
-	}
 
 	@Test
 	public void testGetFilesInDirectoryTree() {
 
-		String testDirPath = "./src/test/resources/org/ijsberg/iglu/util/io/directory structure";
-		File file = new File(testDirPath);
-		FileSupport.deleteContentsInDirectoryTree(file, ".DS_Store");
+		File file = new File(dirStructRoot);
+		
 
-		System.out.println(file.getAbsolutePath());
+//		System.out.println(file.getAbsolutePath());
 		assertTrue(file.exists());
 
-		List<File> foundFiles = FileSupport.getFilesInDirectoryTree(testDirPath);
+		List<File> foundFiles = FileSupport.getFilesInDirectoryTree(dirStructRoot);
 		
 		assertEquals(169, foundFiles.size());
+		
+//		CollectionSupport.print(foundFiles);
 
-		testDirPath += '/';
+		String testDirPath = dirStructRoot + '/';
 
-		foundFiles = FileSupport.getFilesInDirectoryTree(testDirPath);
+		foundFiles = FileSupport.getFilesInDirectoryTree(dirStructRoot);
 		assertEquals(169, foundFiles.size());
+
+	}
+
+	@Test
+	public void testGetFilesInDirectoryTreeWithMask() {
+
+		File file = new File(dirStructRoot);
+		
+
+		assertTrue(file.exists());
+
+		List<File> foundFiles = FileSupport.getFilesInDirectoryTree(dirStructRoot, "*/_d0/*");
+		
+		assertEquals(27, foundFiles.size());
+
+		String testDirPath = dirStructRoot + '/';
 
 		foundFiles = FileSupport.getFilesInDirectoryTree(testDirPath, "*.LOG");
 		assertEquals(19, foundFiles.size());
@@ -74,7 +80,51 @@ public class FileSupportTest {
 	}
 
 
+	@Test
+	public void testGetFilesInDirectoryTreeWithRuleSet() {
 
+		File file = new File(dirStructRoot);
+		assertTrue(file.exists());
+		
+		FileFilterRuleSet ruleSet = new FileFilterRuleSet("*.LOG");
+		
+		List<File> foundFiles = FileSupport.getFilesInDirectoryTree(dirStructRoot, ruleSet);
+		assertEquals(19, foundFiles.size());
+		
+		ruleSet.setIncludeFilesWithNameMask("*/_d0/*");
+		foundFiles = FileSupport.getFilesInDirectoryTree(dirStructRoot, ruleSet);
+		assertEquals(27, foundFiles.size());
+		
+		ruleSet.setExcludeFilesWithNameMask("*.LOG");
+		foundFiles = FileSupport.getFilesInDirectoryTree(dirStructRoot, ruleSet);		
+		assertEquals(26, foundFiles.size());
+		
+		
+		ruleSet.setExcludeFilesWithNameMask("*.LOG|*.css");
+		foundFiles = FileSupport.getFilesInDirectoryTree(dirStructRoot, ruleSet);		
+		assertEquals(25, foundFiles.size());
+
+		ruleSet.setExcludeFilesWithNameMask("*.gif|*.jpg");
+		foundFiles = FileSupport.getFilesInDirectoryTree(dirStructRoot, ruleSet);		
+		assertEquals(2, foundFiles.size());
+
+		ruleSet.setIncludeFilesContainingLineMask("*ijsberg*");
+		foundFiles = FileSupport.getFilesInDirectoryTree(dirStructRoot, ruleSet);		
+		assertEquals(1, foundFiles.size());
+
+		ruleSet.setIncludeFilesContainingLineMask("*title*");
+		foundFiles = FileSupport.getFilesInDirectoryTree(dirStructRoot, ruleSet);		
+		assertEquals(2, foundFiles.size());
+
+		ruleSet.setExcludeFilesContainingLineMask("*ijsberg*");
+		foundFiles = FileSupport.getFilesInDirectoryTree(dirStructRoot, ruleSet);		
+		assertEquals(1, foundFiles.size());
+		
+		assertEquals("ijsberg.css", foundFiles.get(0).getName());
+}
+
+	
+	
 	@Test
 	public void testCreateTmpDir() throws Exception {
 		File dir = FileSupport.createTmpDir();
@@ -109,11 +159,11 @@ public class FileSupportTest {
 
 		input = FileSupport.getInputStreamFromClassLoader("test/ijsberg.jpg");
 
-		//apparently a dir can be loaded
-		input = FileSupport.getInputStreamFromClassLoader(ROOT + "WWW");
+		//a dir can be loaded
+		input = FileSupport.getInputStreamFromClassLoader(RELATIVE_DIR_PATH + "WWW");
 		//(input.available produces NullPointer on Apple)
 		
-		input = FileSupport.getInputStreamFromClassLoader(ROOT + "WWW/route.gif");
+		input = FileSupport.getInputStreamFromClassLoader(RELATIVE_DIR_PATH + "WWW/route.gif");
 		
 		byte[] thing = StreamSupport.absorbInputStream(input);
 
@@ -123,17 +173,25 @@ public class FileSupportTest {
 	@Test
 	public void testCopyClassLoadableResourceToFileSystem() throws IOException{
 
-		assertEquals(0, tmpDir.listFiles().length);
+		int nrofFilesInTmpDir = tmpDir.listFiles().length;
 		FileSupport.copyClassLoadableResourceToFileSystem("iglu_logo_ice.gif", tmpDir.getPath() + "/iglu_logo.gif");
-		assertEquals(1, tmpDir.listFiles().length);
-		assertEquals("iglu_logo.gif", tmpDir.listFiles()[0].getName());
+		assertEquals(nrofFilesInTmpDir + 1, tmpDir.listFiles().length);
+		assertEquals("iglu_logo.gif", tmpDir.listFiles()[1].getName());
 
 		FileSupport.copyClassLoadableResourceToFileSystem("iglu_logo_ice.gif", tmpDir.getPath());
-		assertEquals(2, tmpDir.listFiles().length);
+		assertEquals(nrofFilesInTmpDir + 2, tmpDir.listFiles().length);
 
 		assertTrue(new File(tmpDir.getPath() + "/iglu_logo_ice.gif").exists());
 	}
 
+	@Test
+	public void testGetDirNameFromPath() throws Exception {
+		assertEquals("/hop/", FileSupport.getDirNameFromPath("/hop/la"));
+		assertEquals("/hop/", FileSupport.getDirNameFromPath("/hop/"));
+		assertEquals("/hop/", FileSupport.getDirNameFromPath("/hop/la"));
+		assertEquals("/", FileSupport.getDirNameFromPath("/hop"));
+		assertEquals("", FileSupport.getDirNameFromPath("hop"));
+	}
 
-
+	
 }

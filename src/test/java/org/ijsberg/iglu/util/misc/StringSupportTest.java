@@ -100,5 +100,20 @@ public class StringSupportTest {
 		assertEquals("part in between", result.toArray()[0]);
 		assertEquals("and another part", result.toArray()[1]);
 	}
+	
+	@Test
+	public void testReplaceFirst() throws Exception {
+		assertEquals("Harry met Dick", StringSupport.replaceFirst("Harry met Sally", "Sally", "Dick"));
+		assertEquals("Dick met Sally", StringSupport.replaceFirst("Harry met Sally", "Harry", "Dick"));
+		assertEquals("Harry dates Sally", StringSupport.replaceFirst("Harry met Sally", "met", "dates"));
+	}
+
+	
+	@Test
+	public void testReplaceAll() throws Exception {
+		assertEquals("Harry met Dick", StringSupport.replaceAll("Harry met Sally", "Sally", "Dick"));
+		assertEquals("Dick met Sally", StringSupport.replaceAll("Harry met Sally", "Harry", "Dick"));
+		assertEquals("Harry dates Sally", StringSupport.replaceAll("Harry met Sally", "met", "dates"));
+	}
 }
 

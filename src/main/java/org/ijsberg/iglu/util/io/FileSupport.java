@@ -536,6 +536,7 @@ public abstract class FileSupport {
 				}
 				retval.put(lineNo, nrofOccurrencesInLine);
 			}
+			
 
 			lineCount++;
 			line = reader.readLine();

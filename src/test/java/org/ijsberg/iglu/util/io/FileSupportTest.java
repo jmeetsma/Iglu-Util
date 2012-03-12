@@ -26,10 +26,12 @@ import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import org.ijsberg.iglu.util.collection.ArraySupport;
 import org.ijsberg.iglu.util.collection.CollectionSupport;
 import org.junit.After;
 import org.junit.Before;
@@ -176,7 +178,13 @@ public class FileSupportTest extends DirStructureDependentTest {
 		int nrofFilesInTmpDir = tmpDir.listFiles().length;
 		FileSupport.copyClassLoadableResourceToFileSystem("iglu_logo_ice.gif", tmpDir.getPath() + "/iglu_logo.gif");
 		assertEquals(nrofFilesInTmpDir + 1, tmpDir.listFiles().length);
-		assertEquals("iglu_logo.gif", tmpDir.listFiles()[1].getName());
+
+		assertEquals("iglu_logo.gif", tmpDir.listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File pathname) {
+				return pathname.isFile();
+			}
+		})[0].getName());
 
 		FileSupport.copyClassLoadableResourceToFileSystem("iglu_logo_ice.gif", tmpDir.getPath());
 		assertEquals(nrofFilesInTmpDir + 2, tmpDir.listFiles().length);

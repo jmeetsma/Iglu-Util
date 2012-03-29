@@ -590,6 +590,7 @@ public abstract class StringSupport {
 
 	//TODO get rid of flags (move to spec)
 	//TODO distinguish delimiters and bracketdelimiters
+	//TODO get rid of this code altogether
 
 	/**
 	 * reads all words in a text

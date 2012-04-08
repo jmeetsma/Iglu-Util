@@ -48,6 +48,7 @@ public class PatternMatchingSupportTest {
 		assertTrue(PatternMatchingSupport.valueMatchesWildcardExpression("/dir/subdir/file.ext", "/dir/s?bdir/file.ext"));
 		assertTrue(PatternMatchingSupport.valueMatchesWildcardExpression("/dir/subdir/file.ext", "*/subdir/*"));
 
+
 	}
 
 	@Test
@@ -62,6 +63,9 @@ public class PatternMatchingSupportTest {
 	public void testMatchRegExp() {
 		assertTrue(PatternMatchingSupport.valueMatchesRegularExpression("jeroen@ijsberg.nl", "^[A-Za-z0-9](([_\\.\\-]?[a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([\\.\\-]?[a-zA-Z0-9]+)*)\\.([A-Za-z]{2,})$"
 		));
+
+		assertTrue(PatternMatchingSupport.valueMatchesRegularExpression("hopla.mask", ".*mask"));
+		assertTrue(PatternMatchingSupport.valueMatchesRegularExpression("hopla.mask.mask", ".*mask"));
 	}
 
 }

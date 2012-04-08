@@ -535,6 +535,7 @@ public abstract class FileSupport {
 					nrofOccurrencesInLine = new Integer(nrofOccurrencesInLine.intValue() + 1);
 				}
 				retval.put(lineNo, nrofOccurrencesInLine);
+				//System.out.println(">" + line + "<");
 			}
 			
 

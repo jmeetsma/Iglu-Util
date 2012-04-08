@@ -591,6 +591,45 @@ public abstract class StringSupport {
 	//TODO get rid of flags (move to spec)
 	//TODO distinguish delimiters and bracketdelimiters
 
+	
+	/*	
+	@Test
+	public void testSplit() {
+		List<CodePiece> result = SourceFile.split("hello this contains a=20l a long", new RegExTokenDef("[0-9]+l", NumericConstant.class), 13);
+		System.out.println(result);
+	}
+
+	
+	public static List<CodePiece> split(String val, RegExTokenDef tokenType, int lineNr) {
+//TODO @see FileSupport.countOccurrences
+		List<CodePiece> retval = new ArrayList<CodePiece>();
+		
+		Pattern p = Pattern.compile(tokenType.getKey());
+		Matcher matcher = p.matcher(val);
+		
+		int position = 0;
+
+		while (matcher.find()) {
+			String undefCode = val.substring(position, matcher.start());
+			if(undefCode.length() > 0) {
+				retval.add(new UndefinedCode(undefCode, lineNr));
+			}
+			position = matcher.end();
+			retval.add(CodePiece.createCodePiece(tokenType.codePieceType, val.substring(matcher.start(), position), lineNr));
+		}
+		String undefCode = val.substring(position);
+		if(undefCode.length() > 0) {
+			retval.add(new UndefinedCode(undefCode, lineNr));
+		}			
+		  
+		/*if (matcher.matches()) {
+//			retval.add(CodePiece.createCodePiece(tokenType.codePieceType, val.substring(matcher.start(), matcher.end()), lineNr));
+			retval.add(CodePiece.createCodePiece(tokenType.codePieceType, val.substring(matcher.start(), matcher.end()), lineNr));
+		}* /
+		return retval;
+	}
+*/
+
 	/**
 	 * reads all words in a text
 	 *

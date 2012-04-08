@@ -28,11 +28,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.ijsberg.iglu.util.formatting.PatternMatchingSupport;
+import org.ijsberg.iglu.util.misc.StringSupport;
 
 /**
  * Contains up to 4 rules that a file may match.
  *
  * Masks are wildcard expressions as defined in Iglu's pattern matching support.
+ *
+ * Note: Unix-style file separators are assumed in expressions.
  *
  * @see PatternMatchingSupport#valueMatchesWildcardExpression(String, String)
  */
@@ -44,7 +47,8 @@ public class FileFilterRuleSet {
 	private String excludeFilesContainingLineMask = "";
 
 	/**
-	 * 
+	 * Note: Unix-style file separators are assumed in expressions.
+	 *
 	 * @param includeFileWithNameMask
 	 */
 	public FileFilterRuleSet(String includeFileWithNameMask) {
@@ -54,7 +58,8 @@ public class FileFilterRuleSet {
 
 	
 	/**
-	 * 
+	 * Note: Unix-style file separators are assumed in expressions.
+	 *
 	 * @param includeFileWithNameMask
 	 * @param excludeFileWithNameMask
 	 */
@@ -66,7 +71,8 @@ public class FileFilterRuleSet {
 
 	
 	/**
-	 * 
+	 * Note: Unix-style file separators are assumed in expressions.
+	 *
 	 * @param includeFileWithNameMask
 	 * @param excludeFileWithNameMask
 	 * @param includeFileContainingLineMask
@@ -80,25 +86,38 @@ public class FileFilterRuleSet {
 		this.includeFilesContainingLineMask = includeFileContainingLineMask;
 		this.excludeFilesContainingLineMask = excludeFileContainingLineMask;
 	}
-	
+/*
+	//TODO shortcut
+	public boolean matchesAll() {
+		return excludesNone() && "*".equals(this.includeFilesWithNameMask);
+	}
+*/
+	private boolean matches(String mask, String defaultMask) {
+		return (this.excludeFilesWithNameMask == null || "".equals(this.excludeFilesWithNameMask)) &&
+				(this.excludeFilesContainingLineMask == null || "".equals(this.excludeFilesContainingLineMask));
+	}
 
 	/**
-	 * 
+	 * Checks if file matches rules.
 	 * @param file
 	 * @return true if a file exists, matches include and exclude rules and is successfully parsed in case of inspection of contents
 	 * @throws IOException
 	 */
 	public boolean fileMatchesRules(File file) {
-		String fileName = file.getPath();
-		try {
-			return file.exists() &&
-					includeBecauseOfName(fileName) &&
-					!excludeBecauseOfName(fileName) &&
-					includeBecauseOfContainedTextLine(file) &&
-					!excludeBecauseOfContainedTextLine(file);
-		} catch (IOException ioe) {
-			return false;
+		if(file.exists()) {
+			String fileName = FileSupport.convertToUnixStylePath(file.getPath());
+			try {
+				return
+						includeBecauseOfName(fileName) &&
+						!excludeBecauseOfName(fileName) &&
+						includeBecauseOfContainedTextLine(file) &&
+						!excludeBecauseOfContainedTextLine(file);
+
+			} catch (IOException ioe) {
+				//at the moment file does not match rules
+			}
 		}
+		return false;
 	}
 	
 
@@ -111,6 +130,7 @@ public class FileFilterRuleSet {
 	private boolean excludeBecauseOfName(String fileName) {
 		boolean retval = excludeFilesWithNameMask != null && !"".equals(excludeFilesWithNameMask) &&
 				PatternMatchingSupport.valueMatchesWildcardExpression(fileName, excludeFilesWithNameMask);
+
 		return retval;
 	}
 

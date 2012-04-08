@@ -127,7 +127,7 @@ public abstract class FileSupport {
 	 * Retrieves contents from a directory and its subdirectories matching a given rule set.
 	 *
 	 * @param directory directory
-	 * @param includeMask file name to match
+	 * @param ruleSet file name to match
 	 * @param returnFiles return files
 	 * @param returnDirs return directories
 	 * @return a list containing the found contents
@@ -184,7 +184,6 @@ public abstract class FileSupport {
 	 *
 	 * @param path path to directory
 	 * @param includeMask file name to match
-	 * @param returnDirs indicates if directories must be returned as well
 	 * @return a list containing the found files
 	 */
 	public static ArrayList<File> getFilesAndDirectoriesInDirectoryTree(String path, String includeMask) {
@@ -535,7 +534,9 @@ public abstract class FileSupport {
 					nrofOccurrencesInLine = new Integer(nrofOccurrencesInLine.intValue() + 1);
 				}
 				retval.put(lineNo, nrofOccurrencesInLine);
+				//System.out.println(">" + line + "<");
 			}
+			
 
 			lineCount++;
 			line = reader.readLine();

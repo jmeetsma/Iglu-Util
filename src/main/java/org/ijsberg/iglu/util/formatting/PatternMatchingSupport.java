@@ -20,9 +20,12 @@
 
 package org.ijsberg.iglu.util.formatting;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.ijsberg.iglu.util.collection.ArraySupport;
 import org.ijsberg.iglu.util.misc.StringSupport;
 
 /**
@@ -44,7 +47,7 @@ public abstract class PatternMatchingSupport {
 
 	/**
 	 * Returns true only if the value matches the regular expression
-	 * only once and exactly.
+	 * at least once.
 	 *
 	 * @param val	string value that may match the expression
 	 * @param regexp regular expression
@@ -52,9 +55,28 @@ public abstract class PatternMatchingSupport {
 	 */
 	public static boolean valueMatchesRegularExpression(String val, Pattern regexp) {
 		Matcher m = regexp.matcher(val);
-		return m.matches() && m.group().equals(val);
+		return m.matches()/* && m.group().equals(val)*/;
 	}
 
+	public static List<int[]> getRangesMatchingRegularExpression(String val, String regexp) {
+
+		List<int[]> retval = new ArrayList<int[]>();
+		
+		Pattern p = Pattern.compile(regexp);
+		Matcher matcher = p.matcher(val);
+
+		while (matcher.find()) {
+			retval.add(new int[] {matcher.start(), matcher.end()});
+		}
+		  
+		if (matcher.matches()) {
+			retval.add(new int[] {matcher.start(), matcher.end()});
+		}
+		return retval;
+	}
+
+	
+	
 	/**
 	 * Matches DOS-type wildcardexpressions rather than regular expressions.
 	 * The function adds one little but handy feature of regular expressions:
@@ -73,6 +95,7 @@ public abstract class PatternMatchingSupport {
 		
 		return (valueMatchesRegularExpression(val, expCopy));
 	}
+	
 
 
 }

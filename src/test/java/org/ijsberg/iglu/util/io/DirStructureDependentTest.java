@@ -22,6 +22,7 @@ package org.ijsberg.iglu.util.io;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
 import java.io.StringReader;
 
 import org.junit.After;
@@ -44,6 +45,7 @@ public abstract class DirStructureDependentTest {
 
 		tmpDir = FileSupport.createTmpDir("Iglu-Util-test");
 		dirStructRoot = tmpDir.getPath() + '/';
+
 		byte[] bytes = FileSupport.getBinaryFromClassLoader(BASE_RELATIVE_DIR_PATH + "files.txt");
 		String fileList = new String(bytes);
 		StringReader reader = new StringReader(fileList);

@@ -59,6 +59,12 @@ public class StringSupportTest {
 		line = "the \"market square \" and a space";
 		result = StringSupport.split(line, " ", "\"");
 		assertEquals("market square ", result.get(1));
+/*
+//TODO this should work
+		line = "the \"market \\\"square \" and a space";
+		result = StringSupport.split(line, " ", "\"");
+		assertEquals("market \"square ", result.get(1));
+*/
 	}
 
 	@Test
@@ -104,6 +110,21 @@ public class StringSupportTest {
 		assertEquals(2, result.size());
 		assertEquals("part in between", result.toArray()[0]);
 		assertEquals("and another part", result.toArray()[1]);
+	}
+
+	@Test
+	public void testReplaceFirst() throws Exception {
+		assertEquals("Harry met Dick", StringSupport.replaceFirst("Harry met Sally", "Sally", "Dick"));
+		assertEquals("Dick met Sally", StringSupport.replaceFirst("Harry met Sally", "Harry", "Dick"));
+		assertEquals("Harry dates Sally", StringSupport.replaceFirst("Harry met Sally", "met", "dates"));
+	}
+
+	
+	@Test
+	public void testReplaceAll() throws Exception {
+		assertEquals("Harry met Dick", StringSupport.replaceAll("Harry met Sally", "Sally", "Dick"));
+		assertEquals("Dick met Sally", StringSupport.replaceAll("Harry met Sally", "Harry", "Dick"));
+		assertEquals("Harry dates Sally", StringSupport.replaceAll("Harry met Sally", "met", "dates"));
 	}
 
 	private static final String TEXT_FILE_PATH = "org/ijsberg/iglu/util/io/directory structure/root/WWW/contact.html";

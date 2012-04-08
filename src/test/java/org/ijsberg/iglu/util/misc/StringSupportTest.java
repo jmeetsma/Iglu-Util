@@ -21,11 +21,16 @@
 package org.ijsberg.iglu.util.misc;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 import java.util.List;
 import java.util.Set;
+import java.io.File;
+import java.io.InputStream;
+import java.io.FileInputStream;
 
 import org.junit.Test;
+import org.ijsberg.iglu.util.io.FileSupport;
 
 
 public class StringSupportTest {
@@ -100,5 +105,29 @@ public class StringSupportTest {
 		assertEquals("part in between", result.toArray()[0]);
 		assertEquals("and another part", result.toArray()[1]);
 	}
-}
 
+	private static final String TEXT_FILE_PATH = "org/ijsberg/iglu/util/io/directory structure/root/WWW/contact.html";
+
+	@Test
+	public void testAbsorbInputStream() throws Exception {
+		File tmpDir = FileSupport.createTmpDir("Iglu-Util-test");
+		String tmpFilePath = tmpDir + "contact.html";
+		FileSupport.copyClassLoadableResourceToFileSystem(TEXT_FILE_PATH, tmpFilePath);
+
+
+		String loadedFile = StringSupport.absorbInputStream(new FileInputStream(tmpFilePath));
+		assertTrue(loadedFile.startsWith("<!--"));
+		assertTrue(loadedFile.endsWith("</html>"));
+
+		loadedFile = StringSupport.absorbInputStream(new FileInputStream(tmpFilePath), "utf-8");
+		assertEquals(65533, loadedFile.charAt(10));
+		loadedFile = StringSupport.absorbInputStream(new FileInputStream(tmpFilePath), "windows-1251");
+		assertEquals(1100, loadedFile.charAt(10));
+
+//		System.out.println(0 + loadedFile.charAt(10));
+//		System.out.println(bytes[10] + ":" + bytes[11] + ":" + bytes[12] + ":" + bytes[13]);
+		//-17 -65
+
+		assertTrue(FileSupport.deleteFile(tmpDir));
+	}
+}

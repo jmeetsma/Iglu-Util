@@ -49,7 +49,7 @@ public class BasicChannel implements Channel, Transmitter {
 	/**
 	 * Constructs a channel with a certain name and a maximun nunber of receivers.
 	 *
-	 * @param name			 name
+	 * @param name name
 	 * @param maxNrofReceivers maximum number of receivers
 	 */
 	public BasicChannel(String name, int maxNrofReceivers) {

@@ -20,6 +20,8 @@
 
 package org.ijsberg.iglu.util.misc;
 
+import org.ijsberg.iglu.util.io.StreamSupport;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -445,7 +447,8 @@ public abstract class StringSupport {
 	 * @return a resulting String
 	 */
 	public static String absorbInputStream(InputStream input) throws IOException {
-		return absorbInputStream(input, null);
+		byte[] bytes = StreamSupport.absorbInputStream(input);
+		return new String(bytes);
 	}
 
 
@@ -456,28 +459,8 @@ public abstract class StringSupport {
 	 * @return a resulting String
 	 */
 	public static String absorbInputStream(InputStream input, String encoding) throws IOException {
-
-		//TODO use StreamSupport
-		
-		char[] buf = new char[1000];
-		//String lineSeparator = System.getProperty("line.separator");
-		StringBuffer sb = new StringBuffer();
-		BufferedReader br = null;
-		if (encoding == null) {
-			br = new BufferedReader(new InputStreamReader(input));
-		}
-		else {
-			br = new BufferedReader(new InputStreamReader(input, encoding));
-		}
-
-		String s;
-		int charsRead;
-		while (br.ready()) {
-			charsRead = br.read(buf);
-			sb.append(buf, 0, charsRead);
-		}
-		return sb.toString();
-		
+		byte[] bytes = StreamSupport.absorbInputStream(input);
+		return new String(bytes, encoding);
 	}
 
 	/**

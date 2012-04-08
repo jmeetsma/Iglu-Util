@@ -434,9 +434,9 @@ public abstract class FileSupport {
 	 *
 	 * @param file
 	 */
-	public static void deleteFile(File file) {
+	public static boolean deleteFile(File file) {
 		deleteContentsInDirectoryTree(file, null);
-		file.delete();
+		return file.delete();
 	}
 
 	/**

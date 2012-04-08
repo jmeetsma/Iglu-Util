@@ -20,6 +20,47 @@
 
 package org.ijsberg.iglu.util.io;
 
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+
 public class BasicChannelTest {
+
+	@Test
+	public void testTransmit() throws Exception {
+		BasicChannel channel = new BasicChannel("channel");
+		ReceiverQueue receiver = new ReceiverQueue();
+
+		channel.registerReceiver(receiver);
+
+		assertEquals(0, receiver.available());
+
+		channel.transmit("message");
+
+		assertEquals(1, receiver.available());
+		assertEquals("message", receiver.read());
+	}
+
+	@Test
+	public void testTransmitBroadcast() throws Exception {
+		BasicChannel channel = new BasicChannel("channel");
+		ReceiverQueue receiver1 = new ReceiverQueue();
+		ReceiverQueue receiver2 = new ReceiverQueue();
+
+		channel.registerReceiver(receiver1);
+		channel.registerReceiver(receiver2);
+
+		assertEquals(0, receiver1.available());
+
+		channel.transmit("message");
+
+		assertEquals(1, receiver1.available());
+		assertEquals("message", receiver1.read());
+		assertEquals(0, receiver1.available());
+
+		assertEquals(1, receiver2.available());
+		assertEquals("message", receiver2.read());
+		assertEquals(0, receiver2.available());
+	}
+
 }
 

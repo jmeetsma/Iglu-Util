@@ -75,7 +75,6 @@ public class SchedulingSupport extends TimeSupport {
 	 * Determines the exact time the next interval starts based on a time within the current interval.
 	 * @param time time in millis
 	 * @param intervalInMinutes
-	 * @param offsetInMinutes
 	 *
 	 * @return the exact time in milliseconds the interval begins local time
 	 */

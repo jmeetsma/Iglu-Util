@@ -21,6 +21,7 @@
 package org.ijsberg.iglu.util.misc;
 
 import org.ijsberg.iglu.util.io.StreamSupport;
+import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -218,6 +219,8 @@ public abstract class StringSupport {
 	/**
 	 */
 	public static void condenseWhitespace(StringBuffer haystack) {
+		//TODO leave trailing whitespace
+		//TODO convert all whitespace to spaces
 		int size = haystack.length();
 //		int nrRemoved = 0;
 		boolean prevIsWhiteSpace = false;
@@ -875,5 +878,7 @@ public abstract class StringSupport {
 		System.arraycopy(retval, 0, retval, i, size - i);
 		return retval;
 	}
+
+
 
 }

@@ -151,4 +151,11 @@ public class StringSupportTest {
 
 		assertTrue(FileSupport.deleteFile(tmpDir));
 	}
+
+
+	@Test
+	public void testCondenseWhitespace() {
+		assertEquals("\tthis line contains too much whitespace ", StringSupport.condenseWhitespace("\t\tthis  line \t  contains too much  whitespace \t  "));
+	}
+	
 }

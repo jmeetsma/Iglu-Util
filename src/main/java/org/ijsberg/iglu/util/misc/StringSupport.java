@@ -21,7 +21,6 @@
 package org.ijsberg.iglu.util.misc;
 
 import org.ijsberg.iglu.util.io.StreamSupport;
-import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.IOException;

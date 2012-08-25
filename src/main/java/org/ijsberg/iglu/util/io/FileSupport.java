@@ -79,7 +79,7 @@ public abstract class FileSupport {
 	 * @param includeMask exact filename, or mask containing wildcards
 	 * @return A list containing the found files
 	 */
-	public static ArrayList<File> getFilesInDirectoryTree(String path, String includeMask) {
+	public static List<File> getFilesInDirectoryTree(String path, String includeMask) {
 		File file = new File(path);
 		return getContentsInDirectoryTree(file, includeMask, true, false);
 	}
@@ -460,11 +460,16 @@ public abstract class FileSupport {
 		}
 		if (!overwriteExisting && newFile.exists()) {
 			throw new IOException("file '" + newFileName + "' already exists");
+		} else {
+			//newFile.mkdirs();
+			newFile.getParentFile().mkdirs();
+			newFile.createNewFile();
 		}
 		byte[] buffer = new byte[COPY_BUFFER];
 
 		int read = 0;
 
+		
 		FileInputStream in = new FileInputStream(file);
 		FileOutputStream out = new FileOutputStream(newFile);
 

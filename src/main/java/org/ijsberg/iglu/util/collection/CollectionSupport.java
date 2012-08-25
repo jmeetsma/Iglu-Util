@@ -69,7 +69,7 @@ public abstract class CollectionSupport {
 	 * @param separator item separator
 	 * @return formatted collection
 	 */
-	public static String format(Collection coll, String separator) {
+	public static String format(Collection<?> coll, String separator) {
 		return format(null, coll, separator);
 	}
 

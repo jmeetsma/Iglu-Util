@@ -39,7 +39,7 @@ import org.ijsberg.iglu.util.misc.StringSupport;
  *
  * @see PatternMatchingSupport#valueMatchesWildcardExpression(String, String)
  */
-public class FileFilterRuleSet {
+public class FileFilterRuleSet implements Cloneable {
 	
 	private String includeFilesWithNameMask;
 	private String excludeFilesWithNameMask = "";
@@ -51,9 +51,9 @@ public class FileFilterRuleSet {
 	 *
 	 * @param includeFileWithNameMask
 	 */
-	public FileFilterRuleSet(String includeFileWithNameMask) {
+	public FileFilterRuleSet(String includeFilesWithNameMask) {
 		super();
-		this.includeFilesWithNameMask = includeFileWithNameMask;
+		this.includeFilesWithNameMask = includeFilesWithNameMask;
 	}
 
 	
@@ -63,10 +63,10 @@ public class FileFilterRuleSet {
 	 * @param includeFileWithNameMask
 	 * @param excludeFileWithNameMask
 	 */
-	public FileFilterRuleSet(String includeFileWithNameMask, String excludeFileWithNameMask) {
+	public FileFilterRuleSet(String includeFilesWithNameMask, String excludeFilesWithNameMask) {
 		super();
-		this.includeFilesWithNameMask = includeFileWithNameMask;
-		this.excludeFilesWithNameMask = excludeFileWithNameMask;
+		this.includeFilesWithNameMask = includeFilesWithNameMask;
+		this.excludeFilesWithNameMask = excludeFilesWithNameMask;
 	}
 
 	
@@ -78,13 +78,13 @@ public class FileFilterRuleSet {
 	 * @param includeFileContainingLineMask
 	 * @param excludeFileContainingLineMask
 	 */
-	public FileFilterRuleSet(String includeFileWithNameMask, String excludeFileWithNameMask,
-			String includeFileContainingLineMask, String excludeFileContainingLineMask) {
+	public FileFilterRuleSet(String includeFilesWithNameMask, String excludeFilesWithNameMask,
+			String includeFilesContainingLineMask, String excludeFilesContainingLineMask) {
 		super();
-		this.includeFilesWithNameMask = includeFileWithNameMask;
-		this.excludeFilesWithNameMask = excludeFileWithNameMask;
-		this.includeFilesContainingLineMask = includeFileContainingLineMask;
-		this.excludeFilesContainingLineMask = excludeFileContainingLineMask;
+		this.includeFilesWithNameMask = includeFilesWithNameMask;
+		this.excludeFilesWithNameMask = excludeFilesWithNameMask;
+		this.includeFilesContainingLineMask = includeFilesContainingLineMask;
+		this.excludeFilesContainingLineMask = excludeFilesContainingLineMask;
 	}
 /*
 	//TODO shortcut
@@ -92,11 +92,11 @@ public class FileFilterRuleSet {
 		return excludesNone() && "*".equals(this.includeFilesWithNameMask);
 	}
 */
-	private boolean matches(String mask, String defaultMask) {
+/*	private boolean matches(String mask, String defaultMask) {
 		return (this.excludeFilesWithNameMask == null || "".equals(this.excludeFilesWithNameMask)) &&
 				(this.excludeFilesContainingLineMask == null || "".equals(this.excludeFilesContainingLineMask));
 	}
-
+*/
 	/**
 	 * Checks if file matches rules.
 	 * @param file
@@ -186,8 +186,10 @@ public class FileFilterRuleSet {
 		this.excludeFilesContainingLineMask = excludeFilesContainingLineMask;
 	}
 
-
-	
+	@Override
+	public FileFilterRuleSet clone() {
+		return new FileFilterRuleSet(includeFilesWithNameMask, excludeFilesWithNameMask, includeFilesContainingLineMask, excludeFilesContainingLineMask);
+	}
 	
 	
 	

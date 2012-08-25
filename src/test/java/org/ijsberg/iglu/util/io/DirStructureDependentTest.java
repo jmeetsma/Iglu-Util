@@ -22,7 +22,6 @@ package org.ijsberg.iglu.util.io;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStream;
 import java.io.StringReader;
 
 import org.junit.After;

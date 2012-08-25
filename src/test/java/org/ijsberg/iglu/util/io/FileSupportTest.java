@@ -31,10 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.ijsberg.iglu.util.collection.ArraySupport;
-import org.ijsberg.iglu.util.collection.CollectionSupport;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public class FileSupportTest extends DirStructureDependentTest {

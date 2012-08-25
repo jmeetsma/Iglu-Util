@@ -55,7 +55,7 @@ public abstract class PatternMatchingSupport {
 	 */
 	public static boolean valueMatchesRegularExpression(String val, Pattern regexp) {
 		Matcher m = regexp.matcher(val);
-		return m.matches()/* && m.group().equals(val)*/;
+		return m.matches();
 	}
 
 	public static List<int[]> getRangesMatchingRegularExpression(String val, String regexp) {

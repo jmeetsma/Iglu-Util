@@ -85,6 +85,19 @@ public abstract class CollectionSupport {
 	}
 
 	/**
+	 * @param itemPrefix
+	 * @param itemPostfix
+	 * @param coll
+	 * @param separator item separator
+	 * @return formatted collection
+	 */
+	public static String format(String itemPrefix, String itemPostfix, Collection coll, String separator) {
+		if (coll == null) return "";
+		return ArraySupport.format(itemPrefix, itemPostfix, coll.toArray(), separator);
+	}
+
+	
+	/**
 	 * @param map
 	 */
 	public static void print(Map map) {

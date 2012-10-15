@@ -99,6 +99,24 @@ public abstract class ArraySupport {
 
 
 	/**
+	 * @param itemPrefix
+	 * @param itemPostfix
+	 * @param array
+	 * @param separator
+	 * @return
+	 */
+	public static String format(String itemPrefix, String itemPostfix, Object[] array, String separator) {
+		if (array == null) {
+			return "";
+		}
+		StringBuffer retval = new StringBuffer();
+		for (int i = 0; i < array.length; i++) {
+			retval.append((itemPrefix != null ? itemPrefix : "") + array[i] + (itemPostfix != null ? itemPostfix : "") + (i + 1 != array.length ? separator : ""));
+		}
+		return retval.toString();
+	}
+
+	/**
 	 * @param array
 	 * @param separator
 	 * @return

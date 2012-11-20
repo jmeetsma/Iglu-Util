@@ -34,6 +34,9 @@ public class NumberFormatter {
 	private char decimalSymbol = ',';
 	private char digitGroupingSymbol = '.';
 
+	public NumberFormatter() {
+	}
+	
 	/**
 	 * @param decimalSymbol	   character that separates decimals
 	 * @param digitGroupingSymbol symbol that groups 3 digits

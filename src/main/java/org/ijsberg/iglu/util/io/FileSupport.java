@@ -25,10 +25,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -39,7 +42,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.ijsberg.iglu.util.collection.CollectionSupport;
-import org.ijsberg.iglu.util.formatting.PatternMatchingSupport;
+import org.ijsberg.iglu.util.misc.Line;
 import org.ijsberg.iglu.util.misc.StringSupport;
 
 /**
@@ -403,10 +406,26 @@ public abstract class FileSupport {
 	public static File createFile(String filename) throws IOException {
 		File file = new File(filename);
 		if (!file.exists()) {
-			File path = new File(file.getParent());
-			path.mkdirs();
+			if(file.getParent() != null) {
+				File path = new File(file.getParent());
+				path.mkdirs();
+			}
 			file.createNewFile();
 		}
+		return file;
+	}
+	
+	
+	public static File writeTextFile(String filename, String text) throws IOException {
+		
+		File file = createFile(filename);
+		BufferedReader reader = new BufferedReader(new StringReader(text));
+		PrintStream out = new PrintStream(file);
+		String line = null;
+		while((line = reader.readLine()) != null) {
+			out.println(line);
+		}
+		out.close();
 		return file;
 	}
 
@@ -539,7 +558,7 @@ public abstract class FileSupport {
 					nrofOccurrencesInLine = new Integer(nrofOccurrencesInLine.intValue() + 1);
 				}
 				retval.put(lineNo, nrofOccurrencesInLine);
-				//System.out.println(">" + line + "<");
+				System.out.println(">" + line + "<");
 			}
 			
 
@@ -608,12 +627,10 @@ public abstract class FileSupport {
 	 * @param files
 	 * @param searchString
 	 */
-	private static void printOccurringString(List files, String searchString) {
+	public static void printOccurringString(List<File> files, String searchString) {
 		//TODO use unix conventions for arguments
 		//TODO print message if no files found
-		Iterator i = files.iterator();
-		while (i.hasNext()) {
-			File file = (File) i.next();
+		for (File file : files) {
 			try {
 				Map<Integer, Integer> occurrences = countOccurencesInTextFile(file, searchString);
 				if (occurrences.size() > 0) {
@@ -688,5 +705,24 @@ public abstract class FileSupport {
 		file.delete();
 		file.mkdirs();
 		return file;
+	}
+
+	public static List<Line> getLinesInTextFile(File file) throws IOException {
+		return findLinesInTextFile(file, null);
+	}
+	
+	public static List<Line> findLinesInTextFile(File file, String regexp) throws IOException {
+		ArrayList<Line> lines = new ArrayList<Line>();
+		FileReader fileReader = new FileReader(file);
+		BufferedReader reader = new BufferedReader(fileReader);
+		String line; int count = 0;
+		while ((line = reader.readLine()) != null) {
+			count++;
+			if(regexp == null || line.matches(regexp)) {
+				lines.add(new Line(count, line));
+			}
+		}
+		reader.close();
+		return lines;
 	}
 }

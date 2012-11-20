@@ -21,6 +21,7 @@
 package org.ijsberg.iglu.util.collection;
 
 import java.io.PrintStream;
+import java.util.Arrays;
 
 /**
  * Contains miscellaneous static methods for array handling.
@@ -148,6 +149,11 @@ public abstract class ArraySupport {
 		return retval.toString();
 	}
 
+	
+	public static <T> T[] getFilledArray(T[] array, T val) {
+		Arrays.fill(array, val);
+		return array;
+	}
 
 
 

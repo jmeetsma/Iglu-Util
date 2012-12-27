@@ -20,12 +20,9 @@
 
 package org.ijsberg.iglu.util.misc;
 
-import org.ijsberg.iglu.util.io.StreamSupport;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -36,6 +33,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
+
+import org.ijsberg.iglu.util.collection.ArraySupport;
+import org.ijsberg.iglu.util.io.StreamSupport;
 
 /**
  * Helper class containing string manipulation functions.
@@ -135,13 +135,14 @@ public abstract class StringSupport {
 		}
 		StringBuffer buf = new StringBuffer(haystack);
 		for (int i = 0; i < needle.length; i++) {
+			//TODO not very elegant
 			replaceAll(buf, needle[i], newNeedle[i]);
 		}
 		return buf.toString();
 	}
 
 	/**
-	 * replaces all occurances of needle in haystack with newNeedle
+	 * replaces all occurrences of needle in haystack with newNeedle
 	 * the input itself is not modified
 	 *
 	 * @param haystack  input string
@@ -168,7 +169,7 @@ public abstract class StringSupport {
 	//default is 0, which means that all found characters must be replaced
 	public static void replaceAll(StringBuffer haystack, String needle, String newNeedle, int interval) {
 		if (needle == null || "".equals(needle)) {
-			throw new IllegalArgumentException("string to replace may not be empty");
+			throw new IllegalArgumentException("string to replace can not be empty");
 		}
 		int idx = haystack.indexOf(needle);
 		int nextIdx = -1;
@@ -245,7 +246,7 @@ public abstract class StringSupport {
 	}
 
 	/**
-	 * removes all occurances of needle in haystack
+	 * removes all occurrences of needle in haystack
 	 *
 	 * @param haystack input string
 	 * @param needle   string to remove
@@ -254,6 +255,15 @@ public abstract class StringSupport {
 		return replaceAll(haystack, needle, "");
 	}
 
+	/**
+	 * removes all occurrences of needle in haystack
+	 *
+	 * @param haystack input string
+	 * @param needles   strings to remove
+	 */
+	public static String removeAll(String haystack, String ... needles) {
+		return replaceAll(haystack, needles, ArraySupport.getFilledArray(new String[needles.length], ""));
+	}
 
 	/**
 	 * removes all occurances of needle in haystack
@@ -574,47 +584,9 @@ public abstract class StringSupport {
 	}
 
 	//TODO get rid of flags (move to spec)
-	//TODO distinguish delimiters and bracketdelimiters
 	//TODO get rid of this code altogether
 
 	
-	/*	
-	@Test
-	public void testSplit() {
-		List<CodePiece> result = SourceFile.split("hello this contains a=20l a long", new RegExTokenDef("[0-9]+l", NumericConstant.class), 13);
-		System.out.println(result);
-	}
-
-	
-	public static List<CodePiece> split(String val, RegExTokenDef tokenType, int lineNr) {
-//TODO @see FileSupport.countOccurrences
-		List<CodePiece> retval = new ArrayList<CodePiece>();
-		
-		Pattern p = Pattern.compile(tokenType.getKey());
-		Matcher matcher = p.matcher(val);
-		
-		int position = 0;
-
-		while (matcher.find()) {
-			String undefCode = val.substring(position, matcher.start());
-			if(undefCode.length() > 0) {
-				retval.add(new UndefinedCode(undefCode, lineNr));
-			}
-			position = matcher.end();
-			retval.add(CodePiece.createCodePiece(tokenType.codePieceType, val.substring(matcher.start(), position), lineNr));
-		}
-		String undefCode = val.substring(position);
-		if(undefCode.length() > 0) {
-			retval.add(new UndefinedCode(undefCode, lineNr));
-		}			
-		  
-		/*if (matcher.matches()) {
-//			retval.add(CodePiece.createCodePiece(tokenType.codePieceType, val.substring(matcher.start(), matcher.end()), lineNr));
-			retval.add(CodePiece.createCodePiece(tokenType.codePieceType, val.substring(matcher.start(), matcher.end()), lineNr));
-		}* /
-		return retval;
-	}
-*/
 
 	/**
 	 * reads all words in a text
@@ -865,7 +837,7 @@ public abstract class StringSupport {
 	 * @param defaultVal
 	 * @return
 	 */
-	static char[] initializelLargeCharArray(char[] retval, char defaultVal) {
+	static <T> char[] initializelLargeCharArray(char[] retval, char defaultVal) {
 		int size = retval.length;
 		retval[0] = defaultVal;
 		int i = 1;

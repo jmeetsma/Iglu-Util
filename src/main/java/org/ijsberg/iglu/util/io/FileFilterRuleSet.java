@@ -28,7 +28,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.ijsberg.iglu.util.formatting.PatternMatchingSupport;
-import org.ijsberg.iglu.util.misc.StringSupport;
 
 /**
  * Contains up to 4 rules that a file may match.

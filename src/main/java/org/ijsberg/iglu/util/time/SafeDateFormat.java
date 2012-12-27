@@ -32,7 +32,7 @@ import java.util.Date;
  */
 public final class SafeDateFormat {
 
-	private final java.lang.ThreadLocal dateFormat;
+	private final java.lang.ThreadLocal<DateFormat> dateFormat;
 
 	/**
 	 * @param aDateFormat

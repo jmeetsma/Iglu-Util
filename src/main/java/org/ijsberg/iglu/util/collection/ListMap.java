@@ -95,15 +95,21 @@ public class ListMap<K, V> {
 		return retval;
 	}
 
-	public void removeFirst(K key) {
+	public V removeFirst(K key) {
 		
 		List<V> list = internalMap.get(key);
 		if(!list.isEmpty()) {
-			list.remove(0);
+			return list.remove(0);
 		}
+		return null;
 		
 	}
 	
+	public List<V> removeAll(K key) {
+		
+		return internalMap.remove(key);
+		
+	}
 	
 
 }

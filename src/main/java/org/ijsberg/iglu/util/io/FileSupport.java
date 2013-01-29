@@ -29,8 +29,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -415,6 +418,13 @@ public abstract class FileSupport {
 		return file;
 	}
 	
+	public static File createDirectory(String directoryname) throws IOException {
+		File file = new File(directoryname);
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+		return file;
+	}
 	
 	public static File writeTextFile(String filename, String text) throws IOException {
 		
@@ -725,4 +735,30 @@ public abstract class FileSupport {
 		reader.close();
 		return lines;
 	}
+	
+	public static void saveSerializable(Serializable serializable, String fileName) throws IOException {
+		
+		FileOutputStream fStream = new FileOutputStream(fileName);
+		ObjectOutputStream oOutput = new ObjectOutputStream(fStream);
+		
+		oOutput.writeObject(serializable);
+		
+		oOutput.close();
+		fStream.close();
+	}
+	
+	
+	public static Serializable readSerializable(String fileName) throws IOException, ClassNotFoundException {
+		
+		FileInputStream fStream = new FileInputStream(fileName);
+		ObjectInputStream oInput = new ObjectInputStream(fStream);
+		
+		Serializable retval = (Serializable)oInput.readObject();
+		
+		oInput.close();
+		fStream.close();
+		
+		return retval;
+	}
+
 }

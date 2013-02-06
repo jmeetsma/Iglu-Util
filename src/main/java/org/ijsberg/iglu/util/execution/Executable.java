@@ -92,7 +92,7 @@ public abstract class Executable implements Runnable {
 		}
 		final Executable nestedExec = this;
 		Executable exec = new Executable() {
-			protected Object execute() throws Throwable {
+			public Object execute() throws Throwable {
 				return nestedExec.executeTimed(timeout);
 			}
 		};
@@ -108,7 +108,7 @@ public abstract class Executable implements Runnable {
 	public void executeAsyncDelayed(final long delay) {
 		final Executable nestedExec = this;
 		Executable exec = new Executable() {
-			protected Object execute() throws Throwable {
+			public Object execute() throws Throwable {
 				return nestedExec.executeDelayed(delay);
 			}
 		};
@@ -175,6 +175,14 @@ public abstract class Executable implements Runnable {
 		}
 	}
 
+	/**
+	 * Joins execution thread
+	 */
+	public void waitUntilFinished() throws InterruptedException {
+		if (executeThread != null) {
+			executeThread.join();
+		}
+	}
 
 	/**
 	 * @return the (runtime) exception that may have occurred during execution

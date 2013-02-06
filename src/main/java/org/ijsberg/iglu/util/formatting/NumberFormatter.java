@@ -31,8 +31,8 @@ import org.ijsberg.iglu.util.misc.StringSupport;
  * Trailing zeroes are, if necessary, returned to fill up the desired number of decimals.
  */
 public class NumberFormatter {
-	private char decimalSymbol = ',';
-	private char digitGroupingSymbol = '.';
+	private char decimalSymbol = '.';
+	private char digitGroupingSymbol = ',';
 
 	public NumberFormatter() {
 	}
@@ -66,6 +66,15 @@ public class NumberFormatter {
 		return format(new BigDecimal(number), nrofDecimals);
 	}
 
+	/**
+	 * @param part
+	 * @param part
+	 * @param nrofDecimals desired number of decimals
+	 * @return the formatted percentage
+	 */
+	public String formatPercentage(int part, int total, int nrofDecimals) {
+		return format(new BigDecimal(((1.0 * part) / total) * 100), nrofDecimals);
+	}
 
 	/**
 	 * @param number	   number to format

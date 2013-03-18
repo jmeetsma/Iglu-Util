@@ -103,6 +103,7 @@ public class FileFilterRuleSet implements Cloneable {
 	 * @throws IOException
 	 */
 	public boolean fileMatchesRules(File file) {
+		
 		if(file.exists()) {
 			String fileName = FileSupport.convertToUnixStylePath(file.getPath());
 			try {

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 
-public class ListMap<K, V> {
+public class ListMap<K extends Comparable<?>, V> {
 	
 	protected TreeMap<K, List<V>> internalMap = new TreeMap<K, List<V>>();
 	private int loadFactor = 10;
@@ -109,6 +109,11 @@ public class ListMap<K, V> {
 		
 		return internalMap.remove(key);
 		
+	}
+
+	public boolean containsRelation(K key, V value) {
+		List<V> values;
+		return ((values = get(key)) != null && values.contains(value));
 	}
 	
 

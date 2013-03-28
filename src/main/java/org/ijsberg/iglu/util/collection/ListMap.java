@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 
-public class ListMap<K extends Comparable<?>, V> {
+public class ListMap<K, V> {
 	
 	protected TreeMap<K, List<V>> internalMap = new TreeMap<K, List<V>>();
 	private int loadFactor = 10;
@@ -30,6 +30,9 @@ public class ListMap<K extends Comparable<?>, V> {
 	}
 	
 	public List<V> put(K key, V value) {
+        if(!(key instanceof Comparable)) {
+            throw new ClassCastException("key K must implement Comparable");
+        }
 		List<V> list = createOrRetrieveList(key);
 		list.add(value);
 		return list;

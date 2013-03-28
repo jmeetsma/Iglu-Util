@@ -166,6 +166,7 @@ public class FileFilterRuleSet implements Cloneable {
 
 
 	public void setIncludeFilesWithNameMask(String includeFilesWithNameMask) {
+
 		this.includeFilesWithNameMask = includeFilesWithNameMask;
 	}
 

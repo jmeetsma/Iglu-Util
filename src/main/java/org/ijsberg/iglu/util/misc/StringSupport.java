@@ -770,6 +770,21 @@ public abstract class StringSupport {
 	 *
 	 * @param t
 	 * @param depth
+	 * @return
+	 */
+	public static String getRootStackTrace(Throwable t, int depth) {
+
+		while(t.getCause() != null) {
+			t = t.getCause();
+		}
+		return getStackTrace(t, depth, null);
+	}
+
+	/**
+	 * Retrieves stack trace from throwable.
+	 *
+	 * @param t
+	 * @param depth
 	 * @param prefix
 	 * @return
 	 */

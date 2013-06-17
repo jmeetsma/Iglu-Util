@@ -717,14 +717,29 @@ public abstract class FileSupport {
 		return file;
 	}
 
+	public static List<Line> getLinesInTextFile(String encoding, File file) throws IOException {
+		return findLinesInTextFile(encoding, file, null);
+	}
+
 	public static List<Line> getLinesInTextFile(File file) throws IOException {
-		return findLinesInTextFile(file, null);
+		return findLinesInTextFile(null, file, null);
 	}
 	
 	public static List<Line> findLinesInTextFile(File file, String regexp) throws IOException {
+		return findLinesInTextFile(null, file, regexp);
+	}
+
+	public static List<Line> findLinesInTextFile(String encoding, File file, String regexp) throws IOException {
 		ArrayList<Line> lines = new ArrayList<Line>();
-		FileReader fileReader = new FileReader(file);
-		BufferedReader reader = new BufferedReader(fileReader);
+		FileInputStream inputStream = new FileInputStream(file);
+		InputStreamReader inputReader = null;
+		if(encoding != null) {
+			inputReader = new InputStreamReader(inputStream, encoding);
+		} else {
+			inputReader = new InputStreamReader(inputStream);
+		}
+		//FileReader fileReader = new FileReader(file);
+		BufferedReader reader = new BufferedReader(inputReader);
 		String line; int count = 0;
 		while ((line = reader.readLine()) != null) {
 			count++;
@@ -735,7 +750,7 @@ public abstract class FileSupport {
 		reader.close();
 		return lines;
 	}
-	
+
 	public static void saveSerializable(Serializable serializable, String fileName) throws IOException {
 		
 		FileOutputStream fStream = new FileOutputStream(fileName);

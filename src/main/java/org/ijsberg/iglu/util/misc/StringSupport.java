@@ -168,7 +168,7 @@ public abstract class StringSupport {
 	//interval minimum size of chunks after which replacement must take place
 	//default is 0, which means that all found characters must be replaced
 	public static void replaceAll(StringBuffer haystack, String needle, String newNeedle, int interval) {
-		if (needle == null || "".equals(needle)) {
+		if (needle == null) {
 			throw new IllegalArgumentException("string to replace can not be empty");
 		}
 		int idx = haystack.indexOf(needle);

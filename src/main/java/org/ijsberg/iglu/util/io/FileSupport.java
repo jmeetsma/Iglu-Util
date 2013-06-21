@@ -421,7 +421,9 @@ public abstract class FileSupport {
 	public static File createDirectory(String directoryname) throws IOException {
 		File file = new File(directoryname);
 		if (!file.exists()) {
-			file.mkdirs();
+			if(!file.mkdirs()) {
+				throw new IOException("unable to create missing directory '" + directoryname + "'");
+			}
 		}
 		return file;
 	}

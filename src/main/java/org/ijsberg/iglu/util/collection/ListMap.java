@@ -114,10 +114,15 @@ public class ListMap<K, V> {
 		
 	}
 
+	//TODO remove
 	public boolean containsRelation(K key, V value) {
 		List<V> values;
 		return ((values = get(key)) != null && values.contains(value));
 	}
-	
+
+	public boolean containsValue(K key, V value) {
+		List<V> values;
+		return ((values = get(key)) != null && values.contains(value));
+	}
 
 }

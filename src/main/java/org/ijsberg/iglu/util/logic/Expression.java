@@ -21,6 +21,7 @@
 package org.ijsberg.iglu.util.logic;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -54,9 +55,7 @@ public class Expression extends Statement {
 	private Expression(Operator operator, Object[] elementsArray) {
 		this.operator = operator;
 		this.elementsArray = elementsArray;
-		for (int i = 0; i < elementsArray.length; i++) {
-			elements.add(elementsArray[i]);
-		}
+		Collections.addAll(elements, elementsArray);
 	}
 
 

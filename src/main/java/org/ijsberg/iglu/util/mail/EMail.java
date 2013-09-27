@@ -22,6 +22,7 @@ package org.ijsberg.iglu.util.mail;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Map;
 
 import org.ijsberg.iglu.util.execution.Executable;
 import org.ijsberg.iglu.util.io.FileData;
@@ -90,6 +91,8 @@ public class EMail// implements Executable
 			outMail.println("To: " + mailto);
 			outMail.println("Subject: " + subject);
 			if (attachments == null) {
+				outMail.println("Content-Type: text/plain;");
+				outMail.println("	charset=\"UTF-8\"");
 				outMail.println();
 				if (message != null) {
 					outMail.println(message);
@@ -105,7 +108,7 @@ public class EMail// implements Executable
 				if (message != null) {
 					outMail.println("--" + boundary);
 					outMail.println("Content-Type: text/plain;");
-					outMail.println("	charset=\"iso-8859-1\"");
+					outMail.println("	charset=\"UTF-8\"");
 					outMail.println("Content-Transfer-Encoding: quoted-printable");
 					outMail.println();
 					outMail.println(message);
@@ -155,11 +158,18 @@ public class EMail// implements Executable
 	 */
 	public void mail() {
 		final EMail mail = this;
+		try {
+			mail.execute();
+		} catch (Throwable throwable) {
+			throwable.printStackTrace();
+		}
+		/*
 		Executable exec = new Executable() {
 			protected Object execute() throws Throwable {
 				return mail.execute();
 			}
 		};
 		exec.executeAsync();
+		*/
 	}
 }

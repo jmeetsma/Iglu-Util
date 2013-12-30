@@ -34,12 +34,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -245,6 +240,16 @@ public abstract class FileSupport {
 		throw new FileNotFoundException("file '" + fileName + "' does not exist");
 	}
 
+    /**
+     * @param existingTextFile
+     * @return
+     * @throws IOException
+     */
+    public static String getTextFileFromFS(File existingTextFile) throws IOException {
+
+        return new String(getBinaryFromFS(existingTextFile));
+    }
+
 	/**
 	 * @return
 	 * @throws IOException
@@ -281,32 +286,35 @@ public abstract class FileSupport {
 		return null;
 	}
 
-	/**
-	 * Tries to retrieve a file as ZipEntry from all jars mentioned in system property java.class.path
-	 *
-	 * @param fileName class name as retrieved in myObject.getClass().getName()
-	 * @return a ZipEntry if the class file was found or null otherwise
-	 */
-	public static byte[] getBinaryFromJar(String fileName, String jarFileName) throws IOException {
-		//zipfile is opened for READ on instantiation
-		ZipFile zipfile = new ZipFile(jarFileName);
-		try {
-			ZipEntry entry = zipfile.getEntry(fileName);
-			if (entry == null) {
-				throw new IOException("entry " + fileName + " not found in jar " + jarFileName);
-			}
-			InputStream in = zipfile.getInputStream(entry);
-			try {
-				return StreamSupport.absorbInputStream(in);
-			}
-			finally {
-				in.close();
-			}
-		}
-		finally {
-			zipfile.close();
-		}
+	public static byte[] getBinaryFromJar(String fileName, ZipFile zipFile) throws IOException {
+        ZipEntry entry = zipFile.getEntry(fileName);
+        if (entry == null) {
+            throw new IOException("entry " + fileName + " not found in jar " + fileName);
+        }
+        InputStream in = zipFile.getInputStream(entry);
+        try {
+            return StreamSupport.absorbInputStream(in);
+        }
+        finally {
+            in.close();
+        }
 	}
+
+    public static byte[] getBinaryFromJar(String fileName, String jarFileName) throws IOException {
+        //zipfile is opened for READ on instantiation
+        ZipFile zipfile = new ZipFile(jarFileName);
+        try {
+            return getBinaryFromJar(fileName, zipfile);
+        }
+        finally {
+            zipfile.close();
+        }
+    }
+
+    public static String getTextFileFromJar(String fileName, ZipFile zipFile) throws IOException {
+
+        return new String(getBinaryFromJar(fileName, zipFile));
+    }
 
 	public static byte[] getBinaryFromClassPath(String fileName, String classPath) throws IOException {
 		byte[] retval = null;
@@ -395,6 +403,35 @@ public abstract class FileSupport {
 	}
 
 
+    public static ArrayList<ZipEntry> getContentsFromZipFile(ZipFile zipFile, FileFilterRuleSet ruleSet) {
+        ArrayList<ZipEntry> result = new ArrayList<ZipEntry>();
+
+        Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
+        while(zipEntries.hasMoreElements()) {
+            ZipEntry zipEntry = zipEntries.nextElement();
+            if(ruleSet.fileMatchesRules(zipEntry, zipFile)) {
+                result.add(zipEntry);
+            }
+        }
+
+/*        if (directory != null && !directory.isFile()) {
+            File[] files = directory.listFiles();
+            if (files != null) {
+                for (int i = 0; i < files.length; i++) {
+                    if (files[i].isDirectory()) {
+                        if (returnDirs && ruleSet.fileMatchesRules(files[i])) {
+                            result.add(files[i]);
+                        }
+                        result.addAll(getContentsInDirectoryTree(files[i], ruleSet, returnFiles, returnDirs));
+                    }
+                    else if (returnFiles && ruleSet.fileMatchesRules(files[i])) {
+                        result.add(files[i]);
+                    }
+                }
+            }
+        } */
+        return result;
+    }
 
 
 	/**

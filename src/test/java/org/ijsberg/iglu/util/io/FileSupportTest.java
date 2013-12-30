@@ -105,15 +105,15 @@ public class FileSupportTest extends DirStructureDependentTest {
 		foundFiles = FileSupport.getFilesInDirectoryTree(dirStructRoot, ruleSet);		
 		assertEquals(2, foundFiles.size());
 
-		ruleSet.setIncludeFilesContainingLineMask("*ijsberg*");
+		ruleSet.setIncludeFilesContainingText("*ijsberg*");
 		foundFiles = FileSupport.getFilesInDirectoryTree(dirStructRoot, ruleSet);		
 		assertEquals(1, foundFiles.size());
 
-		ruleSet.setIncludeFilesContainingLineMask("*title*");
+		ruleSet.setIncludeFilesContainingText("*title*");
 		foundFiles = FileSupport.getFilesInDirectoryTree(dirStructRoot, ruleSet);		
 		assertEquals(2, foundFiles.size());
 
-		ruleSet.setExcludeFilesContainingLineMask("*ijsberg*");
+		ruleSet.setExcludeFilesContainingText("*ijsberg*");
 		foundFiles = FileSupport.getFilesInDirectoryTree(dirStructRoot, ruleSet);		
 		assertEquals(1, foundFiles.size());
 		

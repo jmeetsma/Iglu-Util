@@ -19,12 +19,10 @@
 
 package org.ijsberg.iglu.util.io;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.ijsberg.iglu.util.formatting.PatternMatchingSupport;
 
@@ -41,13 +39,13 @@ public class FileFilterRuleSet implements Cloneable {
 	
 	private String includeFilesWithNameMask;
 	private String excludeFilesWithNameMask = "";
-	private String includeFilesContainingLineMask = "*";
-	private String excludeFilesContainingLineMask = "";
+	private String[] includeFilesContainingText = new String[0];
+	private String[] excludeFilesContainingText = new String[0];
 
 	/**
 	 * Note: Unix-style file separators are assumed in expressions.
 	 *
-	 * @param includeFileWithNameMask
+	 * @param includeFilesWithNameMask
 	 */
 	public FileFilterRuleSet(String includeFilesWithNameMask) {
 		super();
@@ -58,8 +56,8 @@ public class FileFilterRuleSet implements Cloneable {
 	/**
 	 * Note: Unix-style file separators are assumed in expressions.
 	 *
-	 * @param includeFileWithNameMask
-	 * @param excludeFileWithNameMask
+	 * @param includeFilesWithNameMask
+	 * @param excludeFilesWithNameMask
 	 */
 	public FileFilterRuleSet(String includeFilesWithNameMask, String excludeFilesWithNameMask) {
 		super();
@@ -68,21 +66,13 @@ public class FileFilterRuleSet implements Cloneable {
 	}
 
 	
-	/**
-	 * Note: Unix-style file separators are assumed in expressions.
-	 *
-	 * @param includeFileWithNameMask
-	 * @param excludeFileWithNameMask
-	 * @param includeFileContainingLineMask
-	 * @param excludeFileContainingLineMask
-	 */
 	public FileFilterRuleSet(String includeFilesWithNameMask, String excludeFilesWithNameMask,
-			String includeFilesContainingLineMask, String excludeFilesContainingLineMask) {
+			String[] includeFilesContainingLineMask, String[] excludeFilesContainingLineMask) {
 		super();
 		this.includeFilesWithNameMask = includeFilesWithNameMask;
 		this.excludeFilesWithNameMask = excludeFilesWithNameMask;
-		this.includeFilesContainingLineMask = includeFilesContainingLineMask;
-		this.excludeFilesContainingLineMask = excludeFilesContainingLineMask;
+		this.includeFilesContainingText = includeFilesContainingLineMask;
+		this.excludeFilesContainingText = excludeFilesContainingLineMask;
 	}
 /*
 	//TODO shortcut
@@ -92,7 +82,7 @@ public class FileFilterRuleSet implements Cloneable {
 */
 /*	private boolean matches(String mask, String defaultMask) {
 		return (this.excludeFilesWithNameMask == null || "".equals(this.excludeFilesWithNameMask)) &&
-				(this.excludeFilesContainingLineMask == null || "".equals(this.excludeFilesContainingLineMask));
+				(this.excludeFilesContainingText == null || "".equals(this.excludeFilesContainingText));
 	}
 */
 	/**
@@ -102,23 +92,61 @@ public class FileFilterRuleSet implements Cloneable {
 	 * @throws IOException
 	 */
 	public boolean fileMatchesRules(File file) {
-		
-		if(file.exists()) {
-			String fileName = FileSupport.convertToUnixStylePath(file.getPath());
-			try {
-				return
-						includeBecauseOfName(fileName) &&
-						!excludeBecauseOfName(fileName) &&
-						includeBecauseOfContainedTextLine(file) &&
-						!excludeBecauseOfContainedTextLine(file);
 
-			} catch (IOException ioe) {
-				//at the moment file does not match rules
-			}
-		}
+        try {
+            if(file.exists()) {
+                if(includeFilesContainingText.length == 0 && excludeFilesContainingText.length == 0) {
+                    return fileMatchesRules(
+                            FileSupport.convertToUnixStylePath(file.getPath()));
+                } else {
+                    return fileMatchesRules(
+                            FileSupport.convertToUnixStylePath(file.getPath()),
+                            FileSupport.getTextFileFromFS(file));
+                }
+            }
+        } catch (IOException ioe) {
+            //at the moment file does not match rules
+        }
 		return false;
 	}
-	
+
+    public boolean fileMatchesRules(ZipEntry entry, ZipFile zipFile) {
+
+        try {
+                if(includeFilesContainingText.length == 0 && excludeFilesContainingText.length == 0) {
+                    return fileMatchesRules(
+                            FileSupport.convertToUnixStylePath(entry.getName()));
+                } else {
+                    return fileMatchesRules(
+                            FileSupport.convertToUnixStylePath(entry.getName()),
+                            FileSupport.getTextFileFromJar(entry.getName(), zipFile));
+                }
+        } catch (IOException ioe) {
+            //at the moment file does not match rules
+        }
+        return false;
+    }
+
+    public boolean fileMatchesRules(String fileName) {
+
+            return
+                    includeBecauseOfName(fileName) &&
+                            !excludeBecauseOfName(fileName);
+    }
+
+    public boolean fileMatchesRules(String fileName, String fileContents) {
+
+        try {
+            return
+                    fileMatchesRules(fileName) &&
+                        includeBecauseOfContainedTextLine(fileContents) &&
+                        !excludeBecauseOfContainedTextLine(fileContents);
+
+        } catch (IOException ioe) {
+            //at the moment file does not match rules
+        }
+        return false;
+    }
 
 	private boolean includeBecauseOfName(String fileName) {
 		boolean retval = includeFilesWithNameMask == null || "*".equals(includeFilesWithNameMask) || 
@@ -133,18 +161,43 @@ public class FileFilterRuleSet implements Cloneable {
 		return retval;
 	}
 
-	private boolean includeBecauseOfContainedTextLine(File file) throws IOException {
-		boolean retval = includeFilesContainingLineMask == null || "*".equals(includeFilesContainingLineMask) || occurenceFound(file, includeFilesContainingLineMask);
+	private boolean includeBecauseOfContainedTextLine(String fileContents) throws IOException {
+		boolean retval = includeFilesContainingText == null ||
+                includeFilesContainingText.length == 0 ||
+                occurenceFound(fileContents, includeFilesContainingText);
 		return retval;
 	}
 	
-	private boolean excludeBecauseOfContainedTextLine(File file) throws IOException {
-		boolean retval = excludeFilesContainingLineMask != null && !"".equals(excludeFilesContainingLineMask) && occurenceFound(file, excludeFilesContainingLineMask);
+	private boolean excludeBecauseOfContainedTextLine(String fileContents) throws IOException {
+		boolean retval = excludeFilesContainingText != null &&
+                excludeFilesContainingText.length > 0 &&
+                occurenceFound(fileContents, excludeFilesContainingText);
 		return retval;
 	}
 
 
-	private static boolean occurenceFound(File file, String expression) throws IOException {
+    private static boolean occurenceFound(String fileContents, String[] expressions) throws IOException {
+
+        for(String expression : expressions) {
+            if(fileContents.contains(expression)) {
+                return true;
+            }
+        }
+        return false;
+
+/*
+        if(new String(fileContents).contains(expression)) {
+            System.out.println(new String(fileContents));
+
+        }
+        System.out.println(PatternMatchingSupport.valueMatchesWildcardExpression(
+                new String(fileContents), expression));
+
+        return PatternMatchingSupport.valueMatchesWildcardExpression(
+                new String(fileContents), expression);   */
+    }
+
+/*	private static boolean occurenceFound(File file, String expression) throws IOException {
 		InputStream input = new FileInputStream(file);
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(input));
@@ -162,7 +215,7 @@ public class FileFilterRuleSet implements Cloneable {
 		}
 		return false;
 	}
-
+*/
 
 	public void setIncludeFilesWithNameMask(String includeFilesWithNameMask) {
 
@@ -175,23 +228,30 @@ public class FileFilterRuleSet implements Cloneable {
 	}
 
 
-	public void setIncludeFilesContainingLineMask(
-			String includeFilesContainingLineMask) {
-		this.includeFilesContainingLineMask = includeFilesContainingLineMask;
+	public void setIncludeFilesContainingText(
+            String ... includeFilesContainingText) {
+		this.includeFilesContainingText = includeFilesContainingText;
 	}
 
 
-	public void setExcludeFilesContainingLineMask(
-			String excludeFilesContainingLineMask) {
-		this.excludeFilesContainingLineMask = excludeFilesContainingLineMask;
+	public void setExcludeFilesContainingText(
+            String ... excludeFilesContainingText) {
+		this.excludeFilesContainingText = excludeFilesContainingText;
 	}
 
 	@Override
 	public FileFilterRuleSet clone() {
-		return new FileFilterRuleSet(includeFilesWithNameMask, excludeFilesWithNameMask, includeFilesContainingLineMask, excludeFilesContainingLineMask);
+		return new FileFilterRuleSet(includeFilesWithNameMask, excludeFilesWithNameMask, includeFilesContainingText, excludeFilesContainingText);
 	}
 	
-	
+
+    public String toString() {
+        return "file filter:\n" +
+                "include names: " + includeFilesWithNameMask + "\n" +
+                "include lines containing: " + includeFilesContainingText + "\n" +
+                "exclude names: " + excludeFilesContainingText + "\n" +
+                "exclude lines containing: " + excludeFilesContainingText + "\n";
+    }
 	
 
 }

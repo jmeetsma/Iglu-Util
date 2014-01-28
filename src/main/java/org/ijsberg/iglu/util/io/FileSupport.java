@@ -708,7 +708,7 @@ public abstract class FileSupport {
 	 */
 	public static String convertToUnixStylePath(String path) {
 		String retval = StringSupport.replaceAll(path, "\\", "/");
-		retval = StringSupport.replaceAll(retval, "//", "/");
+		retval = StringSupport.replaceAll(retval, new String[]{"///", "//"}, new String[]{"/", "/"});
 		return retval;
 	}
 

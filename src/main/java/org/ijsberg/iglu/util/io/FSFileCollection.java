@@ -42,7 +42,12 @@ public class FSFileCollection implements FileCollection {
         return new String(getFileByName(fileName));
     }
 
-    private void refreshFiles() {
+	@Override
+	public FileFilterRuleSet getFileFilter() {
+		return includedFilesRuleSet;
+	}
+
+	private void refreshFiles() {
 
         filesByRelativePathAndName.clear();
 

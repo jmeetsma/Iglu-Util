@@ -12,4 +12,7 @@ public interface FileCollection {
     byte[] getFileByName(String fileName) throws IOException;
 
     String getFileContentsByName(String fileName) throws IOException;
+
+	FileFilterRuleSet getFileFilter();
+
 }

@@ -19,9 +19,12 @@
 
 package org.ijsberg.iglu.util.io;
 
+import org.ijsberg.iglu.util.mail.MimeTypeSupport;
 import org.ijsberg.iglu.util.misc.EncodingSupport;
 import org.ijsberg.iglu.util.misc.StringSupport;
 
+
+//TODO it is not obvious that raw data needs to be set
 
 /**
  * Is a transient carrier for a file stored in the file system.
@@ -148,6 +151,7 @@ public class FileData {
 			extension = "";
 			fileNameNoExt = fileName;
 		}
+		setMimeType(MimeTypeSupport.getMimeTypeForFileExtension(extension));
 	}
 
 	/**

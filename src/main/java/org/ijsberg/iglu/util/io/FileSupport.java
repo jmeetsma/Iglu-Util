@@ -380,21 +380,31 @@ public abstract class FileSupport {
 	public static void copyClassLoadableResourceToFileSystem(String pathToResource, String outputPath) throws IOException{
 
 		//TODO make sure that files exist
-		InputStream input = getInputStreamFromClassLoader(pathToResource);
-
 		File outputFile = createFile(outputPath);
 		if(outputFile.isDirectory()) {
 			outputFile = new File(outputFile.getPath() + '/' + getFileNameFromPath(pathToResource));
 		}
 		OutputStream output = new FileOutputStream(outputFile);
+		copyClassLoadableResource(pathToResource, output);
+		output.close();
+	}
+
+	/**
+	 * @param pathToResource
+	 * @param output
+	 * @throws IOException
+	 */
+	public static void copyClassLoadableResource(String pathToResource, OutputStream output) throws IOException{
+
+		//TODO make sure that files exist
+		InputStream input = getInputStreamFromClassLoader(pathToResource);
+
 		try {
 			StreamSupport.absorbInputStream(input, output);
 		} finally {
-			output.close();
 			input.close();
 		}
 	}
-
 
 	public static ZipEntry getZipEntryFromJar(String fileName, String jarFileName) throws IOException {
 		//zipfile is opened for READ on instantiation

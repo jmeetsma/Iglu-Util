@@ -42,9 +42,6 @@ public class ZipFileStreamProvider implements FileStreamProvider {
 		}
 	}
 
-
-	private ZipEntry currentEntry;
-
 	@Override
 	public PrintStream createPrintStream(String fileName) {
 
@@ -72,9 +69,6 @@ public class ZipFileStreamProvider implements FileStreamProvider {
 	@Override
 	public OutputStream createOutputStream(String fileName) {
 
-		if(currentEntry != null) {
-			throw new RuntimeException("unable to save to " + fileName);
-		}
 		try {
 			ZipEntry e = new ZipEntry(FileSupport.convertToUnixStylePath(fileName));
 			out.putNextEntry(e);

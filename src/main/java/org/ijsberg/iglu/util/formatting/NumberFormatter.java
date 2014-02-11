@@ -55,6 +55,13 @@ public class NumberFormatter {
 		return format(new BigDecimal(number), nrofDecimals);
 	}
 
+	/**
+	 * @param number	   number to format
+	 * @return the formatted number
+	 */
+	public String format(int number) {
+		return format(new BigDecimal(number), 0);
+	}
 
 	/**
 	 * @param number	   number to format
@@ -84,22 +91,25 @@ public class NumberFormatter {
 		BigDecimal pow = new BigDecimal(Math.pow(10, (double) nrofDecimals));
 
 		String numStr = number.multiply(pow).divide(pow, nrofDecimals, BigDecimal.ROUND_HALF_UP).toString();
+
 		int decimalSymbolPos = numStr.indexOf('.');
-		numStr = numStr.substring(0, decimalSymbolPos + nrofDecimals + 1);
 		if (decimalSymbolPos > -1) {
 			numStr = numStr.substring(0, decimalSymbolPos + nrofDecimals + 1);
 			numStr = StringSupport.replaceFirst(numStr, ".", String.valueOf(decimalSymbol));
 		}
 		else {
 			decimalSymbolPos = numStr.length();
-			numStr += decimalSymbol;
+			if(nrofDecimals > 0) {
+				numStr += decimalSymbol;
+			}
 		}
-		int nrofMissingZeros = decimalSymbolPos + nrofDecimals - numStr.length();
-		for (int i = 0; i <= nrofMissingZeros; i++) {
-			numStr += '0';
+		if(nrofDecimals > 0) {
+			int nrofMissingZeros = decimalSymbolPos + nrofDecimals - numStr.length();
+			for (int i = 0; i <= nrofMissingZeros; i++) {
+				numStr += '0';
+			}
+			numStr = StringSupport.replaceFirst(numStr, ".", String.valueOf(decimalSymbol));
 		}
-		numStr = StringSupport.replaceFirst(numStr, ".", String.valueOf(decimalSymbol));
-
 		if (decimalSymbolPos > 3) {
 			StringBuffer numStrBuf = new StringBuffer(numStr);
 			int trailingDigits = decimalSymbolPos - (numStr.startsWith("-") ? 1 : 0);

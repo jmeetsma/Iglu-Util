@@ -769,15 +769,25 @@ public abstract class FileSupport {
 		return findLinesInTextFile(encoding, file, null);
 	}
 
-	public static List<Line> getLinesInTextFile(File file) throws IOException {
+    public static void saveTextFile(List<Line> lines, File file) throws IOException {
+
+        FileOutputStream outputStream = new FileOutputStream(file);
+        PrintStream printStream = new PrintStream(outputStream);
+        for(Line line : lines) {
+            printStream.println(line.getLine());
+        }
+
+    }
+
+	public static ArrayList<Line> getLinesInTextFile(File file) throws IOException {
 		return findLinesInTextFile(null, file, null);
 	}
 	
-	public static List<Line> findLinesInTextFile(File file, String regexp) throws IOException {
+	public static ArrayList<Line> findLinesInTextFile(File file, String regexp) throws IOException {
 		return findLinesInTextFile(null, file, regexp);
 	}
 
-	public static List<Line> findLinesInTextFile(String encoding, File file, String regexp) throws IOException {
+	public static ArrayList<Line> findLinesInTextFile(String encoding, File file, String regexp) throws IOException {
 		ArrayList<Line> lines = new ArrayList<Line>();
 		FileInputStream inputStream = new FileInputStream(file);
 		InputStreamReader inputReader = null;

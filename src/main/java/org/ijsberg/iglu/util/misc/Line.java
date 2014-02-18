@@ -45,7 +45,11 @@ public class Line {
 	public String getLine() {
 		return line;
 	}
-	
+
+    public void setLine(String line) {
+        this.line = line;
+    }
+
 	public String toString() {
 		return (fileName != null ? fileName + " " : "") + number + ": " + line;
 	}

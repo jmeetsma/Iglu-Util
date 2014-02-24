@@ -380,21 +380,31 @@ public abstract class FileSupport {
 	public static void copyClassLoadableResourceToFileSystem(String pathToResource, String outputPath) throws IOException{
 
 		//TODO make sure that files exist
-		InputStream input = getInputStreamFromClassLoader(pathToResource);
-
 		File outputFile = createFile(outputPath);
 		if(outputFile.isDirectory()) {
 			outputFile = new File(outputFile.getPath() + '/' + getFileNameFromPath(pathToResource));
 		}
 		OutputStream output = new FileOutputStream(outputFile);
+		copyClassLoadableResource(pathToResource, output);
+		output.close();
+	}
+
+	/**
+	 * @param pathToResource
+	 * @param output
+	 * @throws IOException
+	 */
+	public static void copyClassLoadableResource(String pathToResource, OutputStream output) throws IOException{
+
+		//TODO make sure that files exist
+		InputStream input = getInputStreamFromClassLoader(pathToResource);
+
 		try {
 			StreamSupport.absorbInputStream(input, output);
 		} finally {
-			output.close();
 			input.close();
 		}
 	}
-
 
 	public static ZipEntry getZipEntryFromJar(String fileName, String jarFileName) throws IOException {
 		//zipfile is opened for READ on instantiation
@@ -708,7 +718,7 @@ public abstract class FileSupport {
 	 */
 	public static String convertToUnixStylePath(String path) {
 		String retval = StringSupport.replaceAll(path, "\\", "/");
-		retval = StringSupport.replaceAll(retval, "//", "/");
+		retval = StringSupport.replaceAll(retval, new String[]{"///", "//"}, new String[]{"/", "/"});
 		return retval;
 	}
 
@@ -759,15 +769,25 @@ public abstract class FileSupport {
 		return findLinesInTextFile(encoding, file, null);
 	}
 
-	public static List<Line> getLinesInTextFile(File file) throws IOException {
+    public static void saveTextFile(List<Line> lines, File file) throws IOException {
+
+        FileOutputStream outputStream = new FileOutputStream(file);
+        PrintStream printStream = new PrintStream(outputStream);
+        for(Line line : lines) {
+            printStream.println(line.getLine());
+        }
+
+    }
+
+	public static ArrayList<Line> getLinesInTextFile(File file) throws IOException {
 		return findLinesInTextFile(null, file, null);
 	}
 	
-	public static List<Line> findLinesInTextFile(File file, String regexp) throws IOException {
+	public static ArrayList<Line> findLinesInTextFile(File file, String regexp) throws IOException {
 		return findLinesInTextFile(null, file, regexp);
 	}
 
-	public static List<Line> findLinesInTextFile(String encoding, File file, String regexp) throws IOException {
+	public static ArrayList<Line> findLinesInTextFile(String encoding, File file, String regexp) throws IOException {
 		ArrayList<Line> lines = new ArrayList<Line>();
 		FileInputStream inputStream = new FileInputStream(file);
 		InputStreamReader inputReader = null;

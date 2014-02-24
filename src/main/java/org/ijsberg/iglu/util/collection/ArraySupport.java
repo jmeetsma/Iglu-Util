@@ -59,7 +59,7 @@ public abstract class ArraySupport {
 	 * @param out
 	 */
 	public static void print(Object[] array, PrintStream out) {
-		print(array, System.out, System.getProperty("line.separator"));
+		print(array, out, System.getProperty("line.separator"));
 	}
 
 	/**

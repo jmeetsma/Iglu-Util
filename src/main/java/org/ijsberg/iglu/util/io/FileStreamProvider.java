@@ -17,43 +17,20 @@
  * along with Iglu.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.ijsberg.iglu.util.misc;
+package org.ijsberg.iglu.util.io;
 
-public class Line {
-	
-	private String fileName;
-	private int number;
-	private String line;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
-	public Line(String fileName, int number, String line) {
-		super();
-		this.fileName = fileName;
-		this.number = number;
-		this.line = line;
-	}
+/**
+ */
+public interface FileStreamProvider {
 
-	public Line(int number, String line) {
-		super();
-		this.number = number;
-		this.line = line;
-	}
-	
-	public int getNumber() {
-		return number;
-	}
+	PrintStream createPrintStream(String fileName);
 
-	public String getLine() {
-		return line;
-	}
+	void closeCurrentStream();
 
-    public void setLine(String line) {
-        this.line = line;
-    }
+	void close();
 
-	public String toString() {
-		return (fileName != null ? fileName + " " : "") + number + ": " + line;
-	}
-	
-	
-
+	OutputStream createOutputStream(String fileName);
 }

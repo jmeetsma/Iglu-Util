@@ -30,4 +30,38 @@ public class NumberFormatterTest {
 		String result = new NumberFormatter(',', '.').format(66.6666, 1);
 		assertEquals("66,7", result);
 	}
+
+	@Test
+	public void testFormatFloat() {
+		String result = new NumberFormatter(',', '.').format(66.6666, 2);
+		assertEquals("66,67", result);
+
+		result = new NumberFormatter(',', '.').format(666666.6666, 2);
+		assertEquals("666.666,67", result);
+
+		result = new NumberFormatter(',', '.').format(666666.66500, 2);
+		assertEquals("666.666,67", result);
+
+		result = new NumberFormatter(',', '.').format(666666.66499, 2);
+		assertEquals("666.666,66", result);
+
+		result = new NumberFormatter(',', '.').format(666666.000000001, 2);
+		assertEquals("666.666,00", result);
+
+		result = new NumberFormatter(',', '.').format(666666.0, 2);
+		assertEquals("666.666,00", result);
+
+		result = new NumberFormatter(',', '.').format(666666, 1);
+		assertEquals("666.666,0", result);
+
+		result = new NumberFormatter(',', '.').format(666666.6666, 0);
+		assertEquals("666.667", result);
+	}
+
+
+	@Test
+	public void testFormatInt() {
+		String result = new NumberFormatter(',', '.').format(666666);
+		assertEquals("666.666", result);
+	}
 }

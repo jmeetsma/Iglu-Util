@@ -94,14 +94,22 @@ public class ListMap<K, V> {
 
 	//TODO expensive
 
-	public Collection<V> values() {
+	public List<V> values() {
 		List<V> retval = new ArrayList<V>();
 		for(List<V> list : internalMap.values()) {
 			retval.addAll(list);
 		}
 		return retval;
 	}
-	
+
+	public List<V> valuesDescending() {
+		List<V> retval = new ArrayList<V>();
+		for(K key : internalMap.descendingKeySet()) {
+			retval.addAll(internalMap.get(key));
+		}
+		return retval;
+	}
+
 	public List<V> getTop(int x) {
 		
 		List<V> retval = new ArrayList<V>();
@@ -128,20 +136,14 @@ public class ListMap<K, V> {
 	}
 	
 	public List<V> removeAll(K key) {
-		
 		return internalMap.remove(key);
-		
 	}
 
-	//TODO remove
-	public boolean containsRelation(K key, V value) {
+	public boolean contains(K key, V value) {
 		List<V> values;
 		return ((values = get(key)) != null && values.contains(value));
 	}
-
-	public boolean containsValue(K key, V value) {
-		List<V> values;
-		return ((values = get(key)) != null && values.contains(value));
-	}
+	
+	
 
 }

@@ -109,7 +109,7 @@ public class EMail// implements Executable
 					outMail.println("--" + boundary);
 					outMail.println("Content-Type: text/plain;");
 					outMail.println("	charset=\"UTF-8\"");
-					outMail.println("Content-Transfer-Encoding: quoted-printable");
+	//				outMail.println("Content-Transfer-Encoding: quoted-printable");
 					outMail.println();
 					outMail.println(message);
 				}

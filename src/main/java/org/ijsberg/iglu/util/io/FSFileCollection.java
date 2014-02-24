@@ -37,12 +37,21 @@ public class FSFileCollection implements FileCollection {
         return FileSupport.getBinaryFromFS(filesByRelativePathAndName.get(fileName));
     }
 
+    public File getActualFileByName(String fileName) throws IOException {
+        return filesByRelativePathAndName.get(fileName);
+    }
+
     @Override
     public String getFileContentsByName(String fileName) throws IOException {
         return new String(getFileByName(fileName));
     }
 
-    private void refreshFiles() {
+	@Override
+	public FileFilterRuleSet getFileFilter() {
+		return includedFilesRuleSet;
+	}
+
+	private void refreshFiles() {
 
         filesByRelativePathAndName.clear();
 

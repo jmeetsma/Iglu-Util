@@ -17,43 +17,35 @@
  * along with Iglu.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.ijsberg.iglu.util.misc;
+package org.ijsberg.iglu.util.collection;
 
-public class Line {
+import java.util.Collection;
+import java.util.List;
+
+/**
+ * 
+ */
+public class PagedList<T> {
 	
-	private String fileName;
-	private int number;
-	private String line;
+	private List<T> list;
+	private int pageSize;
+	private int nrofPages;
 
-	public Line(String fileName, int number, String line) {
-		super();
-		this.fileName = fileName;
-		this.number = number;
-		this.line = line;
-	}
-
-	public Line(int number, String line) {
-		super();
-		this.number = number;
-		this.line = line;
-	}
-	
-	public int getNumber() {
-		return number;
-	}
-
-	public String getLine() {
-		return line;
-	}
-
-    public void setLine(String line) {
-        this.line = line;
-    }
-
-	public String toString() {
-		return (fileName != null ? fileName + " " : "") + number + ": " + line;
+	public PagedList(List<T> list, int pageSize) {
+		this.list = list;
+		this.pageSize = pageSize;
+		nrofPages = (int)Math.ceil((1.0 * list.size()) / pageSize);
 	}
 	
 	
-
+	public List<T> getPage(int offset) {
+		int max = (pageSize * (1 + offset));
+		return list.subList(pageSize * offset, max >= list.size() ? list.size() : max);
+	}
+	
+	
+	public int getNrofPages() {
+		return nrofPages;
+	}
+	
 }

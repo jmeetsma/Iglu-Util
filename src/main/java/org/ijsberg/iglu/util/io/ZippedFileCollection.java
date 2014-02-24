@@ -10,11 +10,11 @@ import java.util.zip.ZipFile;
  */
 public class ZippedFileCollection implements FileCollection {
 
-    //private List<File> files;
     private Map<String, ZipEntry> filesByRelativePathAndName = new TreeMap<String, ZipEntry>();
     private FileFilterRuleSet includedFilesRuleSet;
     private ZipFile zipFile;
 
+	private String relativeDir = "";
 
     public ZippedFileCollection(String zipFileName, FileFilterRuleSet fileFilterRuleSet) throws IOException {
 
@@ -27,7 +27,17 @@ public class ZippedFileCollection implements FileCollection {
         this.zipFile = zipFile;
     }
 
-    @Override
+	public ZippedFileCollection(ZipFile zipFile, String relativeDir, FileFilterRuleSet fileFilterRuleSet) {
+
+		this.includedFilesRuleSet = fileFilterRuleSet;
+		this.zipFile = zipFile;
+		this.relativeDir = FileSupport.convertToUnixStylePath(relativeDir);
+		if(!relativeDir.endsWith("/")) {
+			relativeDir += "/";
+		}
+	}
+
+	@Override
     public List<String> getFileNames() {
         refreshFiles();
         return new ArrayList<String>(filesByRelativePathAndName.keySet());
@@ -35,15 +45,20 @@ public class ZippedFileCollection implements FileCollection {
 
     @Override
     public byte[] getFileByName(String fileName) throws IOException {
-        return FileSupport.getBinaryFromJar(fileName, zipFile);
+        return FileSupport.getBinaryFromJar(relativeDir + fileName, zipFile);
     }
 
     @Override
     public String getFileContentsByName(String fileName) throws IOException {
-        return FileSupport.getTextFileFromJar(fileName, zipFile);
+        return FileSupport.getTextFileFromJar(relativeDir + fileName, zipFile);
     }
 
-    private void refreshFiles() {
+	@Override
+	public FileFilterRuleSet getFileFilter() {
+		return includedFilesRuleSet;
+	}
+
+	private void refreshFiles() {
 
         filesByRelativePathAndName.clear();
 
@@ -51,7 +66,13 @@ public class ZippedFileCollection implements FileCollection {
 
         for (ZipEntry zipEntry : zipEntries) {
             String relativePathAndName = FileSupport.convertToUnixStylePath(zipEntry.getName());
-            filesByRelativePathAndName.put(relativePathAndName, zipEntry);
+
+			if(relativePathAndName.startsWith(relativeDir)){
+				relativePathAndName = relativePathAndName.substring(relativeDir.length());
+				filesByRelativePathAndName.put(relativePathAndName, zipEntry);
+			}
+
+
         }
     }
 

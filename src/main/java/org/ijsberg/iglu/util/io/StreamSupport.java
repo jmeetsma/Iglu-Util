@@ -29,7 +29,7 @@ import java.io.OutputStream;
  */
 public abstract class StreamSupport {
 
-	public static int BUF_SIZE = 10000;
+	public static int BUF_SIZE = 100000;
 
 	/**
 	 * Reads all bytes from an input stream.
@@ -56,9 +56,9 @@ public abstract class StreamSupport {
 	 * @throws IOException
 	 */
 	public static void absorbInputStream(InputStream input, OutputStream output) throws IOException {
-		byte[] buf = new byte[BUF_SIZE];
 		int available;
 		while ((available = input.available()) > 0) {
+			byte[] buf = new byte[available < BUF_SIZE ? available : BUF_SIZE];
 			int len = input.read(buf);
 			output.write(buf, 0, len);
 		}

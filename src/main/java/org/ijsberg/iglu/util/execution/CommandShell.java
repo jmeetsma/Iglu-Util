@@ -260,7 +260,7 @@ public class CommandShell implements Transceiver {
 	 * @return status code
 	 */
 	public static int execute(String command, String[] envVars, File dir, Receiver outputReceiver) throws IOException {
-		return execute(getCommandArrayForCurrentOS(command), envVars, dir,outputReceiver);
+		return execute(getCommandArrayForCurrentOS(command), envVars, dir, outputReceiver);
 	}
 
 	public static int execute(String command, String[] envVars, File dir) throws IOException {

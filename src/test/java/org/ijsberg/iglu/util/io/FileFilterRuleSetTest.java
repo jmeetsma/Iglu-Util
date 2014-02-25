@@ -19,12 +19,12 @@
 
 package org.ijsberg.iglu.util.io;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 import java.io.File;
 
-import org.junit.Test;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class FileFilterRuleSetTest extends DirStructureDependentTest {
 	
@@ -67,10 +67,10 @@ public class FileFilterRuleSetTest extends DirStructureDependentTest {
 		File file = new File(dirStructRoot + "WWW/cornerstone/index.html");
 		assertTrue(file.exists());
 		
-		FileFilterRuleSet ruleSet = new FileFilterRuleSet("*.html", "*/_d0/*", new String[]{""}, new String[]{""});
+		FileFilterRuleSet ruleSet = new FileFilterRuleSet("*.html", "*/_d0/*", new String[]{""}, new String[]{});
 		assertTrue(ruleSet.fileMatchesRules(file));
 
-		ruleSet = new FileFilterRuleSet("*.html", "*/_d0/*", new String[]{"This file is part of Iglu"}, new String[]{""});
+		ruleSet = new FileFilterRuleSet("*.html", "*/_d0/*", new String[]{"This file is part of Iglu"}, new String[]{});
 		assertTrue(ruleSet.fileMatchesRules(file));
 	
 /*		ruleSet = new FileFilterRuleSet("*.html", "* /_d0/ *", "  ~ This file is part of Iglu.", "");

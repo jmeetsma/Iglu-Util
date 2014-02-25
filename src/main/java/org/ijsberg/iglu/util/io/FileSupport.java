@@ -19,28 +19,14 @@
 
 package org.ijsberg.iglu.util.io;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
 import org.ijsberg.iglu.util.collection.CollectionSupport;
 import org.ijsberg.iglu.util.misc.Line;
 import org.ijsberg.iglu.util.misc.StringSupport;
+
+import java.io.*;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * Supports retrieval and deletion of particular files in a directory structure
@@ -286,12 +272,36 @@ public abstract class FileSupport {
 		return null;
 	}
 
+	public static void unzip(String path, ZipFile zipFile) throws IOException {
+
+		ArrayList<ZipEntry> entries = getContentsFromZipFile(zipFile, new FileFilterRuleSet("*.*"));
+		for(ZipEntry entry : entries) {
+			InputStream in = zipFile.getInputStream(entry);
+			if(!entry.isDirectory()) {
+				File file = new File(path + "/" + entry.getName());
+				file.mkdirs();
+				OutputStream out = new FileOutputStream(file);
+				try {
+					StreamSupport.absorbInputStream(in, out);
+				}
+				finally {
+					in.close();
+				}
+			}
+
+
+
+		}
+
+	}
+
+
 	public static byte[] getBinaryFromJar(String fileName, ZipFile zipFile) throws IOException {
         ZipEntry entry = zipFile.getEntry(fileName);
         if (entry == null) {
             throw new IOException("entry " + fileName + " not found in jar " + fileName);
         }
-        InputStream in = zipFile.getInputStream(entry);
+       InputStream in = zipFile.getInputStream(entry);
         try {
             return StreamSupport.absorbInputStream(in);
         }
@@ -524,19 +534,23 @@ public abstract class FileSupport {
 	 * @throws IOException
 	 */
 	public static void copyFile(String fileName, String newFileName, boolean overwriteExisting) throws IOException {
-		File file = new File(fileName);
+		copyFile(new File(fileName), newFileName, overwriteExisting);
+	}
+
+	public static void copyFile(File file, String newFileName, boolean overwriteExisting) throws IOException {
+
 		if (!file.exists()) {
-			throw new IOException("file '" + fileName + "' does not exist");
+			throw new IOException("file '" + file.getName() + "' does not exist");
 		}
 		if (file.isDirectory()) {
-			throw new IOException('\'' + fileName + "' is a directory");
+			throw new IOException('\'' + file.getName() + "' is a directory");
 		}
 		File newFile = new File(newFileName);
-		if(file.isDirectory()) {
-			newFile = new File(file.getPath() + '/' + getFileNameFromPath(fileName));
+		if(newFile.isDirectory()) {
+			newFile = new File(newFileName + '/' + file.getName());
 		}
 		if (!overwriteExisting && newFile.exists()) {
-			throw new IOException("file '" + newFileName + "' already exists");
+			throw new IOException("file '" + newFile.getName() + "' already exists");
 		} else {
 			//newFile.mkdirs();
 			newFile.getParentFile().mkdirs();
@@ -546,7 +560,7 @@ public abstract class FileSupport {
 
 		int read = 0;
 
-		
+
 		FileInputStream in = new FileInputStream(file);
 		FileOutputStream out = new FileOutputStream(newFile);
 
@@ -556,6 +570,16 @@ public abstract class FileSupport {
 		out.close();
 		in.close();
 	}
+
+	public static void copyDirectory(String fileName, String newFileName, boolean overwriteExisting) throws IOException {
+
+		List<File> files = getFilesInDirectoryTree(fileName);
+		for(File file : files) {
+			copyFile(file, newFileName, overwriteExisting);
+		}
+
+	}
+
 
 	/**
 	 * Deletes from a directory all files and subdirectories targeted by a given mask.

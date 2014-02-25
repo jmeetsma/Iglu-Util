@@ -20,9 +20,7 @@
 package org.ijsberg.iglu.util.io;
 
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.fail;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -30,7 +28,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.junit.Test;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 public class FileSupportTest extends DirStructureDependentTest {
 
@@ -105,15 +105,17 @@ public class FileSupportTest extends DirStructureDependentTest {
 		foundFiles = FileSupport.getFilesInDirectoryTree(dirStructRoot, ruleSet);		
 		assertEquals(2, foundFiles.size());
 
-		ruleSet.setIncludeFilesContainingText("*ijsberg*");
+		System.out.println(foundFiles);
+
+		ruleSet.setIncludeFilesContainingText("ijsberg");
 		foundFiles = FileSupport.getFilesInDirectoryTree(dirStructRoot, ruleSet);		
 		assertEquals(1, foundFiles.size());
 
-		ruleSet.setIncludeFilesContainingText("*title*");
+		ruleSet.setIncludeFilesContainingText("title");
 		foundFiles = FileSupport.getFilesInDirectoryTree(dirStructRoot, ruleSet);		
 		assertEquals(2, foundFiles.size());
 
-		ruleSet.setExcludeFilesContainingText("*ijsberg*");
+		ruleSet.setExcludeFilesContainingText("ijsberg");
 		foundFiles = FileSupport.getFilesInDirectoryTree(dirStructRoot, ruleSet);		
 		assertEquals(1, foundFiles.size());
 		

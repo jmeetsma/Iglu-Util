@@ -20,7 +20,6 @@
 package org.ijsberg.iglu.util.io;
 
 import java.io.*;
-import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -33,12 +32,10 @@ public class ZipFileStreamProvider implements FileStreamProvider {
 	public ZipFileStreamProvider(String fileName) {
 		try {
 			File f = new File(fileName);
+			new File(f.getParent()).mkdirs();
 			out = new ZipOutputStream(new FileOutputStream(f));
-
-			System.out.println("created " + f.getAbsolutePath());
-
 		} catch (IOException e) {
-			throw new RuntimeException("unable to save to " + fileName);
+			throw new RuntimeException("unable to save to " + fileName, e);
 		}
 	}
 

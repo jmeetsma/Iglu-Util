@@ -1,6 +1,5 @@
 package org.ijsberg.iglu.util.io;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.zip.ZipEntry;
@@ -45,12 +44,12 @@ public class ZippedFileCollection implements FileCollection {
 
     @Override
     public byte[] getFileByName(String fileName) throws IOException {
-        return FileSupport.getBinaryFromJar(relativeDir + fileName, zipFile);
+        return FileSupport.getBinaryFromZip(relativeDir + fileName, zipFile);
     }
 
     @Override
     public String getFileContentsByName(String fileName) throws IOException {
-        return FileSupport.getTextFileFromJar(relativeDir + fileName, zipFile);
+        return FileSupport.getTextFileFromZip(relativeDir + fileName, zipFile);
     }
 
 	@Override

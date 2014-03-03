@@ -216,7 +216,14 @@ public class CommandShell implements Transceiver {
 	public static int execute(String[] commandArray, String[] alternativeEnvVars, File workingDir, Receiver outputReceiver) throws IOException {
 		Runtime rt = Runtime.getRuntime();
 		//command + arguments, environment parameters, workingdir
-		Process proc = rt.exec(commandArray, alternativeEnvVars, workingDir);
+        Process proc = null;
+        try {
+		    proc = rt.exec(commandArray, alternativeEnvVars, workingDir);
+        } catch (Exception e) {
+            System.out.println("unable to execute command: " + ArraySupport.format(commandArray, ", "));
+            e.printStackTrace();
+            throw new RuntimeException("unable to execute command: " + ArraySupport.format(commandArray, ", "), e);
+        }
 
 		// any error message?
 		Transponder errorForwarder = new

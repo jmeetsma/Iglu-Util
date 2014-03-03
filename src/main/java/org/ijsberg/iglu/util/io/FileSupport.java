@@ -256,14 +256,14 @@ public abstract class FileSupport {
 	 * @param className class name as retrieved in myObject.getClass().getName()
 	 * @return a ZipEntry if the class file was found or null otherwise
 	 */
-	public static ZipEntry getClassZipEntryFromJarInClassPath(String className) throws IOException {
+	public static ZipEntry getClassZipEntryFromZipInClassPath(String className) throws IOException {
 		String fileName = StringSupport.replaceAll(className, ".", "/");
 		fileName += ".class";
 
 		Collection<String> jars = StringSupport.split(System.getProperty("java.class.path"), ";:", false);
 		for(String jarFileName : jars) {
 			if (jarFileName.endsWith(".jar") || jarFileName.endsWith(".zip")) {
-				ZipEntry entry = getZipEntryFromJar(fileName, jarFileName);
+				ZipEntry entry = getZipEntryFromZip(fileName, jarFileName);
 				if (entry != null) {
 					return entry;
 				}
@@ -296,7 +296,7 @@ public abstract class FileSupport {
 	}
 
 
-	public static byte[] getBinaryFromJar(String fileName, ZipFile zipFile) throws IOException {
+	public static byte[] getBinaryFromZip(String fileName, ZipFile zipFile) throws IOException {
         ZipEntry entry = zipFile.getEntry(fileName);
         if (entry == null) {
             throw new IOException("entry " + fileName + " not found in jar " + fileName);
@@ -314,16 +314,16 @@ public abstract class FileSupport {
         //zipfile is opened for READ on instantiation
         ZipFile zipfile = new ZipFile(jarFileName);
         try {
-            return getBinaryFromJar(fileName, zipfile);
+            return getBinaryFromZip(fileName, zipfile);
         }
         finally {
             zipfile.close();
         }
     }
 
-    public static String getTextFileFromJar(String fileName, ZipFile zipFile) throws IOException {
+    public static String getTextFileFromZip(String fileName, ZipFile zipFile) throws IOException {
 
-        return new String(getBinaryFromJar(fileName, zipFile));
+        return new String(getBinaryFromZip(fileName, zipFile));
     }
 
 	public static byte[] getBinaryFromClassPath(String fileName, String classPath) throws IOException {
@@ -416,7 +416,7 @@ public abstract class FileSupport {
 		}
 	}
 
-	public static ZipEntry getZipEntryFromJar(String fileName, String jarFileName) throws IOException {
+	public static ZipEntry getZipEntryFromZip(String fileName, String jarFileName) throws IOException {
 		//zipfile is opened for READ on instantiation
 		ZipFile zipfile = new ZipFile(jarFileName);
 		return zipfile.getEntry(fileName);
@@ -759,21 +759,6 @@ public abstract class FileSupport {
 		return unixStylePath.substring(0, unixStylePath.lastIndexOf('/') + 1);
 	}
 
-	/*
-	public static void main(String[] args)
-	{
-		//CollectionSupport.print(FileSupport.getDirectoriesInDirectoryTree("/home/jeroen/development/flash/src"));
-		try
-		{
-			createFile("C:\\development\\test\\test.ini");
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-*/
-
 
 	public static File createTmpDir() throws IOException {
 		File file = File.createTempFile("iglu_util_test_", null);
@@ -789,7 +774,7 @@ public abstract class FileSupport {
 		return file;
 	}
 
-	public static List<Line> getLinesInTextFile(String encoding, File file) throws IOException {
+	public static List<Line> loadTextFile(String encoding, File file) throws IOException {
 		return findLinesInTextFile(encoding, file, null);
 	}
 
@@ -800,9 +785,9 @@ public abstract class FileSupport {
         for(Line line : lines) {
             printStream.println(line.getLine());
         }
-
     }
 
+    //TODO read text file from zip
 	public static ArrayList<Line> getLinesInTextFile(File file) throws IOException {
 		return findLinesInTextFile(null, file, null);
 	}

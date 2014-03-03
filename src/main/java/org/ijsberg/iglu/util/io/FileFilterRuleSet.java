@@ -119,7 +119,7 @@ public class FileFilterRuleSet implements Cloneable {
                 } else {
                     return fileMatchesRules(
                             FileSupport.convertToUnixStylePath(entry.getName()),
-                            FileSupport.getTextFileFromJar(entry.getName(), zipFile));
+                            FileSupport.getTextFileFromZip(entry.getName(), zipFile));
                 }
         } catch (IOException ioe) {
             //at the moment file does not match rules

@@ -15,4 +15,6 @@ public interface FileCollection {
 
 	FileFilterRuleSet getFileFilter();
 
+	boolean containsFile(String fileName);
+
 }

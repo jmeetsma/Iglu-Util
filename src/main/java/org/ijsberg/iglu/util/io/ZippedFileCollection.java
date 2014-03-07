@@ -1,7 +1,11 @@
 package org.ijsberg.iglu.util.io;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -20,7 +24,11 @@ public class ZippedFileCollection implements FileCollection {
         this(new ZipFile(zipFileName), fileFilterRuleSet);
     }
 
-    public ZippedFileCollection(ZipFile zipFile, FileFilterRuleSet fileFilterRuleSet) {
+	public ZippedFileCollection(File file) throws IOException {
+		this(new ZipFile(file), new FileFilterRuleSet("*.*"));
+	}
+
+	public ZippedFileCollection(ZipFile zipFile, FileFilterRuleSet fileFilterRuleSet) {
 
         this.includedFilesRuleSet = fileFilterRuleSet;
         this.zipFile = zipFile;
@@ -55,6 +63,11 @@ public class ZippedFileCollection implements FileCollection {
 	@Override
 	public FileFilterRuleSet getFileFilter() {
 		return includedFilesRuleSet;
+	}
+
+	@Override
+	public boolean containsFile(String fileName) {
+		return FileSupport.containsFileInZip(relativeDir + fileName, zipFile);
 	}
 
 	private void refreshFiles() {

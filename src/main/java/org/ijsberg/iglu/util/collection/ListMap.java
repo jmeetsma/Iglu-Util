@@ -19,11 +19,7 @@
 
 package org.ijsberg.iglu.util.collection;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 public class ListMap<K, V> {
 	
@@ -91,6 +87,10 @@ public class ListMap<K, V> {
 		return retval;
 	}
 
+
+	public Collection<List<V>> lists() {
+		return internalMap.values();
+	}
 
 	//TODO expensive
 

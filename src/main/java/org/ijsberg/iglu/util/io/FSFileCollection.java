@@ -3,7 +3,10 @@ package org.ijsberg.iglu.util.io;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  */
@@ -49,6 +52,11 @@ public class FSFileCollection implements FileCollection {
 	@Override
 	public FileFilterRuleSet getFileFilter() {
 		return includedFilesRuleSet;
+	}
+
+	@Override
+	public boolean containsFile(String fileName) {
+		return filesByRelativePathAndName.containsKey(fileName);
 	}
 
 	private void refreshFiles() {

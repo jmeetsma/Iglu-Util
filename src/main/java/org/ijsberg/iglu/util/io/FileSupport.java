@@ -120,7 +120,7 @@ public abstract class FileSupport {
 	 */
 	private static ArrayList<File> getContentsInDirectoryTree(File directory, FileFilterRuleSet ruleSet, boolean returnFiles, boolean returnDirs) {
 		ArrayList<File> result = new ArrayList<File>();
-		if (directory != null && !directory.isFile()) {
+		if (directory != null && directory.exists() && directory.isDirectory()) {
 			File[] files = directory.listFiles();
 			if (files != null) {
 				for (int i = 0; i < files.length; i++) {
@@ -416,9 +416,14 @@ public abstract class FileSupport {
 		}
 	}
 
-	public static ZipEntry getZipEntryFromZip(String fileName, String jarFileName) throws IOException {
+	public static boolean containsFileInZip(String fileName, ZipFile zipFile) {
+		return zipFile.getEntry(fileName) != null;
+	}
+
+
+	public static ZipEntry getZipEntryFromZip(String fileName, String zipFileName) throws IOException {
 		//zipfile is opened for READ on instantiation
-		ZipFile zipfile = new ZipFile(jarFileName);
+		ZipFile zipfile = new ZipFile(zipFileName);
 		return zipfile.getEntry(fileName);
 	}
 
@@ -433,23 +438,6 @@ public abstract class FileSupport {
                 result.add(zipEntry);
             }
         }
-
-/*        if (directory != null && !directory.isFile()) {
-            File[] files = directory.listFiles();
-            if (files != null) {
-                for (int i = 0; i < files.length; i++) {
-                    if (files[i].isDirectory()) {
-                        if (returnDirs && ruleSet.fileMatchesRules(files[i])) {
-                            result.add(files[i]);
-                        }
-                        result.addAll(getContentsInDirectoryTree(files[i], ruleSet, returnFiles, returnDirs));
-                    }
-                    else if (returnFiles && ruleSet.fileMatchesRules(files[i])) {
-                        result.add(files[i]);
-                    }
-                }
-            }
-        } */
         return result;
     }
 
@@ -774,6 +762,18 @@ public abstract class FileSupport {
 		return file;
 	}
 
+	public static List<Line> convertToTextFile(String input) throws IOException {
+
+		BufferedReader reader = new BufferedReader(new StringReader(input));
+		List<Line> lines = new ArrayList<Line>();
+		String line; int count = 0;
+		while ((line = reader.readLine()) != null) {
+			lines.add(new Line(count, line));
+		}
+		return lines;
+	}
+
+
 	public static List<Line> loadTextFile(String encoding, File file) throws IOException {
 		return findLinesInTextFile(encoding, file, null);
 	}
@@ -828,19 +828,20 @@ public abstract class FileSupport {
 		oOutput.close();
 		fStream.close();
 	}
-	
-	
+
+
 	public static Serializable readSerializable(String fileName) throws IOException, ClassNotFoundException {
-		
+
 		FileInputStream fStream = new FileInputStream(fileName);
 		ObjectInputStream oInput = new ObjectInputStream(fStream);
-		
+
 		Serializable retval = (Serializable)oInput.readObject();
-		
+
 		oInput.close();
 		fStream.close();
-		
+
 		return retval;
 	}
+
 
 }

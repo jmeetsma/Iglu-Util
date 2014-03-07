@@ -19,17 +19,22 @@
 
 package org.ijsberg.iglu.util.formatting;
 
+import org.ijsberg.iglu.util.misc.StringSupport;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.ijsberg.iglu.util.misc.StringSupport;
 
 /**
  * Helper class that validates formats of values.
  */
 public abstract class PatternMatchingSupport {
+
+	private static HashMap<String, Pattern> cache = new HashMap<String, Pattern>();
+
+
 	/**
 	 * Returns true only if the value matches the regular expression
 	 * only once and exactly.
@@ -39,7 +44,11 @@ public abstract class PatternMatchingSupport {
 	 * @return true if val matches regular expression regexp
 	 */
 	public static boolean valueMatchesRegularExpression(String val, String regexp) {
-		Pattern p = Pattern.compile(regexp);
+		Pattern p = cache.get(regexp);
+		if(p == null) {
+			p = Pattern.compile(regexp);
+			cache.put(regexp, p);
+		}
 		return valueMatchesRegularExpression(val, p);
 	}
 

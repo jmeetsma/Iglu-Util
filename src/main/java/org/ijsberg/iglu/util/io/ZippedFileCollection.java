@@ -79,13 +79,20 @@ public class ZippedFileCollection implements FileCollection {
         for (ZipEntry zipEntry : zipEntries) {
             String relativePathAndName = FileSupport.convertToUnixStylePath(zipEntry.getName());
 
-			if(relativePathAndName.startsWith(relativeDir)){
+			if(relativePathAndName.startsWith(relativeDir)) {
 				relativePathAndName = relativePathAndName.substring(relativeDir.length());
 				filesByRelativePathAndName.put(relativePathAndName, zipEntry);
+				rootDir.addFile(relativePathAndName);
 			}
+		}
+	}
+
+	@Override
+	public Directory getRootDirectory() {
+		return rootDir;
+	}
 
 
-        }
-    }
+	Directory rootDir = new Directory("ROOT");
 
 }

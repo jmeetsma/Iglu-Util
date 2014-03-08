@@ -54,6 +54,8 @@ public class Line {
 		return (fileName != null ? fileName + " " : "") + number + ": " + line;
 	}
 	
-	
+	public int hashCode() {
+		return line.hashCode();
+	}
 
 }

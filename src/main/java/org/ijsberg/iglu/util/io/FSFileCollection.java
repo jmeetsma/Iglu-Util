@@ -59,6 +59,11 @@ public class FSFileCollection implements FileCollection {
 		return filesByRelativePathAndName.containsKey(fileName);
 	}
 
+	@Override
+	public Directory getRootDirectory() {
+		return rootDir;
+	}
+
 	private void refreshFiles() {
 
         filesByRelativePathAndName.clear();
@@ -69,6 +74,18 @@ public class FSFileCollection implements FileCollection {
             String relativePathAndName = FileSupport.convertToUnixStylePath(file.getPath()).substring(
                     baseDir.length());
             filesByRelativePathAndName.put(relativePathAndName, file);
+
+
+			rootDir.addFile(relativePathAndName);
+
+
         }
     }
+
+	Directory rootDir = new Directory("ROOT");
+
+
+
+
+
 }

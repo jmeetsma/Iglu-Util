@@ -763,16 +763,21 @@ public abstract class FileSupport {
 	}
 
 	public static List<Line> convertToTextFile(String input) throws IOException {
+		return convertToTextFile(input, false);
+	}
+
+	public static List<Line> convertToTextFile(String input, boolean skipEmpty) throws IOException {
 
 		BufferedReader reader = new BufferedReader(new StringReader(input));
 		List<Line> lines = new ArrayList<Line>();
 		String line; int count = 0;
 		while ((line = reader.readLine()) != null) {
-			lines.add(new Line(count, line));
+			if(!skipEmpty || !line.trim().isEmpty()) {
+				lines.add(new Line(count, line));
+			}
 		}
 		return lines;
 	}
-
 
 	public static List<Line> loadTextFile(String encoding, File file) throws IOException {
 		return findLinesInTextFile(encoding, file, null);

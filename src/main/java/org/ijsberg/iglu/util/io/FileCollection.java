@@ -18,4 +18,6 @@ public interface FileCollection {
 	boolean containsFile(String fileName);
 
 	Directory getRootDirectory();
+
+	void setFileFilter(FileFilterRuleSet fileFilter);
 }

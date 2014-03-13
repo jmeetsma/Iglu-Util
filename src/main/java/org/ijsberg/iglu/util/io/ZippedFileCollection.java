@@ -32,6 +32,8 @@ public class ZippedFileCollection implements FileCollection {
 
         this.includedFilesRuleSet = fileFilterRuleSet;
         this.zipFile = zipFile;
+		refreshFiles();
+
     }
 
 	public ZippedFileCollection(ZipFile zipFile, String relativeDir, FileFilterRuleSet fileFilterRuleSet) {
@@ -42,11 +44,12 @@ public class ZippedFileCollection implements FileCollection {
 		if(!relativeDir.endsWith("/")) {
 			relativeDir += "/";
 		}
+		refreshFiles();
+
 	}
 
 	@Override
     public List<String> getFileNames() {
-        refreshFiles();
         return new ArrayList<String>(filesByRelativePathAndName.keySet());
     }
 
@@ -67,12 +70,14 @@ public class ZippedFileCollection implements FileCollection {
 
 	@Override
 	public boolean containsFile(String fileName) {
-		return FileSupport.containsFileInZip(relativeDir + fileName, zipFile);
+		return  filesByRelativePathAndName.containsKey(fileName);
+//				FileSupport.containsFileInZip(relativeDir + fileName, zipFile);
 	}
 
 	private void refreshFiles() {
 
         filesByRelativePathAndName.clear();
+		rootDir = new Directory("ROOT");
 
         List<ZipEntry> zipEntries = FileSupport.getContentsFromZipFile(zipFile, includedFilesRuleSet);
 
@@ -83,6 +88,7 @@ public class ZippedFileCollection implements FileCollection {
 				relativePathAndName = relativePathAndName.substring(relativeDir.length());
 				filesByRelativePathAndName.put(relativePathAndName, zipEntry);
 				rootDir.addFile(relativePathAndName);
+
 			}
 		}
 	}
@@ -90,6 +96,12 @@ public class ZippedFileCollection implements FileCollection {
 	@Override
 	public Directory getRootDirectory() {
 		return rootDir;
+	}
+
+	@Override
+	public void setFileFilter(FileFilterRuleSet fileFilter) {
+		this.includedFilesRuleSet = fileFilter;
+		refreshFiles();
 	}
 
 

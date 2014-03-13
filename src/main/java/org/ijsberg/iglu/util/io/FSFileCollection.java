@@ -64,9 +64,16 @@ public class FSFileCollection implements FileCollection {
 		return rootDir;
 	}
 
+	@Override
+	public void setFileFilter(FileFilterRuleSet fileFilter) {
+		this.includedFilesRuleSet = fileFilter;
+		refreshFiles();
+	}
+
 	private void refreshFiles() {
 
         filesByRelativePathAndName.clear();
+		rootDir = new Directory("ROOT");
 
         List<File> files = FileSupport.getFilesInDirectoryTree(baseDir, includedFilesRuleSet);
 

@@ -143,7 +143,14 @@ public class ListMap<K, V> {
 		List<V> values;
 		return ((values = get(key)) != null && values.contains(value));
 	}
-	
-	
+
+	public boolean containsKey(K key) {
+		return internalMap.containsKey(key);
+	}
+
+	public int indexOf(K key, V value) {
+		List<V> values;
+		return (values = get(key)) == null ? -1 : values.indexOf(value);
+	}
 
 }

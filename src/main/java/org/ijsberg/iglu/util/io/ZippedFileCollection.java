@@ -74,7 +74,8 @@ public class ZippedFileCollection implements FileCollection {
 //				FileSupport.containsFileInZip(relativeDir + fileName, zipFile);
 	}
 
-	private void refreshFiles() {
+	@Override
+	public void refreshFiles() {
 
         filesByRelativePathAndName.clear();
 		rootDir = new Directory("ROOT");

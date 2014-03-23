@@ -70,7 +70,7 @@ public class FSFileCollection implements FileCollection {
 		refreshFiles();
 	}
 
-	private void refreshFiles() {
+	public void refreshFiles() {
 
         filesByRelativePathAndName.clear();
 		rootDir = new Directory("ROOT");

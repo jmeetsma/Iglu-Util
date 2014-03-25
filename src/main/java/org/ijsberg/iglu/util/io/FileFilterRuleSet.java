@@ -19,12 +19,13 @@
 
 package org.ijsberg.iglu.util.io;
 
+import org.ijsberg.iglu.util.collection.ArraySupport;
+import org.ijsberg.iglu.util.formatting.PatternMatchingSupport;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import org.ijsberg.iglu.util.formatting.PatternMatchingSupport;
 
 /**
  * Contains up to 4 rules that a file may match.
@@ -248,9 +249,9 @@ public class FileFilterRuleSet implements Cloneable {
     public String toString() {
         return "file filter:\n" +
                 "include names: " + includeFilesWithNameMask + "\n" +
-                "include lines containing: " + includeFilesContainingText + "\n" +
-                "exclude names: " + excludeFilesContainingText + "\n" +
-                "exclude lines containing: " + excludeFilesContainingText + "\n";
+                "include lines containing: " + ArraySupport.format("\"", "\"", includeFilesContainingText, ",") + "\n" +
+                "exclude names: " + ArraySupport.format("\"", "\"", excludeFilesContainingText, ", ") + "\n" +
+                "exclude lines containing: " + ArraySupport.format("\"", "\"", excludeFilesContainingText, ", ") + "\n";
     }
 	
 

@@ -297,7 +297,7 @@ public abstract class FileSupport {
 
 
 	public static byte[] getBinaryFromZip(String fileName, ZipFile zipFile) throws IOException {
-        ZipEntry entry = zipFile.getEntry(fileName);
+        ZipEntry entry = zipFile.getEntry(FileSupport.convertToUnixStylePath(fileName));
         if (entry == null) {
             throw new IOException("entry " + fileName + " not found in jar " + fileName);
         }

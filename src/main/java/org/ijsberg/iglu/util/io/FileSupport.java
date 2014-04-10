@@ -434,6 +434,7 @@ public abstract class FileSupport {
         Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
         while(zipEntries.hasMoreElements()) {
             ZipEntry zipEntry = zipEntries.nextElement();
+
             if(ruleSet.fileMatchesRules(zipEntry, zipFile)) {
                 result.add(zipEntry);
             }

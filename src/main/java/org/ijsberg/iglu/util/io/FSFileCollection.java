@@ -89,6 +89,11 @@ public class FSFileCollection implements FileCollection {
         }
     }
 
+	@Override
+	public String getDescription() {
+		return "directory: '" + baseDir + "'";
+	}
+
 	Directory rootDir = new Directory("ROOT");
 
 

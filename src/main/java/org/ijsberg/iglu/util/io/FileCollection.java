@@ -22,4 +22,6 @@ public interface FileCollection {
 	void setFileFilter(FileFilterRuleSet fileFilter);
 
 	void refreshFiles();
+
+	String getDescription();
 }

@@ -152,6 +152,7 @@ public class FileFilterRuleSet implements Cloneable {
 	private boolean includeBecauseOfName(String fileName) {
 		boolean retval = includeFilesWithNameMask == null || "*".equals(includeFilesWithNameMask) || 
 				PatternMatchingSupport.valueMatchesWildcardExpression(fileName, includeFilesWithNameMask);
+
 		return retval;
 	}
 

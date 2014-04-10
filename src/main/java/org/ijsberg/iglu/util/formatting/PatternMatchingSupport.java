@@ -99,7 +99,7 @@ public abstract class PatternMatchingSupport {
 				exp,
 				new String[]{"[", 	"\\", 	"^", 	"$", ".",	"?", "*", "+", "(", ")"},
 				new String[]{"\\[", "\\\\", "\\^", "\\$", "\\.",".?", ".*", "\\+", "\\(", "\\)"});
-		
+
 		return (valueMatchesRegularExpression(val, expCopy));
 	}
 	

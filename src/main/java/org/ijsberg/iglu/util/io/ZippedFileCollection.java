@@ -105,6 +105,12 @@ public class ZippedFileCollection implements FileCollection {
 	}
 
 
+	@Override
+	public String getDescription() {
+		return "file: '" + zipFile.getName() + "' subdirectory: '" + relativeDir + "'";
+	}
+
+
 	Directory rootDir = new Directory("ROOT");
 
 }

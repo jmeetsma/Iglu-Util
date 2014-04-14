@@ -132,6 +132,22 @@ public abstract class ArraySupport {
 		return retval.toString();
 	}
 
+    /**
+     * @param array
+     * @param separator
+     * @return
+     */
+    public static String format(double[] array, String separator) {
+        if (array == null) {
+            return null;
+        }
+        StringBuffer retval = new StringBuffer();
+        for (int i = 0; i < array.length; i++) {
+            retval.append(array[i] + (i + 1 != array.length ? separator : ""));
+        }
+        return retval.toString();
+    }
+
 	/**
 	 * @param array
 	 * @param separator

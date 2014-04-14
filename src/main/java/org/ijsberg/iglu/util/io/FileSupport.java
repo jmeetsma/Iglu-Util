@@ -299,7 +299,7 @@ public abstract class FileSupport {
 	public static byte[] getBinaryFromZip(String fileName, ZipFile zipFile) throws IOException {
         ZipEntry entry = zipFile.getEntry(FileSupport.convertToUnixStylePath(fileName));
         if (entry == null) {
-            throw new IOException("entry " + fileName + " not found in jar " + fileName);
+            throw new IOException("entry " + fileName + " not found in jar " + zipFile);
         }
        InputStream in = zipFile.getInputStream(entry);
         try {

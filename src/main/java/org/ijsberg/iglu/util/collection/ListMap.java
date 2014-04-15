@@ -134,7 +134,17 @@ public class ListMap<K, V> {
 		return null;
 		
 	}
-	
+
+    public boolean remove(K key, V value) {
+
+        List<V> list = internalMap.get(key);
+        if(!list.isEmpty()) {
+            return list.remove(value);
+        }
+        return false;
+
+    }
+
 	public List<V> removeAll(K key) {
 		return internalMap.remove(key);
 	}

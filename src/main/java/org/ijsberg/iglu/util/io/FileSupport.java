@@ -124,6 +124,7 @@ public abstract class FileSupport {
 			File[] files = directory.listFiles();
 			if (files != null) {
 				for (int i = 0; i < files.length; i++) {
+
 					if (files[i].isDirectory()) {
 						if (returnDirs && ruleSet.fileMatchesRules(files[i])) {
 							result.add(files[i]);

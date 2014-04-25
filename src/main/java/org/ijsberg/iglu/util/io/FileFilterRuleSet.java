@@ -37,8 +37,9 @@ import java.util.zip.ZipFile;
  * @see PatternMatchingSupport#valueMatchesWildcardExpression(String, String)
  */
 public class FileFilterRuleSet implements Cloneable {
-	
-	private String includeFilesWithNameMask;
+
+	private String baseDir = "";
+    private String includeFilesWithNameMask;
 	private String excludeFilesWithNameMask = "";
 	private String[] includeFilesContainingText = new String[0];
 	private String[] excludeFilesContainingText = new String[0];
@@ -75,17 +76,12 @@ public class FileFilterRuleSet implements Cloneable {
 		this.includeFilesContainingText = includeFilesContainingLineMask;
 		this.excludeFilesContainingText = excludeFilesContainingLineMask;
 	}
-/*
-	//TODO shortcut
-	public boolean matchesAll() {
-		return excludesNone() && "*".equals(this.includeFilesWithNameMask);
-	}
-*/
-/*	private boolean matches(String mask, String defaultMask) {
-		return (this.excludeFilesWithNameMask == null || "".equals(this.excludeFilesWithNameMask)) &&
-				(this.excludeFilesContainingText == null || "".equals(this.excludeFilesContainingText));
-	}
-*/
+
+
+/*    public FileFilterRuleSet setBaseDir(File baseDir) {
+        this.baseDir = baseDir;
+    }*/
+
 	/**
 	 * Checks if file matches rules.
 	 * @param file
@@ -151,14 +147,16 @@ public class FileFilterRuleSet implements Cloneable {
 
 	private boolean includeBecauseOfName(String fileName) {
 		boolean retval = includeFilesWithNameMask == null || "*".equals(includeFilesWithNameMask) || 
-				PatternMatchingSupport.valueMatchesWildcardExpression(fileName, includeFilesWithNameMask);
+				PatternMatchingSupport.valueMatchesWildcardExpression(fileName, includeFilesWithNameMask) ||
+                PatternMatchingSupport.valueMatchesWildcardExpression(fileName, "*/" + includeFilesWithNameMask);
 
 		return retval;
 	}
 
 	private boolean excludeBecauseOfName(String fileName) {
 		boolean retval = excludeFilesWithNameMask != null && !"".equals(excludeFilesWithNameMask) &&
-				PatternMatchingSupport.valueMatchesWildcardExpression(fileName, excludeFilesWithNameMask);
+                (PatternMatchingSupport.valueMatchesWildcardExpression(fileName, excludeFilesWithNameMask) ||
+                PatternMatchingSupport.valueMatchesWildcardExpression(fileName, "*/" + excludeFilesWithNameMask));
 
 		return retval;
 	}
@@ -186,38 +184,7 @@ public class FileFilterRuleSet implements Cloneable {
             }
         }
         return false;
-
-/*
-        if(new String(fileContents).contains(expression)) {
-            System.out.println(new String(fileContents));
-
-        }
-        System.out.println(PatternMatchingSupport.valueMatchesWildcardExpression(
-                new String(fileContents), expression));
-
-        return PatternMatchingSupport.valueMatchesWildcardExpression(
-                new String(fileContents), expression);   */
     }
-
-/*	private static boolean occurenceFound(File file, String expression) throws IOException {
-		InputStream input = new FileInputStream(file);
-
-		BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-
-		try {
-			String line;
-			while ((line = reader.readLine()) != null) {
-				if(PatternMatchingSupport.valueMatchesWildcardExpression(line, expression)) {
-					return true;
-				}
-			}
-		} finally {
-			reader.close();
-			input.close();
-		}
-		return false;
-	}
-*/
 
 	public void setIncludeFilesWithNameMask(String includeFilesWithNameMask) {
 

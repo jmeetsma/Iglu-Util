@@ -55,7 +55,7 @@ public class Line {
 	}
 	
 	public int hashCode() {
-		return line.hashCode();
+		return StringSupport.condenseWhitespace(line).trim().hashCode();
 	}
 
 }

@@ -70,8 +70,8 @@ public class ZippedFileCollection implements FileCollection {
 
 	@Override
 	public boolean containsFile(String fileName) {
+
 		return  filesByRelativePathAndName.containsKey(FileSupport.convertToUnixStylePath(fileName));
-//				FileSupport.containsFileInZip(relativeDir + fileName, zipFile);
 	}
 
 	@Override

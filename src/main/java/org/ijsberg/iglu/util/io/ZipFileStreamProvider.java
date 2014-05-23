@@ -43,8 +43,11 @@ public class ZipFileStreamProvider implements FileStreamProvider {
 
 	@Override
 	public PrintStream createPrintStream(String fileName) {
-
-		return new PrintStream(createOutputStream(fileName));
+        String cleanPath = FileSupport.convertToUnixStylePath(fileName);
+        if(fileName.startsWith("/")) {
+            cleanPath = cleanPath.substring(1);
+        }
+		return new PrintStream(createOutputStream(cleanPath));
 	}
 
 	public void closeCurrentStream() {
@@ -69,11 +72,9 @@ public class ZipFileStreamProvider implements FileStreamProvider {
 
 	@Override
 	public OutputStream createOutputStream(String fileName) {
-
 		try {
 			ZipEntry e = new ZipEntry(FileSupport.convertToUnixStylePath(fileName));
 			out.putNextEntry(e);
-
 			return bufferedOut;
 		} catch (IOException e) {
 			throw new RuntimeException("unable to save to " + fileName, e);

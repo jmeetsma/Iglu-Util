@@ -25,7 +25,7 @@ import java.util.HashMap;
  * Helper class containing current mime types.
  */
 public abstract class MimeTypeSupport {
-	public static HashMap mapping = new HashMap(10);
+	public static HashMap<String, String> mapping = new HashMap<String, String>(10);
 	//static initialization
 	public static FileExtensionToTypeMapping fe2tmapping = new FileExtensionToTypeMapping();
 
@@ -36,6 +36,7 @@ public abstract class MimeTypeSupport {
 			mapping.put("txt", "text/plain");
 			mapping.put("c", "text/plain");
 			mapping.put("c++", "text/plain");
+            mapping.put("cpp", "text/plain");
 			mapping.put("pl", "text/plain");
 			mapping.put("cc", "text/plain");
 			mapping.put("h", "text/plain");
@@ -213,6 +214,10 @@ public abstract class MimeTypeSupport {
 	 * @return
 	 */
 	public static String getMimeTypeForFileExtension(String extension) {
-		return (String) mapping.get(extension);
+		String retval = mapping.get(extension);
+        if (retval == null) {
+            retval = "text/plain";
+        }
+        return retval;
 	}
 }

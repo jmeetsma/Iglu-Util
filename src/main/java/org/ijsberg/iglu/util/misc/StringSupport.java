@@ -218,10 +218,7 @@ public abstract class StringSupport {
 	/**
 	 */
 	public static void condenseWhitespace(StringBuffer haystack) {
-		//TODO leave trailing whitespace
-		//TODO convert all whitespace to spaces
 		int size = haystack.length();
-//		int nrRemoved = 0;
 		boolean prevIsWhiteSpace = false;
 		for (int i = 0; i < size; i++) {
 			char c = haystack.charAt(i);

@@ -25,8 +25,7 @@ public class ListMap<K, V> {
 	
 	protected TreeMap<K, List<V>> internalMap = new TreeMap<K, List<V>>();
 	private int loadFactor = 10;
-	//protected List<K> keyList = new ArrayList<K>();
-	
+
 	public ListMap() {
 	}
 	
@@ -77,7 +76,6 @@ public class ListMap<K, V> {
 		return internalMap.descendingKeySet();
 	}
 
-	//TODO expensive
 	public int size() {
 		//nr of items
 		int retval = 0;
@@ -91,8 +89,6 @@ public class ListMap<K, V> {
 	public Collection<List<V>> lists() {
 		return internalMap.values();
 	}
-
-	//TODO expensive
 
 	public List<V> values() {
 		List<V> retval = new ArrayList<V>();

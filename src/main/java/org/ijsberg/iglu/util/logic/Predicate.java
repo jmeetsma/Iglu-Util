@@ -19,24 +19,23 @@
 
 package org.ijsberg.iglu.util.logic;
 
-//TODO this is a predicate!
 /**
- * A statement may be evaluated as being 'true' or 'false'
+ * May be evaluated as being 'true' or 'false'
  * but it may also be some string of which its presence may be tested.
  */
-public class Statement extends LogicalElement {
+public class Predicate extends LogicalElement {
 	protected String statement;
 
 	/**
 	 *
 	 */
-	protected Statement() {
+	protected Predicate() {
 	}
 
 	/**
 	 * @param statement
 	 */
-	public Statement(String statement) {
+	public Predicate(String statement) {
 		this.statement = statement;
 	}
 

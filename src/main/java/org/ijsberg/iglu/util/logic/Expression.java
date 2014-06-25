@@ -29,7 +29,7 @@ import java.util.HashMap;
  * An expression that has been analyzed fully, contains 1 operator and a number of elements that
  * may be evaluated accordingly.
  */
-public class Expression extends Statement {
+public class Expression extends Predicate {
 	private static HashMap cache = new HashMap();
 
 	private ArrayList elements = new ArrayList();
@@ -62,7 +62,7 @@ public class Expression extends Statement {
 	 * Constructs an expression based on a logical expression defined in a string.
 	 * The string may contain
 	 * <ul>
-	 * <li>statements (which are not interpreted, just stored in Statement objects)</li>
+	 * <li>statements (which are not interpreted, just stored in Predicate objects)</li>
 	 * <li>logical operators '!'=NOT followed by an element,
 	 * <li>'|': OR inbetween 2 elements,
 	 * <li>'&amp;': AND inbetween 2 elements,
@@ -70,7 +70,7 @@ public class Expression extends Statement {
 	 * </ul>
 	 *
 	 * @param expression
-	 * @see Statement
+	 * @see Predicate
 	 */
 	public Expression(String expression) {
 		this(expression, false);
@@ -81,7 +81,7 @@ public class Expression extends Statement {
 	 * Constructs an expression based on a logical expression defined in a string.
 	 * The string may contain
 	 * <ul>
-	 * <li>statements (which are not interpreted, just stored in Statement objects)</li>
+	 * <li>statements (which are not interpreted, just stored in Predicate objects)</li>
 	 * <li>logical operators '!'=NOT followed by statement,
 	 * <li>'|': OR inbetween 2 statements,
 	 * <li>'&amp;': AND inbetween 2 statements,
@@ -92,7 +92,7 @@ public class Expression extends Statement {
 	 *
 	 * @param expression
 	 * @param useCache   expressions will be cached in a static cache if true
-	 * @see Statement
+	 * @see Predicate
 	 */
 	public Expression(String expression, boolean useCache) {
 		if (useCache && cache.containsKey(expression)) {
@@ -271,7 +271,7 @@ public class Expression extends Statement {
 	 */
 	private boolean addStatement(StringBuffer statementBuffer) {
 		if (statementBuffer.length() > 0) {
-			elements.add(new Statement(statementBuffer.toString()));
+			elements.add(new Predicate(statementBuffer.toString()));
 			elementsArray = elements.toArray();
 			statementBuffer.delete(0, statementBuffer.length());
 			return true;
@@ -345,23 +345,23 @@ public class Expression extends Statement {
 		boolean result = true;
 
 		if (operator == null) {
-			return ((Statement) elementsArray[0]).match(statements);
+			return ((Predicate) elementsArray[0]).match(statements);
 		}
 
 		switch (operator.getType()) {
 			case NOT: {
-				return !((Statement) elementsArray[0]).match(statements);
+				return !((Predicate) elementsArray[0]).match(statements);
 			}
 			case AND: {
 				for (int i = 0; i < elementsArray.length; i++) {
-					result = result && ((Statement) elementsArray[i]).match(statements);
+					result = result && ((Predicate) elementsArray[i]).match(statements);
 				}
 				break;
 			}
 			case OR: {
 				result = false;
 				for (int i = 0; i < elementsArray.length; i++) {
-					result = result || ((Statement) elementsArray[i]).match(statements);
+					result = result || ((Predicate) elementsArray[i]).match(statements);
 				}
 				break;
 			}
@@ -422,8 +422,8 @@ public class Expression extends Statement {
 			if ((elementsArray[0] instanceof Expression)) {
 				return ((Expression) elementsArray[0]).getStatement();
 			}
-			else if ((elementsArray[0] instanceof Statement)) {
-				return ((Statement) elementsArray[0]).getStatement();
+			else if ((elementsArray[0] instanceof Predicate)) {
+				return ((Predicate) elementsArray[0]).getStatement();
 			}
 		}
 		return statement;

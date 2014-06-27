@@ -33,12 +33,17 @@ public class ListMap<K, V> {
 		this.loadFactor = loadFactor;
 	}
 
+	public ListMap(ListMap<K, V> listMap) {
+		for(K key : listMap.internalMap.keySet()) {
+			put(key, listMap.internalMap.get(key));
+		}
+	}
+
 	protected List<V> createOrRetrieveList(K key) {
 		List<V> list = internalMap.get(key);
 		if(list == null) {
 			list = new ArrayList<V>(loadFactor);
 			internalMap.put(key, list);
-			//keyList = new ArrayList<K>(internalMap.keySet());
 		}
 		return list;
 	}
@@ -51,7 +56,20 @@ public class ListMap<K, V> {
 		list.add(value);
 		return list;
 	}
-	
+
+	public List<V> put(K key, V ... values) {
+		return put(key, Arrays.asList(values));
+	}
+
+	public List<V> put(K key, List<V> values) {
+		if(!(key instanceof Comparable)) {
+			throw new ClassCastException("key K must implement Comparable");
+		}
+		List<V> list = createOrRetrieveList(key);
+		list.addAll(values);
+		return list;
+	}
+
 	public TreeMap<K, List<V>> getMap() {
 		return internalMap;
 	}

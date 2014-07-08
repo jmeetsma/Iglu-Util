@@ -19,9 +19,9 @@
 
 package org.ijsberg.iglu.util.formatting;
 
-import java.math.BigDecimal;
-
 import org.ijsberg.iglu.util.misc.StringSupport;
+
+import java.math.BigDecimal;
 
 
 /**
@@ -60,6 +60,10 @@ public class NumberFormatter {
 	 * @return the formatted number
 	 */
 	public String format(int number) {
+		return format(new BigDecimal(number), 0);
+	}
+
+	public String format(long number) {
 		return format(new BigDecimal(number), 0);
 	}
 

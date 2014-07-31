@@ -34,13 +34,13 @@ public class FileFilterRuleSetTest extends DirStructureDependentTest {
 		
 		File file = new File(dirStructRoot + "WWW/cornerstone/architecture.gif");
 		
-		FileFilterRuleSet ruleSet = new FileFilterRuleSet("*.gif");
+		FileFilterRuleSet ruleSet = new FileFilterRuleSet().setIncludeFilesWithNameMask("*.gif");
 		assertTrue(ruleSet.fileMatchesRules(file));
 
-		ruleSet = new FileFilterRuleSet("*/cornerstone/*");
+		ruleSet = new FileFilterRuleSet().setIncludeFilesWithNameMask("*/cornerstone/*");
 		assertTrue(ruleSet.fileMatchesRules(file));
 		
-		ruleSet = new FileFilterRuleSet("*/cornerstone/*.jpg");
+		ruleSet = new FileFilterRuleSet().setIncludeFilesWithNameMask("*/cornerstone/*.jpg");
 		assertFalse(ruleSet.fileMatchesRules(file));
 	}
 
@@ -51,13 +51,13 @@ public class FileFilterRuleSetTest extends DirStructureDependentTest {
 
 		assertTrue(file.exists());
 		
-		FileFilterRuleSet ruleSet = new FileFilterRuleSet("*.gif", "*/_d0/*");
+		FileFilterRuleSet ruleSet = new FileFilterRuleSet().setIncludeFilesWithNameMask("*.gif").setExcludeFilesWithNameMask("*/_d0/*");
 		assertTrue(ruleSet.fileMatchesRules(file));
 
-		ruleSet = new FileFilterRuleSet("*/cornerstone/*", "*.jpg");
+		ruleSet = new FileFilterRuleSet().setIncludeFilesWithNameMask("*/cornerstone/*").setExcludeFilesWithNameMask("*.jpg");
 		assertTrue(ruleSet.fileMatchesRules(file));
 
-		ruleSet = new FileFilterRuleSet("*/cornerstone/*", "*.gif");
+		ruleSet = new FileFilterRuleSet().setIncludeFilesWithNameMask("*/cornerstone/*").setExcludeFilesWithNameMask("*.gif");
 		assertFalse(ruleSet.fileMatchesRules(file));
 	}
 
@@ -67,10 +67,10 @@ public class FileFilterRuleSetTest extends DirStructureDependentTest {
 		File file = new File(dirStructRoot + "WWW/cornerstone/index.html");
 		assertTrue(file.exists());
 		
-		FileFilterRuleSet ruleSet = new FileFilterRuleSet("*.html", "*/_d0/*", new String[]{""}, new String[]{});
+		FileFilterRuleSet ruleSet = new FileFilterRuleSet().setIncludeFilesWithNameMask("*.html").setExcludeFilesWithNameMask("*/_d0/*");
 		assertTrue(ruleSet.fileMatchesRules(file));
 
-		ruleSet = new FileFilterRuleSet("*.html", "*/_d0/*", new String[]{"This file is part of Iglu"}, new String[]{});
+		ruleSet = new FileFilterRuleSet().setIncludeFilesWithNameMask("*.html").setExcludeFilesWithNameMask("*/_d0/*").setIncludeFilesContainingText("This file is part of Iglu").setExcludeFilesContainingText();
 		assertTrue(ruleSet.fileMatchesRules(file));
 	
 /*		ruleSet = new FileFilterRuleSet("*.html", "* /_d0/ *", "  ~ This file is part of Iglu.", "");

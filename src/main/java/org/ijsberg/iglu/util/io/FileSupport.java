@@ -105,7 +105,7 @@ public abstract class FileSupport {
 	 * @return a list containing the found contents
 	 */
 	private static ArrayList<File> getContentsInDirectoryTree(File directory, String includeMask, boolean returnFiles, boolean returnDirs) {
-		return getContentsInDirectoryTree(directory, new FileFilterRuleSet(includeMask), returnFiles, returnDirs);
+		return getContentsInDirectoryTree(directory, new FileFilterRuleSet(directory.getPath()).setIncludeFilesWithNameMask(includeMask), returnFiles, returnDirs);
 	}
 
 
@@ -275,7 +275,7 @@ public abstract class FileSupport {
 
 	public static void unzip(String path, ZipFile zipFile) throws IOException {
 
-		ArrayList<ZipEntry> entries = getContentsFromZipFile(zipFile, new FileFilterRuleSet("*.*"));
+		ArrayList<ZipEntry> entries = getContentsFromZipFile(zipFile, new FileFilterRuleSet().setIncludeFilesWithNameMask("*.*"));
 		for(ZipEntry entry : entries) {
 			InputStream in = zipFile.getInputStream(entry);
 			if(!entry.isDirectory()) {
@@ -436,7 +436,7 @@ public abstract class FileSupport {
         while(zipEntries.hasMoreElements()) {
             ZipEntry zipEntry = zipEntries.nextElement();
 
-            if(ruleSet.fileMatchesRules(zipEntry, zipFile)) {
+			if(ruleSet.fileMatchesRules(zipEntry, zipFile)) {
                 result.add(zipEntry);
             }
         }

@@ -77,9 +77,11 @@ public class FileSupportTest extends DirStructureDependentTest {
 		assertEquals(19, foundFiles.size());
 //        System.out.println(foundFiles);
 
-        foundFiles = FileSupport.getFilesInDirectoryTree(testDirPath, "WWW/*.LOG");
+        foundFiles = FileSupport.getFilesInDirectoryTree(testDirPath, "/WWW/*.LOG");
         assertEquals(19, foundFiles.size());
 
+		foundFiles = FileSupport.getFilesInDirectoryTree(testDirPath, "WWW/*.LOG");
+		assertEquals(19, foundFiles.size());
 //        System.out.println(foundFiles);
 
 
@@ -92,7 +94,7 @@ public class FileSupportTest extends DirStructureDependentTest {
 		File file = new File(dirStructRoot);
 		assertTrue(file.exists());
 		
-		FileFilterRuleSet ruleSet = new FileFilterRuleSet("*.LOG");
+		FileFilterRuleSet ruleSet = new FileFilterRuleSet().setIncludeFilesWithNameMask("*.LOG");
 		
 		List<File> foundFiles = FileSupport.getFilesInDirectoryTree(dirStructRoot, ruleSet);
 		assertEquals(19, foundFiles.size());

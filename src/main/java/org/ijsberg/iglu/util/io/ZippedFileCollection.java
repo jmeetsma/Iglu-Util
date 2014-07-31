@@ -25,7 +25,7 @@ public class ZippedFileCollection implements FileCollection {
     }
 
 	public ZippedFileCollection(File file) throws IOException {
-		this(new ZipFile(file), new FileFilterRuleSet("*.*"));
+		this(new ZipFile(file), new FileFilterRuleSet().setIncludeFilesWithNameMask("*.*"));
 	}
 
 	public ZippedFileCollection(ZipFile zipFile, FileFilterRuleSet fileFilterRuleSet) {
@@ -40,12 +40,14 @@ public class ZippedFileCollection implements FileCollection {
 
 		this.includedFilesRuleSet = fileFilterRuleSet;
 		this.zipFile = zipFile;
-		this.relativeDir = FileSupport.convertToUnixStylePath(relativeDir);
-		if(!relativeDir.endsWith("/")) {
-			relativeDir += "/";
+		if(relativeDir != null && !"".equals(relativeDir)) {
+			this.relativeDir = FileSupport.convertToUnixStylePath(relativeDir);
+			if(!this.relativeDir.endsWith("/")) {
+				this.relativeDir += "/";
+			}
 		}
+		fileFilterRuleSet.setBaseDir(this.relativeDir);
 		refreshFiles();
-
 	}
 
 	@Override

@@ -26,6 +26,9 @@ public class FSFileCollection implements FileCollection {
 //        this.absSourceRoot = FileSupport.convertToUnixStylePath(baseDir + "/" + relativeSourceRoot);
 
         this.includedFilesRuleSet = fileFilterRuleSet;
+
+		fileFilterRuleSet.setBaseDir(this.baseDir);
+
         refreshFiles();
     }
 

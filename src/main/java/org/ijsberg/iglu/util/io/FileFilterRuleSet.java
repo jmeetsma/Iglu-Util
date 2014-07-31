@@ -38,7 +38,7 @@ import java.util.zip.ZipFile;
  */
 public class FileFilterRuleSet implements Cloneable {
 
-	private String baseDir = "";
+	private String baseDir = null;
     private String includeFilesWithNameMask;
 	private String excludeFilesWithNameMask = "";
 	private String[] includeFilesContainingText = new String[0];
@@ -49,11 +49,11 @@ public class FileFilterRuleSet implements Cloneable {
 	 *
 	 * @param includeFilesWithNameMask
 	 */
-	public FileFilterRuleSet(String includeFilesWithNameMask) {
+/*	public FileFilterRuleSet(String includeFilesWithNameMask) {
 		super();
 		this.includeFilesWithNameMask = includeFilesWithNameMask;
 	}
-
+  */
 	
 	/**
 	 * Note: Unix-style file separators are assumed in expressions.
@@ -61,20 +61,49 @@ public class FileFilterRuleSet implements Cloneable {
 	 * @param includeFilesWithNameMask
 	 * @param excludeFilesWithNameMask
 	 */
-	public FileFilterRuleSet(String includeFilesWithNameMask, String excludeFilesWithNameMask) {
+/*	public FileFilterRuleSet(String includeFilesWithNameMask, String excludeFilesWithNameMask) {
 		super();
 		this.includeFilesWithNameMask = includeFilesWithNameMask;
 		this.excludeFilesWithNameMask = excludeFilesWithNameMask;
 	}
+  */
 
-	
-	public FileFilterRuleSet(String includeFilesWithNameMask, String excludeFilesWithNameMask,
-			String[] includeFilesContainingLineMask, String[] excludeFilesContainingLineMask) {
+	public FileFilterRuleSet(String baseDir) {
+		super();
+		setBaseDir(baseDir);
+	}
+
+	private String getComparableFileName(File file) {
+		return getComparableFileName(file.getPath());
+
+	}
+
+	private String getComparableFileName(String fileName) {
+		String retval = FileSupport.convertToUnixStylePath(fileName);
+
+		if(baseDir != null) {
+			if(retval.startsWith(baseDir)) {
+				retval = retval.substring(baseDir.length());
+			}
+		}
+
+
+		return retval;
+	}
+
+	public FileFilterRuleSet() {
+		super();
+	}
+
+
+	private FileFilterRuleSet(String includeFilesWithNameMask, String excludeFilesWithNameMask,
+			String[] includeFilesContainingLineMask, String[] excludeFilesContainingLineMask, String baseDir) {
 		super();
 		this.includeFilesWithNameMask = includeFilesWithNameMask;
 		this.excludeFilesWithNameMask = excludeFilesWithNameMask;
 		this.includeFilesContainingText = includeFilesContainingLineMask;
 		this.excludeFilesContainingText = excludeFilesContainingLineMask;
+		this.baseDir = baseDir;
 	}
 
 
@@ -94,10 +123,10 @@ public class FileFilterRuleSet implements Cloneable {
             if(file.exists()) {
                 if(includeFilesContainingText.length == 0 && excludeFilesContainingText.length == 0) {
                     return fileMatchesRules(
-                            FileSupport.convertToUnixStylePath(file.getPath()));
+							getComparableFileName(file));
                 } else {
                     return fileMatchesRules(
-                            FileSupport.convertToUnixStylePath(file.getPath()),
+							getComparableFileName(file),
                             FileSupport.getTextFileFromFS(file));
                 }
             }
@@ -112,10 +141,10 @@ public class FileFilterRuleSet implements Cloneable {
         try {
                 if(includeFilesContainingText.length == 0 && excludeFilesContainingText.length == 0) {
                     return fileMatchesRules(
-                            FileSupport.convertToUnixStylePath(entry.getName()));
+							getComparableFileName(entry.getName()));
                 } else {
                     return fileMatchesRules(
-                            FileSupport.convertToUnixStylePath(entry.getName()),
+							getComparableFileName(entry.getName()),
                             FileSupport.getTextFileFromZip(entry.getName(), zipFile));
                 }
         } catch (IOException ioe) {
@@ -127,7 +156,7 @@ public class FileFilterRuleSet implements Cloneable {
     public boolean fileMatchesRules(String fileName) {
 
             return
-                    includeBecauseOfName(fileName) &&
+                    includeBecauseOfName(getComparableFileName(fileName)) &&
                             !excludeBecauseOfName(fileName);
     }
 
@@ -135,7 +164,7 @@ public class FileFilterRuleSet implements Cloneable {
 
         try {
             return
-                    fileMatchesRules(fileName) &&
+                    fileMatchesRules(getComparableFileName(fileName)) &&
                         includeBecauseOfContainedTextLine(fileContents) &&
                         !excludeBecauseOfContainedTextLine(fileContents);
 
@@ -146,17 +175,24 @@ public class FileFilterRuleSet implements Cloneable {
     }
 
 	private boolean includeBecauseOfName(String fileName) {
-		boolean retval = includeFilesWithNameMask == null || "*".equals(includeFilesWithNameMask) || 
-				PatternMatchingSupport.valueMatchesWildcardExpression(fileName, includeFilesWithNameMask) ||
-                PatternMatchingSupport.valueMatchesWildcardExpression(fileName, "*/" + includeFilesWithNameMask);
+
+		//System.out.println(baseDir);
+		//System.out.println(includeFilesWithNameMask + " <-- " + fileName);
+
+
+		boolean retval = includeFilesWithNameMask == null || "*".equals(includeFilesWithNameMask) ||
+				PatternMatchingSupport.valueMatchesWildcardExpression(fileName, includeFilesWithNameMask)
+		//		|| PatternMatchingSupport.valueMatchesWildcardExpression(fileName, "*/" + includeFilesWithNameMask)
+		;
 
 		return retval;
 	}
 
 	private boolean excludeBecauseOfName(String fileName) {
 		boolean retval = excludeFilesWithNameMask != null && !"".equals(excludeFilesWithNameMask) &&
-                (PatternMatchingSupport.valueMatchesWildcardExpression(fileName, excludeFilesWithNameMask) ||
-                PatternMatchingSupport.valueMatchesWildcardExpression(fileName, "*/" + excludeFilesWithNameMask));
+                (PatternMatchingSupport.valueMatchesWildcardExpression(fileName, excludeFilesWithNameMask)
+		//		|| PatternMatchingSupport.valueMatchesWildcardExpression(fileName, "*/" + excludeFilesWithNameMask)
+				);
 
 		return retval;
 	}
@@ -186,36 +222,60 @@ public class FileFilterRuleSet implements Cloneable {
         return false;
     }
 
-	public void setIncludeFilesWithNameMask(String includeFilesWithNameMask) {
+	public FileFilterRuleSet setIncludeFilesWithNameMask(String includeFilesWithNameMask) {
 
-		this.includeFilesWithNameMask = includeFilesWithNameMask;
+		if(includeFilesWithNameMask != null && includeFilesWithNameMask.startsWith("/")) {
+			this.includeFilesWithNameMask = includeFilesWithNameMask.substring(1);
+		} else {
+			this.includeFilesWithNameMask = includeFilesWithNameMask;
+		}
+		return this;
 	}
 
 
-	public void setExcludeFilesWithNameMask(String excludeFilesWithNameMask) {
-		this.excludeFilesWithNameMask = excludeFilesWithNameMask;
+	public FileFilterRuleSet setExcludeFilesWithNameMask(String excludeFilesWithNameMask) {
+
+		if(excludeFilesWithNameMask != null && excludeFilesWithNameMask.startsWith("/")) {
+			this.excludeFilesWithNameMask = excludeFilesWithNameMask.substring(1);
+		} else {
+			this.excludeFilesWithNameMask = excludeFilesWithNameMask;
+		}
+		return this;
 	}
 
 
-	public void setIncludeFilesContainingText(
+	public FileFilterRuleSet setIncludeFilesContainingText(
             String ... includeFilesContainingText) {
 		this.includeFilesContainingText = includeFilesContainingText;
+		return this;
 	}
 
 
-	public void setExcludeFilesContainingText(
+	public FileFilterRuleSet setExcludeFilesContainingText(
             String ... excludeFilesContainingText) {
 		this.excludeFilesContainingText = excludeFilesContainingText;
+		return this;
+	}
+
+	public FileFilterRuleSet setBaseDir(String baseDir) {
+		if(baseDir != null && !"".equals(baseDir)) {
+			this.baseDir = FileSupport.convertToUnixStylePath(baseDir);
+			if(!this.baseDir.endsWith("/")) {
+				this.baseDir += "/";
+			}
+		}
+		return this;
 	}
 
 	@Override
 	public FileFilterRuleSet clone() {
-		return new FileFilterRuleSet(includeFilesWithNameMask, excludeFilesWithNameMask, includeFilesContainingText, excludeFilesContainingText);
+		return new FileFilterRuleSet(includeFilesWithNameMask, excludeFilesWithNameMask, includeFilesContainingText, excludeFilesContainingText, baseDir);
 	}
 	
 
     public String toString() {
         return "file filter:\n" +
+				"base directory: " + baseDir + "\n" +
                 "include names: " + includeFilesWithNameMask + "\n" +
                 "include lines containing: " + ArraySupport.format("\"", "\"", includeFilesContainingText, ",") + "\n" +
                 "exclude names: " + ArraySupport.format("\"", "\"", excludeFilesContainingText, ", ") + "\n" +

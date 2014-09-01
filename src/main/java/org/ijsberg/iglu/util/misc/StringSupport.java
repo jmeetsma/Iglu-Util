@@ -19,22 +19,11 @@
 
 package org.ijsberg.iglu.util.misc;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeMap;
-
 import org.ijsberg.iglu.util.collection.ArraySupport;
 import org.ijsberg.iglu.util.io.StreamSupport;
+
+import java.io.*;
+import java.util.*;
 
 /**
  * Helper class containing string manipulation functions.
@@ -582,7 +571,11 @@ public abstract class StringSupport {
 	//TODO get rid of flags (move to spec)
 	//TODO get rid of this code altogether
 
-	
+
+
+	public static List<String> split(String input, String punctuationChars, String quoteSymbols, boolean sort, boolean convertToLowerCase, boolean distinct) {
+		return split(input, punctuationChars, quoteSymbols, sort, convertToLowerCase, distinct, false);
+	}
 
 	/**
 	 * reads all words in a text
@@ -595,7 +588,7 @@ public abstract class StringSupport {
 	 * @param distinct		   true if a certain word may occur only once in the resulting collection
 	 * @return a collection of extracted words
 	 */
-	public static List<String> split(String input, String punctuationChars, String quoteSymbols, boolean sort, boolean convertToLowerCase, boolean distinct) {
+	public static List<String> split(String input, String punctuationChars, String quoteSymbols, boolean sort, boolean convertToLowerCase, boolean distinct, boolean keepQuotes) {
 		if (input == null) {
 			return new ArrayList<String>(0);
 		}
@@ -629,6 +622,9 @@ public abstract class StringSupport {
 					if (quoteSymbols != null && quoteSymbols.indexOf(input.charAt(i)) != -1) {
 						insideQuote = input.charAt(i);
 						insideQuotes = !insideQuotes;
+						if(keepQuotes) {
+							word.append(input.charAt(i));
+						}
 					}
 					else {
 						word.append(input.charAt(i));
@@ -641,6 +637,9 @@ public abstract class StringSupport {
 					if (quoteSymbols != null && quoteSymbols.indexOf(input.charAt(i)) != -1) {
 						insideQuote = input.charAt(i);
 						insideQuotes = !insideQuotes;
+						if(keepQuotes) {
+							word.append(input.charAt(i));
+						}
 					}
 					else {
 						word.append(input.charAt(i));

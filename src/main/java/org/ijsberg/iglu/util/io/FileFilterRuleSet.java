@@ -44,29 +44,6 @@ public class FileFilterRuleSet implements Cloneable {
 	private String[] includeFilesContainingText = new String[0];
 	private String[] excludeFilesContainingText = new String[0];
 
-	/**
-	 * Note: Unix-style file separators are assumed in expressions.
-	 *
-	 * @param includeFilesWithNameMask
-	 */
-/*	public FileFilterRuleSet(String includeFilesWithNameMask) {
-		super();
-		this.includeFilesWithNameMask = includeFilesWithNameMask;
-	}
-  */
-	
-	/**
-	 * Note: Unix-style file separators are assumed in expressions.
-	 *
-	 * @param includeFilesWithNameMask
-	 * @param excludeFilesWithNameMask
-	 */
-/*	public FileFilterRuleSet(String includeFilesWithNameMask, String excludeFilesWithNameMask) {
-		super();
-		this.includeFilesWithNameMask = includeFilesWithNameMask;
-		this.excludeFilesWithNameMask = excludeFilesWithNameMask;
-	}
-  */
 
 	public FileFilterRuleSet(String baseDir) {
 		super();

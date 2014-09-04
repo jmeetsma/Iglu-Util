@@ -19,17 +19,16 @@
 
 package org.ijsberg.iglu.util.misc;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
+import org.ijsberg.iglu.util.io.FileSupport;
+import org.junit.Test;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
 import java.util.Set;
-import java.io.File;
-import java.io.InputStream;
-import java.io.FileInputStream;
 
-import org.junit.Test;
-import org.ijsberg.iglu.util.io.FileSupport;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 
 public class StringSupportTest {
@@ -55,6 +54,12 @@ public class StringSupportTest {
 		assertEquals("market square", result.get(4));
 		assertEquals("and", result.get(5));
 
+		line = "Harry went to the'market square'and bought some fish";
+		result = StringSupport.split(line, " ", "'");
+		assertEquals("the", result.get(3));
+		assertEquals("market square", result.get(4));
+		assertEquals("and", result.get(5));
+
 		line = "the \"market square \" and a space";
 		result = StringSupport.split(line, " ", "\"");
 		assertEquals("market square ", result.get(1));
@@ -64,6 +69,28 @@ public class StringSupportTest {
 		result = StringSupport.split(line, " ", "\"");
 		assertEquals("market \"square ", result.get(1));
 */
+
+		line = "Harry went to the 'market square' (in Apeldoorn) and bought some fish";
+		result = StringSupport.split(line, " ", "'()");
+		assertEquals("the", result.get(3));
+		assertEquals("market square", result.get(4));
+		assertEquals("in Apeldoorn", result.get(5));
+		assertEquals("and", result.get(6));
+
+		line = "Harry went to the market (in Apeldoorn) and bought some fish";
+		result = StringSupport.split(line, " ", "'()", false, false, false, true);
+		assertEquals("the", result.get(3));
+		assertEquals("market", result.get(4));
+		assertEquals("(in Apeldoorn)", result.get(5));
+		assertEquals("and", result.get(6));
+
+		line = "Harry went to the market(in Apeldoorn)and bought some fish";
+		result = StringSupport.split(line, " ", "'()", false, false, false, true);
+		assertEquals("the", result.get(3));
+		assertEquals("market", result.get(4));
+		assertEquals("(in Apeldoorn)", result.get(5));
+		assertEquals("and", result.get(6));
+
 	}
 
 	@Test
@@ -124,6 +151,17 @@ public class StringSupportTest {
 		assertEquals("Harry met Dick", StringSupport.replaceAll("Harry met Sally", "Sally", "Dick"));
 		assertEquals("Dick met Sally", StringSupport.replaceAll("Harry met Sally", "Harry", "Dick"));
 		assertEquals("Harry dates Sally", StringSupport.replaceAll("Harry met Sally", "met", "dates"));
+
+		assertEquals("Harry metDick", StringSupport.replaceAll("Harry metSally", "Sally", "Dick"));
+	}
+
+	@Test
+	public void testReplaceEntireWords() throws Exception {
+		assertEquals("Harry met Dick", StringSupport.replaceEntireWords("Harry met Sally", " ", "", "Sally", "Dick"));
+		assertEquals("Dick met Sally", StringSupport.replaceEntireWords("Harry met Sally", " ", "", "Harry", "Dick"));
+		assertEquals("Harry dates Sally", StringSupport.replaceEntireWords("Harry met Sally", " ", "", "met", "dates"));
+
+		assertEquals("Harry metSally", StringSupport.replaceEntireWords("Harry metSally", " ", "", "Sally", "Dick"));
 	}
 
 	private static final String TEXT_FILE_PATH = "org/ijsberg/iglu/util/io/directory structure/root/WWW/contact.html";

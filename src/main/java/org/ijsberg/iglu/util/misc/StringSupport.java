@@ -574,24 +574,16 @@ public abstract class StringSupport {
 
 
 	public static List<String> split(String input, String punctuationChars, String quoteSymbols, boolean sort, boolean convertToLowerCase, boolean distinct) {
-		return split(input, punctuationChars, quoteSymbols, sort, convertToLowerCase, distinct, false);
+		return new StringSplitter(input, punctuationChars, quoteSymbols, sort, convertToLowerCase, distinct, false).split();
 	}
 
-	/**
-	 * reads all words in a text
-	 *
-	 * @param input
-	 * @param punctuationChars   characters that can not belong to words and are therefore separators
-	 * @param quoteSymbols	   used as list of characters used to group strings
-	 * @param sort			   whether to sort the result alphabetically. (If the result is sorted, setting the distinct flag to false has no effect)
-	 * @param convertToLowerCase whether to convert all found words to lower case
-	 * @param distinct		   true if a certain word may occur only once in the resulting collection
-	 * @return a collection of extracted words
-	 */
 	public static List<String> split(String input, String punctuationChars, String quoteSymbols, boolean sort, boolean convertToLowerCase, boolean distinct, boolean keepQuotes) {
-		if (input == null) {
-			return new ArrayList<String>(0);
-		}
+		return new StringSplitter(input, punctuationChars, quoteSymbols, sort, convertToLowerCase, distinct, keepQuotes).split();
+	}
+
+
+	static class StringSplitter {
+
 		TreeMap<String, Object> storage = new TreeMap<String, Object>();
 		ArrayList<String> unsortedStorage = new ArrayList<String>();
 
@@ -599,56 +591,107 @@ public abstract class StringSupport {
 		boolean readingWord = false;
 		boolean insideQuotes = false;
 		char insideQuote = '\0';
-		for (int i = 0; i < input.length(); i++) {
-			if (readingWord) {
-				if (punctuationChars.indexOf(input.charAt(i)) != -1 && !insideQuotes) {
-					//check forbidden word list first
-					//or maybe make arrangements in Index
-					//e.g.: disable Index with too many (%) references
 
-					String foundWord = word.toString()/*.trim()*/;
-					if (convertToLowerCase) {
-						foundWord = foundWord.toLowerCase();
+		String input;
+		String punctuationChars;
+		String quoteSymbols;
+		boolean sort;
+		boolean convertToLowerCase;
+		boolean distinct;
+		boolean keepQuotes;
+
+
+		/**
+		 *
+		 * @param input
+		 * @param punctuationChars   characters that can not belong to words and are therefore separators
+		 * @param quoteSymbols	   used as list of characters used to group strings
+		 * @param sort			   whether to sort the result alphabetically. (If the result is sorted, setting the distinct flag to false has no effect)
+		 * @param convertToLowerCase whether to convert all found words to lower case
+		 * @param distinct		   true if a certain word may occur only once in the resulting collection
+		 * @param keepQuotes
+		 */
+		StringSplitter(String input, String punctuationChars, String quoteSymbols, boolean sort, boolean convertToLowerCase, boolean distinct, boolean keepQuotes) {
+			this.input = input;
+			this.punctuationChars = punctuationChars;
+			this.quoteSymbols = quoteSymbols;
+			this.sort = sort;
+			this.convertToLowerCase = convertToLowerCase;
+			this.distinct = distinct;
+			this.keepQuotes = keepQuotes;
+		}
+
+		/**
+		 * reads all words in a text
+		 *
+		 * @return a collection of extracted words
+		 */
+		public List<String> split() {
+			if (input == null) {
+				return new ArrayList<String>(0);
+			}
+			for (int i = 0; i < input.length(); i++) {
+				if (readingWord) {
+					if (punctuationChars.indexOf(input.charAt(i)) != -1 && !insideQuotes) {
+						//check forbidden word list first
+						//or maybe make arrangements in Index
+						//e.g.: disable Index with too many (%) references
+
+						storeCurrentWordAndStartNew();
+						readingWord = false;
 					}
-					if (!sort) {
-						if (!distinct || !storage.containsKey(foundWord)) {
-							unsortedStorage.add(foundWord);
+					else {
+						if (quoteSymbols != null && quoteSymbols.indexOf(input.charAt(i)) != -1) {
+
+							if(!insideQuotes) {
+								storeCurrentWordAndStartNew();
+							}
+
+							insideQuote = input.charAt(i);
+							insideQuotes = !insideQuotes;
+							if(keepQuotes) {
+								word.append(input.charAt(i));
+							}
+
+							if(!insideQuotes) {
+								storeCurrentWordAndStartNew();
+								readingWord = false;
+							}
+						}
+						else {
+							word.append(input.charAt(i));
 						}
 					}
-					storage.put(foundWord, new Object());
-					readingWord = false;
 				}
 				else {
-					if (quoteSymbols != null && quoteSymbols.indexOf(input.charAt(i)) != -1) {
-						insideQuote = input.charAt(i);
-						insideQuotes = !insideQuotes;
-						if(keepQuotes) {
+					if (punctuationChars.indexOf(input.charAt(i)) == -1) {
+						word = new StringBuffer();
+						if (quoteSymbols != null && quoteSymbols.indexOf(input.charAt(i)) != -1) {
+							insideQuote = input.charAt(i);
+							insideQuotes = !insideQuotes;
+							if(keepQuotes) {
+								word.append(input.charAt(i));
+							}
+						}
+						else {
 							word.append(input.charAt(i));
 						}
-					}
-					else {
-						word.append(input.charAt(i));
+						readingWord = true;
 					}
 				}
+			}
+			if (readingWord) {
+				storeCurrentWordAndStartNew();
+			}
+			if (sort) {
+				return new ArrayList<String>(storage.keySet());
 			}
 			else {
-				if (punctuationChars.indexOf(input.charAt(i)) == -1) {
-					word = new StringBuffer();
-					if (quoteSymbols != null && quoteSymbols.indexOf(input.charAt(i)) != -1) {
-						insideQuote = input.charAt(i);
-						insideQuotes = !insideQuotes;
-						if(keepQuotes) {
-							word.append(input.charAt(i));
-						}
-					}
-					else {
-						word.append(input.charAt(i));
-					}
-					readingWord = true;
-				}
+				return unsortedStorage;
 			}
 		}
-		if (readingWord) {
+
+		private void storeCurrentWordAndStartNew() {
 			String foundWord = word.toString()/*.trim()*/;
 			if (convertToLowerCase) {
 				foundWord = foundWord.toLowerCase();
@@ -659,14 +702,140 @@ public abstract class StringSupport {
 				}
 			}
 			storage.put(foundWord, new Object());
+			word = new StringBuffer();
 		}
-		if (sort) {
-			return new ArrayList<String>(storage.keySet());
-		}
-		else {
-			return unsortedStorage;
-		}
+
 	}
+
+
+	public static String replaceEntireWords(String input, String punctuationChars, String quoteSymbols, String needle, String newNeedle) {
+		return new StringReplacer(input, punctuationChars, quoteSymbols, needle, newNeedle).replace();
+	}
+
+
+	static class StringReplacer {
+
+
+		StringBuffer result = new StringBuffer();
+
+		StringBuffer word = new StringBuffer();
+		boolean readingWord = false;
+		boolean insideQuotes = false;
+		char insideQuote = '\0';
+
+		String input;
+		String punctuationChars;
+		String quoteSymbols;
+
+		String needle;
+		String newNeedle;
+
+
+		/**
+		 *
+		 * @param input
+		 * @param punctuationChars   characters that can not belong to words and are therefore separators
+		 * @param quoteSymbols	   used as list of characters used to group strings
+		 */
+		StringReplacer(String input, String punctuationChars, String quoteSymbols, String needle, String newNeedle) {
+			this.input = input;
+			this.punctuationChars = punctuationChars;
+			this.quoteSymbols = quoteSymbols;
+
+			this.needle = needle;
+			this.newNeedle = newNeedle;
+		}
+
+		/**
+		 * reads all words in a text
+		 *
+		 * @return a collection of extracted words
+		 */
+		public String replace() {
+			if (input == null) {
+				return "";
+			}
+			for (int i = 0; i < input.length(); i++) {
+				if (readingWord) {
+					if (punctuationChars.indexOf(input.charAt(i)) != -1 && !insideQuotes) {
+						//check forbidden word list first
+						//or maybe make arrangements in Index
+						//e.g.: disable Index with too many (%) references
+
+						storeCurrentWordAndStartNew();
+
+						result.append(input.charAt(i));
+
+						readingWord = false;
+					}
+					else {
+						if (quoteSymbols != null && quoteSymbols.indexOf(input.charAt(i)) != -1) {
+
+							if(!insideQuotes) {
+								storeCurrentWordAndStartNew();
+							}
+
+							insideQuote = input.charAt(i);
+							insideQuotes = !insideQuotes;
+							//						if(keepQuotes) {
+							//							word.append(input.charAt(i));
+							//						} else
+							result.append(input.charAt(i));
+
+							if(!insideQuotes) {
+								storeCurrentWordAndStartNew();
+								readingWord = false;
+							}
+						}
+						else {
+							word.append(input.charAt(i));
+						}
+					}
+				}
+				else {
+					if (punctuationChars.indexOf(input.charAt(i)) == -1) {
+						word = new StringBuffer();
+						if (quoteSymbols != null && quoteSymbols.indexOf(input.charAt(i)) != -1) {
+							insideQuote = input.charAt(i);
+							insideQuotes = !insideQuotes;
+
+
+	//						if(keepQuotes) {
+	//							word.append(input.charAt(i));
+	//						} else
+							result.append(input.charAt(i));
+
+
+
+						}
+						else {
+							word.append(input.charAt(i));
+						}
+						readingWord = true;
+					}
+				}
+			}
+			if (readingWord) {
+				storeCurrentWordAndStartNew();
+			}
+			return result.toString();
+		}
+
+		private void storeCurrentWordAndStartNew() {
+			String foundWord = word.toString()/*.trim()*/;
+
+
+			if(foundWord.equals(needle)) {
+				result.append(newNeedle);
+			} else {
+				result.append(word);
+			}
+			word = new StringBuffer();
+		}
+
+	}
+
+
 
 
 	/**

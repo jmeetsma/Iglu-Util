@@ -162,7 +162,73 @@ public class StringSupportTest {
 		assertEquals("Harry dates Sally", StringSupport.replaceEntireWords("Harry met Sally", " ", "", "met", "dates"));
 
 		assertEquals("Harry metSally", StringSupport.replaceEntireWords("Harry metSally", " ", "", "Sally", "Dick"));
+
+		assertEquals("Harry metSally", StringSupport.replaceEntireWords("Harry metSally", " ", "", "Sally", "Dick"));
 	}
+
+	@Test
+	public void testReplaceEntireWordsWithPunctChars() throws Exception {
+
+		//WORD:NAMESPACE_BEGIN VAL: namespace x {
+		String start = "NAMESPACE_BEGIN(CryptoPP)";
+		String result = StringSupport.replaceEntireWords(start, " \t+-{}*%&/()\"", "", "NAMESPACE_BEGIN",  "namespace x {");
+
+		System.out.println(result);
+
+/*
+
+WORD:NAMESPACE_BEGIN VAL: namespace x {
+0.NAMESPACE_BEGIN(CryptoPP)
+0.[[MACRO_START:NAMESPACE_BEGIN:DigiModel/sw/src/utils/Crypto/config.h:75:(x)]] namespace x {[[MACRO_END:NAMESPACE_BEGIN]]()CryptoPP
+WORD:NAMESPACE_BEGIN VAL: namespace x {
+1.[[MACRO_START:NAMESPACE_BEGIN:DigiModel/sw/src/utils/Crypto/config.h:75:(x)]] namespace x {[[MACRO_END:NAMESPACE_BEGIN]]()CryptoPP
+2.[[MACRO_START:NAMESPACE_BEGIN:DigiModel/sw/src/utils/Crypto/config.h:75:()x]] namespace x [[MACRO_END:NAMESPACE_BEGIN]]()CryptoPP
+
+
+ */
+
+			}
+
+	@Test
+	public void testReplaceEntireWordsWithPunctChars2() throws Exception {
+
+		//WORD:NAMESPACE_BEGIN VAL: namespace x {
+		String start = "NAMESPACE_BEGIN(CryptoPP)";
+		String result = StringSupport.replaceEntireWords(start, " \t+-{}*%&/", "()\"", "NAMESPACE_BEGIN",  "namespace x {");
+
+		System.out.println(result);
+
+		assertEquals("namespace x {(CryptoPP)", result);
+
+		start = "NAMESPACE_BEGIN(CryptoPP X)";
+		result = StringSupport.replaceEntireWords(start, " \t+-{}*%&/", "()\"", "CryptoPP",  "BLA");
+
+		System.out.println(result);
+
+		assertEquals("NAMESPACE_BEGIN(CryptoPP X)", result);
+
+	}
+
+	/*
+	WORD:vtkSetClampMacro VAL: \
+3. vtkSetClampMacro( NeedToRender, int, 0, 1 );
+4.[[MACRO_START:vtkSetClampMacro:External/VTK/src/Common/vtkSetGet.h:131:(name,type,min,max)]] \[[MACRO_END:vtkSetClampMacro]](NeedToRender, int, 0, 1 ;
+
+	 */
+
+	@Test
+	public void testReplaceEntireWordsWithPunctChars3() throws Exception {
+
+		String result = StringSupport.replaceEntireWords("vtkSetClampMacro( NeedToRender, int, 0, 1 );",
+				" \t+-{}*%&/()\"", "", "vtkSetClampMacro", "\\");
+		//WORD:NAMESPACE_BEGIN VAL: namespace x {
+
+		System.out.println(result);
+
+		assertEquals("\\( NeedToRender, int, 0, 1 );", result);
+
+	}
+
 
 	private static final String TEXT_FILE_PATH = "org/ijsberg/iglu/util/io/directory structure/root/WWW/contact.html";
 

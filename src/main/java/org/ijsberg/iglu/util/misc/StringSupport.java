@@ -124,6 +124,7 @@ public abstract class StringSupport {
 		StringBuffer buf = new StringBuffer(haystack);
 		for (int i = 0; i < needle.length; i++) {
 			//TODO not very elegant
+
 			replaceAll(buf, needle[i], newNeedle[i]);
 		}
 		return buf.toString();
@@ -780,11 +781,14 @@ public abstract class StringSupport {
 							//						if(keepQuotes) {
 							//							word.append(input.charAt(i));
 							//						} else
-							result.append(input.charAt(i));
 
 							if(!insideQuotes) {
 								storeCurrentWordAndStartNew();
+								result.append(input.charAt(i));
 								readingWord = false;
+							}  else {
+								result.append(input.charAt(i));
+
 							}
 						}
 						else {
@@ -812,6 +816,8 @@ public abstract class StringSupport {
 							word.append(input.charAt(i));
 						}
 						readingWord = true;
+					} else {
+						result.append(input.charAt(i));
 					}
 				}
 			}

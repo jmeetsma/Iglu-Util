@@ -20,6 +20,7 @@
 package org.ijsberg.iglu.util.io;
 
 import org.ijsberg.iglu.util.collection.CollectionSupport;
+import org.ijsberg.iglu.util.formatting.PatternMatchingSupport;
 import org.ijsberg.iglu.util.misc.Line;
 import org.ijsberg.iglu.util.misc.StringSupport;
 
@@ -770,16 +771,23 @@ public abstract class FileSupport {
 
 	public static List<Line> convertToTextFile(String input, boolean skipEmpty) throws IOException {
 
+		return convertToTextFile(null, input, skipEmpty);
+	}
+
+	public static List<Line> convertToTextFile(String fileName, String input, boolean skipEmpty) throws IOException {
+
 		BufferedReader reader = new BufferedReader(new StringReader(input));
 		List<Line> lines = new ArrayList<Line>();
 		String line; int count = 0;
 		while ((line = reader.readLine()) != null) {
+			count++;
 			if(!skipEmpty || !line.trim().isEmpty()) {
-				lines.add(new Line(count, line));
+				lines.add(new Line(fileName, count, line));
 			}
 		}
 		return lines;
 	}
+
 
 	public static List<Line> loadTextFile(String encoding, File file) throws IOException {
 		return findLinesInTextFile(encoding, file, null);
@@ -794,16 +802,12 @@ public abstract class FileSupport {
         }
     }
 
-    //TODO read text file from zip
 	public static ArrayList<Line> getLinesInTextFile(File file) throws IOException {
-		return findLinesInTextFile(null, file, null);
-	}
-	
-	public static ArrayList<Line> findLinesInTextFile(File file, String regexp) throws IOException {
-		return findLinesInTextFile(null, file, regexp);
+		return getLinesInTextFile(file);
 	}
 
-	public static ArrayList<Line> findLinesInTextFile(String encoding, File file, String regexp) throws IOException {
+    //TODO read text file from zip
+	public static ArrayList<Line> getLinesInTextFile(String encoding, File file) throws IOException {
 		ArrayList<Line> lines = new ArrayList<Line>();
 		FileInputStream inputStream = new FileInputStream(file);
 		InputStreamReader inputReader = null;
@@ -817,13 +821,49 @@ public abstract class FileSupport {
 		String line; int count = 0;
 		while ((line = reader.readLine()) != null) {
 			count++;
-			if(regexp == null || line.matches(regexp)) {
-				lines.add(new Line(count, line));
-			}
+			lines.add(new Line(file.getName(), count, line));
 		}
 		reader.close();
 		return lines;
 	}
+
+	public static ArrayList<Line> findLinesInTextFile(String encoding, File file, String regexp) throws IOException {
+		ArrayList<Line> lines = new ArrayList<Line>();
+		ArrayList<Line> linesInFile = getLinesInTextFile(encoding, file);
+		lines.addAll(findLinesInTextFile(regexp, linesInFile));
+		return lines;
+	}
+
+	public static ArrayList<Line> findLinesInTextFile(String fileName, String fileData, String regexp) throws IOException {
+		ArrayList<Line> lines = new ArrayList<Line>();
+		List<Line> linesInFile = convertToTextFile(fileName, fileData, false);
+		lines.addAll(findLinesInTextFile(regexp, linesInFile));
+		return lines;
+	}
+
+	private static ArrayList<Line> findLinesInTextFile(String regexp, List<Line> linesInFile) {
+		ArrayList<Line> lines = new ArrayList<Line>();
+		for(Line line : linesInFile) {
+			if(regexp == null || PatternMatchingSupport.valueMatchesRegularExpression(line.getLine(), regexp)) {
+				lines.add(line);
+			}
+		}
+		return lines;
+	}
+
+	public static ArrayList<Line> findLinesInTextFile(File file, String regexp) throws IOException {
+		return findLinesInTextFile(null, file, regexp);
+	}
+
+	public static ArrayList<Line> findLinesInFileCollection(FileCollection files, String regexp) throws IOException {
+		ArrayList<Line> lines = new ArrayList<Line>();
+		for(String fileName : files.getFileNames()) {
+			String fileData = files.getFileContentsByName(fileName);
+			lines.addAll(findLinesInTextFile(fileName, fileData, regexp));
+		}
+		return lines;
+	}
+
 
 	public static void saveSerializable(Serializable serializable, String fileName) throws IOException {
 		

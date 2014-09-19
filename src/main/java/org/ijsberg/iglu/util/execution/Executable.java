@@ -40,6 +40,7 @@ public abstract class Executable implements Runnable {
 	private Throwable execException;
 	private Thread executeThread;
 	private Object retval;
+	private Executable helperExecutable;
 
 	/**
 	 */
@@ -90,12 +91,12 @@ public abstract class Executable implements Runnable {
 			throw new IllegalStateException("use executable once per call");
 		}
 		final Executable nestedExec = this;
-		Executable exec = new Executable() {
+		helperExecutable = new Executable() {
 			public Object execute() throws Throwable {
 				return nestedExec.executeTimed(timeout);
 			}
 		};
-		exec.executeAsync();
+		helperExecutable.executeAsync();
 	}
 
 
@@ -106,12 +107,12 @@ public abstract class Executable implements Runnable {
 	 */
 	public void executeAsyncDelayed(final long delay) {
 		final Executable nestedExec = this;
-		Executable exec = new Executable() {
+		helperExecutable = new Executable() {
 			public Object execute() throws Throwable {
 				return nestedExec.executeDelayed(delay);
 			}
 		};
-		exec.executeAsync();
+		helperExecutable.executeAsync();
 	}
 
 	/**
@@ -147,8 +148,13 @@ public abstract class Executable implements Runnable {
 	 * @throws TimeOutException
 	 * @throws Throwable
 	 */
-	public Object executeDelayed(long delay) throws TimeOutException, Throwable {
-		Thread.sleep(delay);
+	public Object executeDelayed(long delay) throws Throwable {
+		try {
+			Thread.sleep(delay);
+		} catch (InterruptedException e) {
+//			System.out.println("interrupted");
+			throw e;
+		}
 		return executeTimed(0);
 	}
 
@@ -170,6 +176,9 @@ public abstract class Executable implements Runnable {
 			aborted = true;
 			if (executeThread != null) {
 				executeThread.interrupt();
+			}
+			if(helperExecutable != null) {
+				helperExecutable.interrupt();
 			}
 		}
 	}

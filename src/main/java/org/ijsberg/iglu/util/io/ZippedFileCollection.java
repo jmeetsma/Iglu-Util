@@ -112,6 +112,11 @@ public class ZippedFileCollection implements FileCollection {
 		return "file: '" + zipFile.getName() + "' subdirectory: '" + relativeDir + "'";
 	}
 
+	@Override
+	public int size() {
+		return filesByRelativePathAndName.size();
+	}
+
 
 	Directory rootDir = new Directory("ROOT");
 

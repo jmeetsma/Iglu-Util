@@ -24,4 +24,7 @@ public interface FileCollection {
 	void refreshFiles();
 
 	String getDescription();
+
+	int size();
+
 }

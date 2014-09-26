@@ -97,6 +97,11 @@ public class FSFileCollection implements FileCollection {
 		return "directory: '" + baseDir + "'";
 	}
 
+	@Override
+	public int size() {
+		return filesByRelativePathAndName.size();
+	}
+
 	Directory rootDir = new Directory("ROOT");
 
 

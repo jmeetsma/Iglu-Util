@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2013 Jeroen Meetsma - IJsberg
+ * Copyright 2011-2014 Jeroen Meetsma - IJsberg Automatisering BV
  *
  * This file is part of Iglu.
  *
@@ -20,7 +20,6 @@
 package org.ijsberg.iglu.util.io;
 
 import java.io.*;
-import java.util.Map;
 
 /**
  */

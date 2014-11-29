@@ -891,4 +891,16 @@ public abstract class FileSupport {
 	}
 
 
+	public static void saveProperties(Properties properties, String fileName) throws IOException {
+		FileOutputStream outputStream = new FileOutputStream(fileName);
+		PrintStream printStream = new PrintStream(outputStream);
+
+		for(String propertyName : properties.stringPropertyNames()) {
+			printStream.println(propertyName + "=" + properties.getProperty(propertyName));
+		}
+
+		printStream.close();
+		outputStream.close();
+
+	}
 }

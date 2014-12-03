@@ -19,9 +19,10 @@
 
 package org.ijsberg.iglu.util.collection;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class ListMap<K, V> {
+public class ListMap<K, V> implements Serializable {
 	
 	protected TreeMap<K, List<V>> internalMap = new TreeMap<K, List<V>>();
 	private int loadFactor = 10;

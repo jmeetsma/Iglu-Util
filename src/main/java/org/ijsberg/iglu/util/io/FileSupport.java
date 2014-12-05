@@ -274,6 +274,21 @@ public abstract class FileSupport {
 		return null;
 	}
 
+	public static void zip(String path, String zipFileName, String includeMask) throws IOException {
+		String zipFilePath = convertToUnixStylePath(path);
+		List<File> files = getFilesInDirectoryTree(path, includeMask);
+		FileStreamProvider output = new ZipFileStreamProvider(zipFileName);
+		for (File file : files) {
+			String fullFileName = convertToUnixStylePath(file.getPath());
+			String fileName = fullFileName.substring(zipFilePath.length() + (zipFilePath.endsWith("/") ? 0 : 1));
+			OutputStream outputStream = output.createOutputStream(fileName);
+			copyFileResource(fullFileName, outputStream);
+			output.closeCurrentStream();
+		}
+		output.close();
+	}
+
+
 	public static void unzip(String path, ZipFile zipFile) throws IOException {
 
 		ArrayList<ZipEntry> entries = getContentsFromZipFile(zipFile, new FileFilterRuleSet().setIncludeFilesWithNameMask("*.*"));
@@ -413,6 +428,16 @@ public abstract class FileSupport {
 		//TODO make sure that files exist
 		InputStream input = getInputStreamFromClassLoader(pathToResource);
 
+		try {
+			StreamSupport.absorbInputStream(input, output);
+		} finally {
+			input.close();
+		}
+	}
+
+	public static void copyFileResource(String pathToResource, OutputStream output) throws IOException{
+
+		InputStream input = new FileInputStream(pathToResource);
 		try {
 			StreamSupport.absorbInputStream(input, output);
 		} finally {
@@ -652,51 +677,6 @@ public abstract class FileSupport {
 	}
 
 
-	/**
-	 * Commandline use of FileSupport only supports recursive investigation of directories.
-	 * Usage: java FileSupport -<d(elete)|s(how)> [<path>] [<filename>]
-	 *
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		//TODO error message if root dir does not exist
-		if (args.length >= 2) {
-			if (args[0].startsWith("-d")) {
-				if (args.length == 3) {
-					deleteContentsInDirectoryTree(args[1], args[2]);
-					return;
-				}
-				if (args.length == 2) {
-					emptyDirectory(args[1]);
-					return;
-				}
-			}
-			if (args[0].startsWith("-s")) {
-				if (args.length == 2) {
-					CollectionSupport.print(getFilesAndDirectoriesInDirectoryTree(args[1], null));
-					return;
-				}
-				if (args.length == 3) {
-					CollectionSupport.print(getFilesAndDirectoriesInDirectoryTree(args[1], args[2]));
-					return;
-				}
-				if (args.length > 3) {
-
-					if (args.length == 4 && args[2].startsWith("-f")) {
-						List files = getFilesInDirectoryTree(args[1]);
-						printOccurringString(files, args[3]);
-						return;
-					}
-					if (args.length == 5 && args[3].startsWith("-f")) {
-						List files = getFilesInDirectoryTree(args[1], args[2]);
-						printOccurringString(files, args[4]);
-						return;
-					}
-				}
-			}
-		}
-		printUsage();
-	}
 
 	/**
 	 * @param files
@@ -904,5 +884,56 @@ public abstract class FileSupport {
 		printStream.close();
 		outputStream.close();
 
+	}
+
+
+	/**
+	 * Commandline use of FileSupport only supports recursive investigation of directories.
+	 * Usage: java FileSupport -<d(elete)|s(how)> [<path>] [<filename>]
+	 *
+	 * @param args
+	 */
+	public static void main(String[] args) throws Exception {
+		//TODO error message if root dir does not exist
+
+		zip("C:\\util\\keys\\", "C:\\util\\keys.zip", "*.*");
+		System.exit(0);
+
+		if (args.length >= 2) {
+			if (args[0].startsWith("-d")) {
+				if (args.length == 3) {
+					deleteContentsInDirectoryTree(args[1], args[2]);
+					return;
+				}
+				if (args.length == 2) {
+					emptyDirectory(args[1]);
+					return;
+				}
+			}
+			if (args[0].startsWith("-s")) {
+				if (args.length == 2) {
+					CollectionSupport.print(getFilesAndDirectoriesInDirectoryTree(args[1], null));
+					return;
+				}
+				if (args.length == 3) {
+					CollectionSupport.print(getFilesAndDirectoriesInDirectoryTree(args[1], args[2]));
+					return;
+				}
+				if (args.length > 3) {
+
+					if (args.length == 4 && args[2].startsWith("-f")) {
+						List files = getFilesInDirectoryTree(args[1]);
+						printOccurringString(files, args[3]);
+						return;
+					}
+					if (args.length == 5 && args[3].startsWith("-f")) {
+						List files = getFilesInDirectoryTree(args[1], args[2]);
+						printOccurringString(files, args[4]);
+						return;
+					}
+				}
+			}
+		}
+		printUsage();
 	}
 }

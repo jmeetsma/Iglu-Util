@@ -260,7 +260,9 @@ public class CommandShell implements Transceiver {
 
 	/**
 	 * Blindly invokes a shell command on Windows or Unix systems.
+	 * It seems that the command is not executed asynchronously
 	 * Note: this command will hang if user input is required.
+	 *
 	 *
 	 * @param command
 	 * @param dir

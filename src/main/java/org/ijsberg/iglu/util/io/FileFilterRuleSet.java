@@ -24,6 +24,7 @@ import org.ijsberg.iglu.util.formatting.PatternMatchingSupport;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -36,7 +37,7 @@ import java.util.zip.ZipFile;
  *
  * @see PatternMatchingSupport#valueMatchesWildcardExpression(String, String)
  */
-public class FileFilterRuleSet implements Cloneable {
+public class FileFilterRuleSet implements Cloneable, Serializable {
 
 	private String baseDir = null;
     private String includeFilesWithNameMask;

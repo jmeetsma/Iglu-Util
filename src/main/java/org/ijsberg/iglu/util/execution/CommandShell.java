@@ -293,7 +293,7 @@ public class CommandShell implements Transceiver {
 		}
 		else {
 			cmd = new String[3];
-			cmd[0] = "sh";
+			cmd[0] = "/bin/sh";
 			cmd[1] = "-c";
 			cmd[2] = command;
 		}

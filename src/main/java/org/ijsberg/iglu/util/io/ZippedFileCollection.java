@@ -48,15 +48,12 @@ public class ZippedFileCollection implements FileCollection {
 	}
 
 	public ZippedFileCollection(ZipFile zipFile, FileFilterRuleSet fileFilterRuleSet) {
-
         this.includedFilesRuleSet = fileFilterRuleSet;
         this.zipFile = zipFile;
 		refreshFiles();
-
     }
 
 	public ZippedFileCollection(ZipFile zipFile, String relativeDir, FileFilterRuleSet fileFilterRuleSet) {
-
 		this.includedFilesRuleSet = fileFilterRuleSet;
 		this.zipFile = zipFile;
 		if(relativeDir != null && !"".equals(relativeDir)) {
@@ -91,13 +88,11 @@ public class ZippedFileCollection implements FileCollection {
 
 	@Override
 	public boolean containsFile(String fileName) {
-
 		return  filesByRelativePathAndName.containsKey(FileSupport.convertToUnixStylePath(fileName));
 	}
 
 	@Override
 	public void refreshFiles() {
-
         filesByRelativePathAndName.clear();
 		rootDir = new Directory("ROOT");
 

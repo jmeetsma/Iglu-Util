@@ -26,14 +26,49 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 
 public class FileSupportTest extends DirStructureDependentTest {
 
+
+	@Test
+	public void testReplaceStringsInFilesInDirectoryTree() throws Exception {
+
+		List<File> files = FileSupport.getFilesInDirectoryTree(dirStructRoot,
+				new FileFilterRuleSet(dirStructRoot).setIncludeFilesWithNameMask("*.html").
+						setIncludeFilesContainingText("IJsberg"));
+
+		assertEquals(15, files.size());
+
+		files = FileSupport.getFilesInDirectoryTree(dirStructRoot,
+				new FileFilterRuleSet(dirStructRoot).setIncludeFilesWithNameMask("*.html").
+						setIncludeFilesContainingText("Boncode"));
+
+		assertEquals(0, files.size());
+
+		FileSupport.replaceStringsInFilesInDirectoryTree(
+				dirStructRoot, new FileFilterRuleSet(dirStructRoot).setIncludeFilesWithNameMask("*.html"),
+				"IJsberg", "Boncode");
+
+
+		files = FileSupport.getFilesInDirectoryTree(dirStructRoot,
+				new FileFilterRuleSet(dirStructRoot).setIncludeFilesWithNameMask("*.html").
+						setIncludeFilesContainingText("IJsberg"));
+
+		assertEquals(0, files.size());
+
+		files = FileSupport.getFilesInDirectoryTree(dirStructRoot,
+				new FileFilterRuleSet(dirStructRoot).setIncludeFilesWithNameMask("*.html").
+						setIncludeFilesContainingText("Boncode"));
+
+		assertEquals(15, files.size());
+	}
 
 	@Test
 	public void testGetFilesInDirectoryTree() {

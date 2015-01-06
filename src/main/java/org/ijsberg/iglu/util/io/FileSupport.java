@@ -83,6 +83,25 @@ public abstract class FileSupport {
 		return getContentsInDirectoryTree(file, includeRuleSet, true, false);
 	}
 
+
+	/**
+	 */
+	public static List<File> replaceStringsInFilesInDirectoryTree (
+			String path, FileFilterRuleSet includeRuleSet,
+			String searchString, String replaceString) throws IOException {
+		File directory = new File(path);
+		List<File> files = getContentsInDirectoryTree(directory, includeRuleSet, true, false);
+
+		for(File file : files) {
+			String text = getTextFileFromFS(file);
+			String modifiedText = StringSupport.replaceAll(text, searchString, replaceString);
+			saveTextFile(modifiedText, file);
+		}
+		return files;
+	}
+
+
+
 	/**
 	 * Retrieves all files from a directory and its subdirectories
 	 * matching the given mask.
@@ -234,7 +253,6 @@ public abstract class FileSupport {
      * @throws IOException
      */
     public static String getTextFileFromFS(File existingTextFile) throws IOException {
-
         return new String(getBinaryFromFS(existingTextFile));
     }
 
@@ -782,7 +800,16 @@ public abstract class FileSupport {
         for(Line line : lines) {
             printStream.println(line.getLine());
         }
+		outputStream.close();
     }
+
+	public static void saveTextFile(String text, File file) throws IOException {
+
+		FileOutputStream outputStream = new FileOutputStream(file);
+		PrintStream printStream = new PrintStream(outputStream);
+		printStream.println(text);
+		outputStream.close();
+	}
 
 	public static ArrayList<Line> getLinesInTextFile(File file) throws IOException {
 		return getLinesInTextFile(file);

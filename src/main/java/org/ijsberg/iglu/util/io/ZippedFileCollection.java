@@ -50,6 +50,9 @@ public class ZippedFileCollection implements FileCollection {
 	public ZippedFileCollection(ZipFile zipFile, FileFilterRuleSet fileFilterRuleSet) {
         this.includedFilesRuleSet = fileFilterRuleSet;
         this.zipFile = zipFile;
+		if(fileFilterRuleSet.getBaseDir() != null) {
+			this.relativeDir = FileSupport.convertToUnixStylePath(fileFilterRuleSet.getBaseDir());
+		}
 		refreshFiles();
     }
 
@@ -88,7 +91,11 @@ public class ZippedFileCollection implements FileCollection {
 
 	@Override
 	public boolean containsFile(String fileName) {
-		return  filesByRelativePathAndName.containsKey(FileSupport.convertToUnixStylePath(fileName));
+		boolean retval = filesByRelativePathAndName.containsKey(FileSupport.convertToUnixStylePath(fileName));
+		if(!retval) {
+//			System.out.println(FileSupport.convertToUnixStylePath(fileName) + " NOT FOUND in " + filesByRelativePathAndName.keySet());
+		}
+		return retval;
 	}
 
 	@Override

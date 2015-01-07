@@ -245,6 +245,10 @@ public class FileFilterRuleSet implements Cloneable, Serializable {
 		return this;
 	}
 
+	public String getBaseDir() {
+		return baseDir;
+	}
+
 	@Override
 	public FileFilterRuleSet clone() {
 		return new FileFilterRuleSet(includeFilesWithNameMask, excludeFilesWithNameMask, includeFilesContainingText, excludeFilesContainingText, baseDir);

@@ -62,7 +62,16 @@ public abstract class PatternMatchingSupport {
 	 */
 	public static boolean valueMatchesRegularExpression(String val, Pattern regexp) {
 		Matcher m = regexp.matcher(val);
-		return m.matches();
+
+		try {
+			return m.matches();
+		} catch (StackOverflowError e) {
+			e.printStackTrace();
+			System.out.println("-> [" + val + "][" + regexp + "]");
+			System.out.println("-> " + val.length());
+			System.exit(0);
+		}
+		return false;
 	}
 
 	public static List<int[]> getRangesMatchingRegularExpression(String val, String regexp) {

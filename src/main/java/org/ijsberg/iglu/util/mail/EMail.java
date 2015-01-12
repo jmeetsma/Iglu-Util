@@ -54,21 +54,28 @@ public class EMail// implements Executable
 	 * @param senderName nice name of sender
 	 */
 	public EMail(String senderName, String senderMailAddress, String mailto, String subject, String message, FileData[] attachments) {
+		this('\"' + (senderName != null ? senderName : System.getProperties().getProperty("user.name")) + '\"' + " <" + senderMailAddress + '>',
+			mailto,  subject, message);
+		this.attachments = attachments;
+	}
+
+	/**
+	 */
+	public EMail(String mailFrom, String mailto, String subject, String message) {
 		this.mailserver = (String) System.getProperties().get("mail.host");
 		//TODO get rid of this one
-		String user = (String) System.getProperties().get("user.name");
+		//String user = (String) System.getProperties().get("user.name");
 
-		if (mailserver == null || user == null) {
-			throw new RuntimeException("'mail.host' or 'user.name' not set in system properties");
+		if (mailserver == null/* || user == null*/) {
+			throw new RuntimeException("'mail.host' not set in system properties");
 		}
 		if (mailto == null || "".equals(mailto)) {
 			throw new IllegalArgumentException("recipient unknown");
 		}
-		this.mailfrom = '\"' + (senderName != null ? senderName : user) + '\"' + " <" + senderMailAddress + '>';
+		this.mailfrom = mailFrom;
 		this.mailto = mailto;
 		this.subject = subject != null ? subject.trim() : "";
 		this.message = message;
-		this.attachments = attachments;
 	}
 
 	/**

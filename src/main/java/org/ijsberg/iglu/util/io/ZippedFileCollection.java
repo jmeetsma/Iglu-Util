@@ -61,7 +61,7 @@ public class ZippedFileCollection implements FileCollection {
 		this.zipFile = zipFile;
 		if(relativeDir != null && !"".equals(relativeDir)) {
 			this.relativeDir = FileSupport.convertToUnixStylePath(relativeDir);
-			if(!this.relativeDir.endsWith("/")) {
+			if(!this.relativeDir.endsWith("/") /*&& !relativeDir.isEmpty()*/) {
 				this.relativeDir += "/";
 			}
 		}
@@ -110,9 +110,12 @@ public class ZippedFileCollection implements FileCollection {
 
 			if(relativePathAndName.startsWith(relativeDir)) {
 				relativePathAndName = relativePathAndName.substring(relativeDir.length());
-				filesByRelativePathAndName.put(relativePathAndName, zipEntry);
-				rootDir.addFile(relativePathAndName);
 			}
+			if(relativePathAndName.startsWith("/")) {
+				relativePathAndName = relativePathAndName.substring(1);
+			}
+			filesByRelativePathAndName.put(relativePathAndName, zipEntry);
+			rootDir.addFile(relativePathAndName);
 		}
 	}
 

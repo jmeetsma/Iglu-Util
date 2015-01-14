@@ -103,8 +103,9 @@ public class FSFileCollection implements FileCollection {
             String relativePathAndName = FileSupport.convertToUnixStylePath(file.getPath()).substring(
                     baseDir.length());
             filesByRelativePathAndName.put(relativePathAndName, file);
-
-
+			if(relativePathAndName.startsWith("/")) {
+				relativePathAndName = relativePathAndName.substring(1);
+			}
 			rootDir.addFile(relativePathAndName);
 
 

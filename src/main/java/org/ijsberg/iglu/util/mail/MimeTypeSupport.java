@@ -206,6 +206,7 @@ public abstract class MimeTypeSupport {
 			mapping.put("ztardist", "application/x-ztardist");
 			mapping.put("wkz", "application/x-wingz");
 			mapping.put("iv", "graphics/x-inventor");
+			mapping.put("xml", "application/xml");
 		}
 	}
 

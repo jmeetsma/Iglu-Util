@@ -886,11 +886,13 @@ public abstract class FileSupport {
 		
 		FileOutputStream fStream = new FileOutputStream(fileName);
 		ObjectOutputStream oOutput = new ObjectOutputStream(fStream);
-		
-		oOutput.writeObject(serializable);
-		
-		oOutput.close();
-		fStream.close();
+
+		try {
+			oOutput.writeObject(serializable);
+		} finally {
+			oOutput.close();
+			fStream.close();
+		}
 	}
 
 
@@ -899,11 +901,13 @@ public abstract class FileSupport {
 		FileInputStream fStream = new FileInputStream(fileName);
 		ObjectInputStream oInput = new ObjectInputStream(fStream);
 
-		Serializable retval = (Serializable)oInput.readObject();
-
-		oInput.close();
-		fStream.close();
-
+		Serializable retval = null;
+		try {
+			retval = (Serializable)oInput.readObject();
+		} finally {
+			oInput.close();
+			fStream.close();
+		}
 		return retval;
 	}
 

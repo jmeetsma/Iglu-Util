@@ -336,6 +336,7 @@ public abstract class FileSupport {
 
         ZipEntry entry = zipFile.getEntry(FileSupport.convertToUnixStylePath(fileName));
         if (entry == null) {
+			entry = zipFile.getEntry("/" + FileSupport.convertToUnixStylePath(fileName));
 
 /*			System.out.println("entry " + fileName + " not found in jar " + zipFile.getName());
 
@@ -344,7 +345,9 @@ public abstract class FileSupport {
 				ZipEntry entry2 = entries.nextElement();
 				System.out.println(entry2.getName());
 			}                              */
-            throw new IOException("entry " + fileName + " not found in jar " + zipFile.getName());
+			if (entry == null) {
+	            throw new IOException("entry " + fileName + " not found in jar " + zipFile.getName());
+			}
         }
        InputStream in = zipFile.getInputStream(entry);
         try {
